@@ -141,7 +141,29 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 7px; border: 1px soli
 .kf.mine { border-color: var(--gold); }
 .kf .w { color: var(--dust); font-size: 13px; letter-spacing: 0.06em; }
 .kf .hs { color: var(--alert); font-size: 12px; letter-spacing: 0.1em; }
-.hud-bl { position: absolute; left: 14px; bottom: max(14px, env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; }
+.hud-bl { position: absolute; left: 14px; bottom: max(14px, env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; justify-items: start; }
+/* chat: recent lines fade out on their own; opening the chat shows them all over a dark backing */
+.chat { width: min(420px, 60vw); display: grid; gap: 4px; }
+.chat-log { display: grid; gap: 2px; align-content: end; max-height: 168px; overflow: hidden; font-size: 15px; line-height: 1.3; }
+.chat-log .cl { padding: 1px 6px; border-radius: 4px; color: #f3ead6; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9); overflow-wrap: anywhere; transition: opacity 0.8s; }
+.chat-log .cl b { font-weight: 600; margin-right: 6px; }
+.chat-log .cl.old { opacity: 0; }
+.chat.open .chat-log { background: rgba(13, 18, 22, 0.62); border-radius: 6px; padding: 4px 0; overflow-y: auto; }
+.chat.open .chat-log .cl.old { opacity: 1; }
+.chat-input { font: inherit; font-size: 15px; color: #f3ead6; background: rgba(13, 18, 22, 0.82); border: 1px solid var(--accent); border-radius: 6px; padding: 6px 9px; outline: none; }
+.col { display: grid; gap: 24px; align-content: start; min-width: 0; }
+.lobby-chat { display: grid; gap: 8px; }
+.lobby-chat .chat-log { max-height: 180px; min-height: 64px; overflow-y: auto; background: rgba(0, 0, 0, 0.18); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 2px; font-size: 15px; }
+.lobby-chat .chat-log:empty::before { content: 'No messages yet.'; color: var(--dust); padding: 0 8px; }
+.lobby-chat form { margin: 0; }
+/* update number and what's new, under the logo */
+.update { color: var(--sand); font-size: 15px; flex-basis: 100%; }
+.update ul { max-width: 52ch; }
+.update summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 10px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); }
+.update summary::-webkit-details-marker { display: none; }
+.update-chip { background: var(--accent); color: #1b1408; font-weight: 700; letter-spacing: 0.12em; font-size: 13px; padding: 3px 9px; border-radius: 99px; text-shadow: none; }
+.update-chip b { font-size: 15px; }
+.update ul { margin: 8px 0 0; padding: 10px 14px 10px 28px; background: rgba(13, 18, 22, 0.72); border: 1px solid var(--line); border-radius: var(--r); display: grid; gap: 4px; }
 .vital { background: var(--panel); border-radius: var(--r); padding: 6px 12px 8px; display: grid; gap: 5px; min-width: 220px; }
 .row-hp { display: flex; align-items: baseline; gap: 10px; }
 .vital .k { font-size: 12px; letter-spacing: 0.16em; color: var(--dust); }
@@ -171,6 +193,12 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 7px; border: 1px soli
 .xh.no-dot .d, .xh.no-lines .t, .xh.no-lines .b, .xh.no-lines .l, .xh.no-lines .r,
 .xh.ads .t, .xh.ads .b, .xh.ads .l, .xh.ads .r { display: none; }
 #crosshair.hide { display: none; }
+/* shotgun: a ring the size of the pellet spread, with short ticks on it */
+.xh .ring { display: none; position: absolute; width: var(--ring, 60px); height: var(--ring, 60px); left: calc(var(--ring, 60px) / -2); top: calc(var(--ring, 60px) / -2);
+  box-sizing: border-box; border: 1.5px solid currentColor; border-radius: 50%; background: none; opacity: 0.85;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(0, 0, 0, 0.45); }
+#crosshair.shotgun .ring { display: block; }
+#crosshair.shotgun.ads .t, #crosshair.shotgun.ads .b, #crosshair.shotgun.ads .l, #crosshair.shotgun.ads .r { display: block; }
 #hitmarker { position: absolute; left: 50%; top: 50%; width: 0; height: 0; opacity: 0; transition: opacity 0.2s; color: #fff; }
 #hitmarker i { position: absolute; width: 2px; height: 8px; left: -1px; top: -4px; background: currentColor; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45); }
 #hitmarker i:nth-child(1) { transform: rotate(45deg) translateY(-11px); }
@@ -183,6 +211,7 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 7px; border: 1px soli
 .pop { display: grid; justify-items: center; animation: pop 1.7s ease-out forwards; }
 .pop b { font: 400 34px/1 var(--display); color: var(--gold); }
 .pop.assist b { font-size: 26px; color: var(--sand); }
+.pop.pickup b { font-size: 28px; color: #7dffa6; }
 .pop span { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sand); }
 @keyframes pop { 0% { opacity: 0; transform: translateY(8px) scale(0.9); } 12% { opacity: 1; transform: translateY(0) scale(1.06); } 22% { transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
 #protect { position: absolute; left: 50%; top: calc(50% - 64px); transform: translateX(-50%); background: rgba(106, 174, 232, 0.2); border: 1px solid rgba(106, 174, 232, 0.6); color: #cfe6fb; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; }
@@ -190,6 +219,9 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 7px; border: 1px soli
 #scope::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0, 0, 0, 0.9); }
 #scope::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(0, 0, 0, 0.9); }
 #vignette { position: absolute; inset: 0; opacity: 0; background: radial-gradient(circle at center, transparent 45%, rgba(190, 20, 10, 0.55)); }
+#pickflash { position: absolute; inset: 0; opacity: 0; pointer-events: none; background: radial-gradient(circle at center, transparent 50%, rgba(70, 230, 130, 0.42)); }
+#pickflash.show { animation: pickflash 0.8s ease-out; }
+@keyframes pickflash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
 #dmgdir { position: absolute; left: 50%; top: 50%; width: 220px; height: 220px; margin: -110px; opacity: 0; }
 #dmgdir::before { content: ''; position: absolute; left: 50%; top: 0; width: 70px; height: 18px; margin-left: -35px; border-top: 5px solid var(--alert); border-radius: 50% 50% 0 0; }
 #banner { position: absolute; left: 50%; top: 20%; transform: translateX(-50%); text-align: center; opacity: 0; transition: opacity 0.25s; width: min(92vw, 760px); }
@@ -313,12 +345,13 @@ button.keycap:hover { border-color: var(--sand); }
   </div>
   <canvas id="radar" width="200" height="200"></canvas>
   <div id="killfeed"></div>
-  <div id="crosshair" class="xh"><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="d"></i></div>
+  <div id="crosshair" class="xh"><i class="ring"></i><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="d"></i></div>
   <div id="hitmarker"><i></i><i></i><i></i><i></i></div>
   <div id="popups" aria-live="polite"></div>
   <div id="protect" hidden>Spawn protection</div>
   <div id="dmgdir"></div>
   <div id="vignette"></div>
+  <div id="pickflash"></div>
   <div id="banner"><div class="big" id="banner-big"></div><div class="small" id="banner-small"></div></div>
   <div id="deathcard" hidden>
     <div id="death-who">You were eliminated</div>
@@ -328,6 +361,10 @@ button.keycap:hover { border-color: var(--sand); }
     <div class="guns" id="death-loadout"></div>
   </div>
   <div class="hud-bl">
+    <div class="chat" id="chat">
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <input class="chat-input" id="chat-input" maxlength="120" autocomplete="off" spellcheck="false" placeholder="Say something · Enter sends · Esc closes" hidden>
+    </div>
     <div class="vital" id="v-hp">
       <div class="row-hp"><span class="k">HEALTH</span><span class="v num" id="hp">100</span><span id="regen" hidden>+ regenerating</span></div>
       <div class="hpbar"><i id="hp-fill"></i></div>
@@ -346,6 +383,16 @@ button.keycap:hover { border-color: var(--sand); }
     <header class="masthead">
       <h1 class="logo">SITE<span>LINE</span> <small class="by">By Yashmit</small></h1>
       <p class="tagline">Free-for-all in a desert market town. Everyone is a target, friends and bots alike.</p>
+      <details class="update" id="update">
+        <summary><span class="update-chip">UPDATE <b id="update-no">7</b></span> What&rsquo;s new</summary>
+        <ul>
+          <li>Online play on school and work Wi-Fi now goes through a relay when a direct connection is blocked.</li>
+          <li>Text chat in the lobby and in matches (press Enter).</li>
+          <li>Bots glow with a red outline, and they&rsquo;re a bit easier: slower reactions, shakier aim, less game sense.</li>
+          <li>A new pump-action shotgun with a spread-ring crosshair.</li>
+          <li>Reloads show the magazine swap clearly.</li>
+        </ul>
+      </details>
     </header>
     <div>
       <div class="panel">
@@ -377,7 +424,8 @@ button.keycap:hover { border-color: var(--sand); }
         <li>First to the point target wins, or whoever leads when the clock runs out.</li>
         <li>You respawn after 3 seconds with 2 seconds of spawn protection. Firing ends it early.</li>
         <li>Health comes back after 4 seconds out of the fight. Ammo is unlimited; reloads aren&rsquo;t.</li>
-        <li>Slot 3 is your knife: you run faster with it out, and a hit from behind does double damage.</li>
+        <li>Fallen players drop a green supply case 70% of the time. Walk over it to heal to full and refill your ammo instantly.</li>
+        <li>There’s no sprint: pull out your knife (slot 3) to run fastest. A knife hit from behind does double damage.</li>
       </ul>
     </div>
   </div>
@@ -417,12 +465,20 @@ button.keycap:hover { border-color: var(--sand); }
       </div>
       <p class="note" id="lobby-wait" hidden>Waiting for the host to start the match.</p>
     </div>
-    <div class="panel manual">
-      <h2>Your gun</h2>
-      <p class="note">You also always carry the P9 pistol and a knife. You can switch guns each time you respawn.</p>
-      <div class="guns" id="lobby-loadout"></div>
-      <div class="label">Your knife</div>
-      <div class="knives" id="lobby-knife"></div>
+    <div class="col">
+      <div class="panel manual">
+        <h2>Your gun</h2>
+        <p class="note">You also always carry the P9 pistol and a knife. You can switch guns each time you respawn.</p>
+        <div class="guns" id="lobby-loadout"></div>
+        <div class="label">Your knife</div>
+        <div class="knives" id="lobby-knife"></div>
+      </div>
+      <div class="panel lobby-chat" id="lobby-chat" hidden>
+        <h3 class="label">Chat</h3>
+        <div class="chat-log open" id="lobby-chat-log" aria-live="polite"></div>
+        <form class="row" id="lobby-chat-form"><input class="input grow" id="lobby-chat-input" maxlength="120" autocomplete="off" spellcheck="false" placeholder="Message everyone in the lobby"><button class="btn small" type="submit">Send</button></form>
+        <p class="note">In a match, press <kbd>Enter</kbd> to chat.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -449,6 +505,7 @@ button.keycap:hover { border-color: var(--sand); }
         <button class="btn" id="btn-end-match" hidden>End for everyone</button>
         <button class="btn danger" id="btn-leave">Leave match</button>
       </div>
+      <div class="slider pause-fov"><div class="row"><label class="label" for="pause-fov">Field of view</label><span class="num" id="pause-fov-v"></span></div><input type="range" id="pause-fov" min="70" max="130" step="1"></div>
       <div class="label">Gun for your next life</div>
       <div class="guns compact" id="pause-loadout"></div>
       <div class="label">Knife</div>
@@ -476,9 +533,9 @@ button.keycap:hover { border-color: var(--sand); }
     </div>
 
     <div class="tabpanel" role="tabpanel" id="panel-game" aria-labelledby="tab-game">
+      <div class="slider"><div class="row"><label class="label" for="set-fov">Field of view</label><span class="num" id="set-fov-v"></span></div><input type="range" id="set-fov" min="70" max="130" step="1"></div>
       <div class="setting-row"><span class="label">Aim (right click)</span><div class="seg" id="seg-aim"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
       <div class="setting-row"><span class="label">Crouch</span><div class="seg" id="seg-crouch"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
-      <div class="setting-row"><span class="label">Sprint</span><div class="seg" id="seg-sprint"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
       <div class="setting-row"><span class="label">Camera bob</span><div class="seg" id="seg-bob"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
       <div class="setting-row"><span class="label">Minimap</span><div class="seg" id="seg-minimap"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
       <p class="note">Toggle means one press turns it on and the next turns it off. On a trackpad, Toggle aim lets a two-finger click switch aiming.</p>
@@ -495,11 +552,10 @@ button.keycap:hover { border-color: var(--sand); }
     </div>
 
     <div class="tabpanel" role="tabpanel" id="panel-video" aria-labelledby="tab-video" hidden>
-      <div class="slider"><div class="row"><label class="label" for="set-fov">Field of view</label><span class="num" id="set-fov-v"></span></div><input type="range" id="set-fov" min="80" max="120" step="1"></div>
       <div class="setting-row"><span class="label">Graphics</span><div class="seg" id="seg-quality"><button data-v="low">Low</button><button data-v="medium">Medium</button><button data-v="high">High</button></div></div>
       <div class="setting-row"><span class="label">FPS counter</span><div class="seg" id="seg-fps"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
       <div class="setting-row" id="row-fullscreen"><span class="label">Fullscreen</span><button class="btn small" id="btn-fullscreen">Go fullscreen</button></div>
-      <p class="note">A wider field of view shows more around you. Use Low graphics if the game stutters.</p>
+      <p class="note">Use Low graphics if the game stutters. Field of view is on the Gameplay tab and in the Esc menu.</p>
     </div>
 
     <div class="tabpanel" role="tabpanel" id="panel-audio" aria-labelledby="tab-audio" hidden>
@@ -593,17 +649,19 @@ function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 function ordinal(n) { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
 
 /* ================= tuning ================= */
-const VERSION = 5;
+const VERSION = 7; // also shown on the main screen as the update number
 const PHYS = {
   gravity: 20, jumpV: 6.6, step: 0.55, radius: 0.34,
   hStand: 1.8, hCrouch: 1.25, eyeStand: 1.62, eyeCrouch: 1.08,
-  run: 6.3, sprint: 1.4, crouch: 0.48, ads: 0.64, scope: 0.46,
+  run: 6.3, crouch: 0.48, ads: 0.64, scope: 0.46,
   accel: 66, airAccel: 13,
 };
 const SCORE = { kill: 20, assist: 10 };
 const RULES = FAST
   ? { respawn: 1.5, protect: 1.5, regenDelay: 3, regenRate: 30, assistMin: 25, assistWindow: 10 }
   : { respawn: 3, protect: 2, regenDelay: 4, regenRate: 25, assistMin: 25, assistWindow: 10 };
+// what a fallen player leaves behind: a supply case that tops you up to full health and refills every magazine
+Object.assign(RULES, { dropChance: 0.7, dropLife: 25, dropReach: 1.35, dropMax: 14 });
 
 function makePattern(n, climb, sway, settle) {
   const out = [];
@@ -614,24 +672,25 @@ function makePattern(n, climb, sway, settle) {
   }
   return out;
 }
-const PATTERNS = { rifle: makePattern(30, 0.08, 0.022, 6.5), smg: makePattern(32, 0.042, 0.013, 7) };
+const PATTERNS = { rifle: makePattern(30, 0.098, 0.027, 6.5), smg: makePattern(32, 0.052, 0.016, 7) };
 
 // dmg per bullet to the body; head multiplier per weapon, legs x0.75; falloff = multiplier per 12.7 m
+// spread is the hip-fire cone (radians); aiming down sights multiplies it by adsMul, so aiming is what makes guns accurate
 const WEAPONS = {
   pistol: { name: 'P9 Sidearm', short: 'P9', kind: 'pistol', dmg: 28, head: 3.2, falloff: 0.82, rate: 6.5, auto: false, mag: 12, reload: 1.5, speed: 1.0,
-    spread: 0.004, move: 0.035, air: 0.12, bloom: 0.012, kick: [0.016, 0.004], zoom: 1.25, adsMul: 0.6, pellets: 1, sound: 'pistol', blurb: 'Always with you. Accurate first shot.' },
+    spread: 0.009, move: 0.035, air: 0.12, bloom: 0.015, kick: [0.02, 0.005], zoom: 1.25, adsMul: 0.32, pellets: 1, sound: 'pistol', blurb: 'Always with you. Accurate when you aim.' },
   rifle: { name: 'Vanguard AR', short: 'AR', kind: 'rifle', dmg: 30, head: 3.6, falloff: 0.96, rate: 10, auto: true, mag: 30, reload: 2.2, speed: 0.92,
-    spread: 0.0025, move: 0.1, air: 0.22, bloom: 0.003, kick: [0.0105, 0.004], zoom: 1.5, adsMul: 0.55, pellets: 1, sound: 'rifle', pattern: 'rifle', blurb: 'All-rounder. One headshot kills out to mid range.' },
+    spread: 0.011, move: 0.1, air: 0.22, bloom: 0.0045, kick: [0.013, 0.005], zoom: 1.5, adsMul: 0.17, pellets: 1, sound: 'rifle', pattern: 'rifle', blurb: 'All-rounder. One headshot kills out to mid range.' },
   smg: { name: 'Wasp SMG', short: 'SMG', kind: 'smg', dmg: 21, head: 2.4, falloff: 0.78, rate: 13.5, auto: true, mag: 32, reload: 1.9, speed: 1.0,
-    spread: 0.01, move: 0.02, air: 0.1, bloom: 0.004, kick: [0.0075, 0.0025], zoom: 1.3, adsMul: 0.6, pellets: 1, sound: 'smg', pattern: 'smg', blurb: 'Fast and mobile. Wins close fights.' },
+    spread: 0.015, move: 0.02, air: 0.1, bloom: 0.0055, kick: [0.0095, 0.003], zoom: 1.3, adsMul: 0.3, pellets: 1, sound: 'smg', pattern: 'smg', blurb: 'Fast and mobile. Wins close fights.' },
   // the shotgun loads shell by shell: a short start, `shell` s per shell, then a pump if it was empty; firing interrupts
   shotgun: { name: 'Breacher', short: 'SG', kind: 'shotgun', dmg: 17, head: 1.6, falloff: 0.6, rate: 1.2, auto: false, mag: 6, reload: 2.4, speed: 0.95, shell: 0.38, rstart: 0.3, pump: 0.34,
-    spread: 0.06, move: 0.01, air: 0.03, bloom: 0, kick: [0.06, 0.01], zoom: 1.15, adsMul: 0.85, pellets: 8, sound: 'shotgun', blurb: 'Eight pellets. Deadly around corners.' },
+    spread: 0.068, move: 0.01, air: 0.03, bloom: 0, kick: [0.068, 0.011], zoom: 1.15, adsMul: 0.75, pellets: 8, sound: 'shotgun', blurb: 'Eight pellets. Deadly around corners.' },
   sniper: { name: 'Longshot', short: 'SR', kind: 'sniper', dmg: 105, head: 2, falloff: 0.995, rate: 0.75, auto: false, mag: 5, reload: 2.8, speed: 0.85,
-    spread: 0.0015, unscoped: 0.07, move: 0.15, air: 0.3, bloom: 0, kick: [0.07, 0.006], zoom: 4.0, adsMul: 1, pellets: 1, sound: 'sniper', scope: true, blurb: 'One shot to the body. Aim to scope in.' },
+    spread: 0.0015, unscoped: 0.085, move: 0.15, air: 0.3, bloom: 0, kick: [0.078, 0.007], zoom: 4.0, adsMul: 1, pellets: 1, sound: 'sniper', scope: true, blurb: 'One shot to the body. Aim to scope in.' },
 };
 // slot 3: light slash (left click) and heavy stab (right click); hits from behind do double damage; faster to run with
-WEAPONS.knife = { name: 'Knife', short: 'KNIFE', kind: 'knife', melee: true, dmg: 45, heavy: 70, back: 2, rate: 2.4, heavyRate: 1.05, range: 2.1, speed: 1.12,
+WEAPONS.knife = { name: 'Knife', short: 'KNIFE', kind: 'knife', melee: true, dmg: 45, heavy: 70, back: 2, rate: 2.4, heavyRate: 1.05, range: 2.1, speed: 1.32,
   head: 1, falloff: 1, auto: true, mag: 1, reload: 0, spread: 0, move: 0, air: 0, bloom: 0, kick: [0, 0], zoom: 1, adsMul: 1, pellets: 1, sound: 'knife', blurb: '' };
 const KNIVES = {
   tactical: { name: 'Tactical knife', blurb: 'Clip-point blade. Flips in your hand.' },
@@ -649,9 +708,9 @@ const PLAYER_COLORS = ['#ff8a3d', '#3ec7ff', '#ff4fa3', '#9be15d', '#ffd23f', '#
 // game sense: hold = reaction multiplier when already holding an angle; chase = chance to hunt where it last saw you;
 // hear = how far away gunfire draws its attention (m); investigate = chance it walks over to check gunfire
 const DIFF = [
-  { name: 'Easy', react: [0.82, 1.15], err: 0.1, decay: 1.1, jitter: 0.04, turn: 3.2, head: 0.04, comp: 0.1, sight: 0.72, facing: 0.52, burst: 0.6, pause: [0.45, 0.8], hold: 0.9, chase: 0.4, hear: 30, investigate: 0.22 },
-  { name: 'Normal', react: [0.6, 0.82], err: 0.066, decay: 1.55, jitter: 0.022, turn: 4.65, head: 0.09, comp: 0.27, sight: 0.85, facing: 0.43, burst: 0.85, pause: [0.32, 0.58], hold: 0.82, chase: 0.5, hear: 36, investigate: 0.28 },
-  { name: 'Hard', react: [0.35, 0.5], err: 0.044, decay: 1.85, jitter: 0.0165, turn: 6.5, head: 0.17, comp: 0.42, sight: 0.95, facing: 0.33, burst: 1, pause: [0.25, 0.46], hold: 0.78, chase: 0.6, hear: 42, investigate: 0.35 },
+  { name: 'Easy', react: [0.97, 1.36], err: 0.12, decay: 0.94, jitter: 0.048, turn: 2.72, head: 0.03, comp: 0.08, sight: 0.662, facing: 0.57, burst: 0.54, pause: [0.52, 0.92], hold: 0.95, chase: 0.32, hear: 26, investigate: 0.176 },
+  { name: 'Normal', react: [0.71, 0.97], err: 0.0792, decay: 1.32, jitter: 0.0264, turn: 3.95, head: 0.068, comp: 0.216, sight: 0.782, facing: 0.48, burst: 0.77, pause: [0.37, 0.67], hold: 0.87, chase: 0.4, hear: 31, investigate: 0.224 },
+  { name: 'Hard', react: [0.41, 0.59], err: 0.0528, decay: 1.57, jitter: 0.0198, turn: 5.52, head: 0.128, comp: 0.336, sight: 0.874, facing: 0.38, burst: 0.9, pause: [0.29, 0.53], hold: 0.83, chase: 0.48, hear: 36, investigate: 0.28 },
 ];
 const BOT_RANGE = { pistol: 30, smg: 30, shotgun: 14, rifle: 62, sniper: 110 };
 
@@ -662,7 +721,11 @@ const MAT = { OPEN: 0, BUILDING: 1, CRATE: 2, STONE: 3, PROP: 4 };
 const GROUND = { COBBLE: 0, PLAZA: 1, SAND: 2, TILE: 3 };
 
 const MAP = (() => {
-  const CELL = 0.5, INV = 2, HALF = 32, N = 128, OOB = 9;
+  // The layout below is written in design metres and built at MS times that size, so streets, squares and building
+  // footprints are all MS times bigger; buildings are also VS times taller. Props (crates, barrels, benches, stairs)
+  // keep their real size and only their positions spread out. MS = 2 keeps every edge on the 0.5 m grid.
+  const MS = 2, VS = 1.35, FS = 1.5, FH = 1.25; // map scale, building height scale, fountain size and height
+  const CELL = 0.5, INV = 2, HALF = 32 * MS, N = 2 * HALF * INV, OOB = 12;
   const H = new Float32Array(N * N).fill(7);
   const M = new Uint8Array(N * N).fill(MAT.BUILDING);
   const G = new Uint8Array(N * N);
@@ -672,19 +735,23 @@ const MAP = (() => {
   const lo = (v) => clamp(Math.floor((v + HALF) * INV + 1e-6), 0, N);
   const hi = (v) => clamp(Math.ceil((v + HALF) * INV - 1e-6), 0, N);
   function each(x0, z0, x1, z1, fn) { const a = lo(x0), b = hi(x1), c = lo(z0), d = hi(z1); for (let z = c; z < d; z++) for (let x = a; x < b; x++) fn(z * N + x, x, z); }
-  const carve = (x0, z0, x1, z1, g = GROUND.COBBLE) => each(x0, z0, x1, z1, (i) => { H[i] = 0; M[i] = MAT.OPEN; G[i] = g; });
-  const solid = (x0, z0, x1, z1, h, m) => each(x0, z0, x1, z1, (i) => { H[i] = h; M[i] = m; });
-  const raise = (x0, z0, x1, z1, h) => each(x0, z0, x1, z1, (i) => { if (M[i] === MAT.BUILDING) H[i] = h; });
-  const tint = (x0, z0, x1, z1, t) => each(x0, z0, x1, z1, (i) => { if (M[i] === MAT.BUILDING) T[i] = t; });
-  const groundUnderProps = (x0, z0, x1, z1, g) => each(x0, z0, x1, z1, (i) => { G[i] = g; });
-  // stairs: heights step 0.25 m per 0.5 m cell; dir is the direction you walk to go UP
-  function stairs(x0, z0, x1, z1, hTop, dir) {
+  const sc = (v) => v * MS, snap = (v) => Math.round(v * 2) / 2, cellC = (v) => Math.floor(v * 2) / 2 + 0.25;
+  // design-space rectangles (scaled)
+  const eachS = (x0, z0, x1, z1, fn) => each(sc(x0), sc(z0), sc(x1), sc(z1), fn);
+  const carve = (x0, z0, x1, z1, g = GROUND.COBBLE) => eachS(x0, z0, x1, z1, (i) => { H[i] = 0; M[i] = MAT.OPEN; G[i] = g; });
+  const solid = (x0, z0, x1, z1, h, m) => eachS(x0, z0, x1, z1, (i) => { H[i] = h; M[i] = m; });
+  const raise = (x0, z0, x1, z1, h, exact) => eachS(x0, z0, x1, z1, (i) => { if (M[i] === MAT.BUILDING) H[i] = exact ? h : h * VS; });
+  const tint = (x0, z0, x1, z1, t) => eachS(x0, z0, x1, z1, (i) => { if (M[i] === MAT.BUILDING) T[i] = t; });
+  // stairs climb evenly from hBot to hTop across the run; dir is the direction you walk to go UP
+  function stairs(x0, z0, x1, z1, hTop, dir, hBot = 0) {
+    [x0, z0, x1, z1] = [sc(x0), sc(z0), sc(x1), sc(z1)];
+    const run = Math.round(((dir === 'n' || dir === 's') ? z1 - z0 : x1 - x0) * INV), step = (hTop - hBot) / run;
     each(x0, z0, x1, z1, (i, x, z) => {
       const cx = (x + 0.5) * CELL - HALF, cz = (z + 0.5) * CELL - HALF;
       let k; // cells from the top edge (0 = top step)
       if (dir === 'n') k = Math.floor((cz - z0) * INV); else if (dir === 's') k = Math.floor((z1 - cz) * INV);
       else if (dir === 'w') k = Math.floor((cx - x0) * INV); else k = Math.floor((x1 - cx) * INV);
-      H[i] = Math.max(0.25, hTop - 0.25 * k); M[i] = MAT.STONE;
+      H[i] = Math.max(hBot + step, hTop - step * k); M[i] = MAT.STONE;
     });
     props.push({ t: 'stairs', x0, z0, x1, z1, hTop, dir });
   }
@@ -695,21 +762,29 @@ const MAP = (() => {
     each(x0, z0, x1, z1, (i) => { H[i] = b + h; M[i] = m; BASE[i] = b; });
     return b;
   }
-  const crate = (x, z, w, d, h, rot = 0) => { const y = propRect(x - w / 2, z - d / 2, x + w / 2, z + d / 2, h, MAT.CRATE); props.push({ t: 'crate', x, y, z, w, d, h, rot }); };
+  // props take design-space positions (spread out by MS) but keep their real-world size
+  const rectAt = (x0, z0, x1, z1) => { const cx = sc((x0 + x1) / 2), cz = sc((z0 + z1) / 2), hw = (x1 - x0) / 2, hd = (z1 - z0) / 2; return [snap(cx - hw), snap(cz - hd), snap(cx + hw), snap(cz + hd)]; };
+  const crateW = (x, z, w, d, h, rot = 0) => { const y = propRect(x - w / 2, z - d / 2, x + w / 2, z + d / 2, h, MAT.CRATE); props.push({ t: 'crate', x, y, z, w, d, h, rot }); };
+  const crate = (x, z, w, d, h, rot = 0) => crateW(snap(sc(x) - w / 2) + w / 2, snap(sc(z) - d / 2) + d / 2, w, d, h, rot);
   // barrel sits on a grid vertex and blocks the 1 m square around it
-  const barrel = (x, z, color = 0) => { const y = propRect(x - 0.5, z - 0.5, x + 0.5, z + 0.5, 1.05, MAT.PROP); props.push({ t: 'barrel', x, y, z, color }); };
-  const sandbags = (x0, z0, x1, z1, h = 1.05) => { const y = propRect(x0, z0, x1, z1, h, MAT.PROP); props.push({ t: 'sandbags', x0, z0, x1, z1, y, h }); };
+  const barrelW = (x, z, color = 0) => { const y = propRect(x - 0.5, z - 0.5, x + 0.5, z + 0.5, 1.05, MAT.PROP); props.push({ t: 'barrel', x, y, z, color }); };
+  const barrel = (x, z, color = 0) => barrelW(snap(sc(x)), snap(sc(z)), color);
+  const sandbagsW = (x0, z0, x1, z1, h = 1.05) => { const y = propRect(x0, z0, x1, z1, h, MAT.PROP); props.push({ t: 'sandbags', x0, z0, x1, z1, y, h }); };
+  const sandbags = (x0, z0, x1, z1, h) => sandbagsW(...rectAt(x0, z0, x1, z1), h);
   // planter centred on a cell centre: 1.5 m square, trunk cell in the middle
-  const planter = (x, z, palm = true) => {
+  const planterW = (x, z, palm = true) => {
     const y = propRect(x - 0.75, z - 0.75, x + 0.75, z + 0.75, 0.62, MAT.PROP);
     if (palm) each(x - 0.25, z - 0.25, x + 0.25, z + 0.25, (i) => { H[i] = y + 2.6; });
     props.push({ t: 'planter', x, y, z, palm });
   };
-  const stall = (x0, z0, x1, z1, color, facing) => { const y = propRect(x0, z0, x1, z1, 0.95, MAT.PROP); props.push({ t: 'stall', x0, z0, x1, z1, y, color, facing }); };
-  const container = (x0, z0, x1, z1, color) => { const y = propRect(x0, z0, x1, z1, 2.6, MAT.PROP); props.push({ t: 'container', x0, z0, x1, z1, y, color }); };
-  const bench = (x0, z0, x1, z1) => { const y = propRect(x0, z0, x1, z1, 0.5, MAT.PROP); props.push({ t: 'bench', x0, z0, x1, z1, y }); };
-  const pot = (x, z, plant = true) => { const y = propRect(x - 0.25, z - 0.25, x + 0.25, z + 0.25, 0.7, MAT.PROP); props.push({ t: 'pot', x, y, z, plant }); };
-  const well = (x, z) => { circle(x, z, 1.0, 0.9, MAT.PROP); props.push({ t: 'well', x, y: 0, z }); };
+  const planter = (x, z, palm = true) => planterW(cellC(sc(x)), cellC(sc(z)), palm);
+  const stall = (x0, z0, x1, z1, color, facing) => { [x0, z0, x1, z1] = rectAt(x0, z0, x1, z1); const y = propRect(x0, z0, x1, z1, 0.95, MAT.PROP); props.push({ t: 'stall', x0, z0, x1, z1, y, color, facing }); };
+  const containerW = (x0, z0, x1, z1, color) => { const y = propRect(x0, z0, x1, z1, 2.6, MAT.PROP); props.push({ t: 'container', x0, z0, x1, z1, y, color }); };
+  const container = (x0, z0, x1, z1, color) => containerW(...rectAt(x0, z0, x1, z1), color);
+  const benchW = (x0, z0, x1, z1) => { const y = propRect(x0, z0, x1, z1, 0.5, MAT.PROP); props.push({ t: 'bench', x0, z0, x1, z1, y }); };
+  const bench = (x0, z0, x1, z1) => benchW(...rectAt(x0, z0, x1, z1));
+  const pot = (x, z, plant = true) => { x = cellC(sc(x)); z = cellC(sc(z)); const y = propRect(x - 0.25, z - 0.25, x + 0.25, z + 0.25, 0.7, MAT.PROP); props.push({ t: 'pot', x, y, z, plant }); };
+  const well = (x, z) => { x = sc(x); z = sc(z); circle(x, z, 1.0, 0.9, MAT.PROP); props.push({ t: 'well', x, y: 0, z }); };
   function circle(cx, cz, r, h, m, rIn = 0) {
     each(cx - r - 0.5, cz - r - 0.5, cx + r + 0.5, cz + r + 0.5, (i, x, z) => {
       const px = (x + 0.5) * CELL - HALF, pz = (z + 0.5) * CELL - HALF, d = Math.hypot(px - cx, pz - cz);
@@ -745,7 +820,7 @@ const MAP = (() => {
   carve(-7, 14, -2.5, 17); stairs(-10, 14, -7, 17, 1.5, 'w');
   carve(-13, 21, -10, 24); stairs(-13, 21, -10, 24, 1.5, 'n');
   solid(-21, 16, -13, 21, 3.5, MAT.BUILDING);
-  stairs(-15, 12, -13, 16, 3.5, 's');
+  stairs(-15, 12, -13, 16, 3.5, 's', 1.5);
   solid(-21, 16, -15, 16.5, 4.4, MAT.STONE); solid(-13.5, 16.5, -13, 21, 4.4, MAT.STONE);
   solid(-21, 20.5, -13.5, 21, 4.4, MAT.STONE); solid(-21, 16.5, -20.5, 20.5, 4.4, MAT.STONE);
   solid(-21, 11, -17, 11.5, 2.5, MAT.STONE); solid(-14, 11, -10, 11.5, 2.5, MAT.STONE);
@@ -758,7 +833,7 @@ const MAP = (() => {
   raise(-24, 2.5, -2.5, 24, 5.0); raise(-10, 9, -2.5, 14, 3.0); raise(-10, 2.5, -9, 9, 3.0); raise(-21, 2.5, -10, 6, 3.2);
   raise(-13, 21, -2.5, 24, 4.5); raise(-21, 21, -13, 24, 5.0);
   raise(-29, -32, 29, -29, 7.5); raise(-29, 29, 29, 32, 7.0); raise(-32, -32, -29, 32, 7.0); raise(29, -32, 32, 32, 8.0);
-  raise(-21, 16, -13, 21, 3.5);
+  raise(-21, 16, -13, 21, 3.5, true); // the walkable roof keeps its height
   tint(-32, -32, 32, 32, 0);
   tint(-24, -24, -2.5, -2.5, 1); tint(-12, -12, -2.5, -2.5, 2);
   tint(2.5, -24, 24, -2.5, 3); tint(15, -12, 24, -2.5, 4);
@@ -767,58 +842,72 @@ const MAP = (() => {
   tint(-29, -32, 29, -29, 3); tint(29, -32, 32, 32, 2); tint(-29, 29, 29, 32, 4); tint(-32, -32, -29, 32, 5);
 
   // plaza
-  circle(0, 0, 2.6, 0.8, MAT.PROP); circle(0, 0, 2.05, 0.35, MAT.PROP); circle(0, 0, 0.62, 2.4, MAT.PROP);
-  props.push({ t: 'fountain', x: 0, z: 0 });
+  circle(0, 0, 2.6 * FS, 0.8 * FH, MAT.PROP); circle(0, 0, 2.05 * FS, 0.35 * FH, MAT.PROP); circle(0, 0, 0.62 * FS, 2.4 * FH, MAT.PROP);
+  props.push({ t: 'fountain', x: 0, z: 0, s: FS, sy: FH });
   for (const [x, z] of [[-6.25, -6.25], [6.25, -6.25], [-6.25, 6.25], [6.25, 6.25]]) planter(x, z);
   bench(-4, -8.5, -1.5, -8); bench(1.5, 8, 4, 8.5); bench(-8.5, 1.5, -8, 4); bench(8, -4, 8.5, -1.5);
-  crate(-7.5, 3, 1, 1, 1); crate(7.5, -3, 1, 1, 1, 0.08); crate(3, 7.5, 1, 1, 1, -0.06); crate(-3, -7.5, 1, 1, 1);
-  for (const [x, z, r] of [[0, -9, 0], [0, 9, 0], [-9, 0, 1], [9, 0, 1]]) props.push({ t: 'arch', x, z, rot: r, span: 5, h: 4.6 });
+  for (const arch of [[0, -9, 0], [0, 9, 0], [-9, 0, 1], [9, 0, 1]]) props.push({ t: 'arch', x: sc(arch[0]), z: sc(arch[1]), rot: arch[2], span: 5 * MS, h: 4.6 * VS });
+  // from here on, positions are in real metres: cover comes in tight clusters
+  crateW(-15, 6, 1, 1, 2); crateW(-15, 7, 1, 1, 1); crateW(15, -6, 1, 1, 2, 0.08); crateW(15, -7, 1, 1, 1);
+  crateW(6, 15, 1, 1, 2, -0.06); crateW(7, 15, 1, 1, 1); crateW(-6, -15, 1, 1, 2); crateW(-7, -15, 1, 1, 1);
+  sandbagsW(-4, -12.5, -1, -11.5); sandbagsW(1, 11.5, 4, 12.5); sandbagsW(-12.5, 1, -11.5, 4); sandbagsW(11.5, -4, 12.5, -1);
 
   // streets
-  crate(1.5, -17, 1, 1, 1); barrel(-1.5, -21); crate(-1.5, -12.5, 1, 1, 2, 0.05);
-  sandbags(-2.5, 19.5, -0.5, 20.5); crate(1.5, 13, 1, 1, 1, 0.1); barrel(1.5, 22, 1);
-  barrel(-20, 1.5, 2); crate(-13, -1.5, 1, 1, 1); crate(-21.5, -1.5, 1, 1, 2);
-  crate(14, 1.5, 1, 1, 1, -0.08); crate(21, -1.5, 1, 1, 2); barrel(16.5, -1.5);
+  crateW(3, -34, 1, 1, 1); crateW(4, -34, 1, 1, 2); barrelW(-3, -42); barrelW(-4, -42, 1); crateW(-3, -25, 1, 1, 2, 0.05); crateW(-4, -25, 1, 1, 1);
+  sandbagsW(1, -42, 4.5, -41);
+  sandbagsW(-4, 39.5, -1, 40.5); crateW(3, 26, 1, 1, 1, 0.1); crateW(4, 26, 1, 1, 2); barrelW(3, 44, 1); barrelW(4, 45);
+  crateW(-3.5, 31, 1, 1, 2); crateW(-3.5, 32, 1, 1, 1);
+  barrelW(-40, 3, 2); barrelW(-41, 3); crateW(-26, -3, 1, 1, 1); crateW(-26, -4, 1, 1, 2); crateW(-43, -3, 1, 1, 2); crateW(-44, -3, 1, 1, 1);
+  sandbagsW(-34, 1, -33, 4.5);
+  crateW(28, 3, 1, 1, 1, -0.08); crateW(28, 4, 1, 1, 2); crateW(42, -3, 1, 1, 2); crateW(43, -3, 1, 1, 1); barrelW(33, -3); barrelW(33, -4, 2);
+  sandbagsW(37, 1, 38, 4.5);
 
-  // ring road cover
+  // ring road: clusters along it, and shipping containers across it so no stretch is one long firing lane
   for (const [x, z] of [[-26.75, -26.75], [26.75, -26.75], [-26.75, 26.75], [26.75, 26.75]]) planter(x, z);
-  crate(-8, -26.5, 1, 1, 1); crate(-8, -25.5, 1, 1, 2); sandbags(5, -28, 6, -25.5); barrel(18, -25.5); barrel(19, -25.5, 1); crate(-19, -27.5, 2, 1, 1);
-  container(25.5, 5, 28, 11, 0); crate(26.5, -9, 1, 1, 1); crate(27.5, -9, 1, 1, 2); barrel(25.5, -17, 2); sandbags(26, 17, 28.5, 18);
-  crate(9, 26.5, 1, 1, 1); crate(10, 26.5, 1, 1, 2); barrel(-5.5, 25.5); sandbags(-21, 26, -20, 28.5); crate(20, 27.5, 2, 1, 1);
-  sandbags(-28.5, -11, -26, -10); crate(-26.5, 9, 1, 1, 1); crate(-25.5, 9, 1, 1, 1, 0.07); crate(-25.5, 10, 1, 1, 2); barrel(-27.5, 18);
+  crateW(-16, -53, 1, 1, 1); crateW(-16, -52, 1, 1, 2); crateW(-15, -52, 1, 1, 1); sandbagsW(10.5, -55, 11.5, -51.5);
+  barrelW(36, -51); barrelW(37, -51, 1); barrelW(36.5, -52, 2); crateW(-38, -55, 2, 1, 1); crateW(-38.5, -54, 1, 1, 1);
+  containerW(-34, -58, -31.5, -52, 2); containerW(31.5, -54, 34, -48, 0);
+  containerW(52.5, 13, 55, 19, 0); crateW(53, -18, 1, 1, 1); crateW(54, -18, 1, 1, 2); barrelW(51, -34, 2); sandbagsW(50, 42, 52.5, 43);
+  containerW(52, -38, 58, -35.5, 3); containerW(48, 34, 54, 36.5, 1);
+  crateW(18, 53, 1, 1, 1); crateW(19, 53, 1, 1, 2); barrelW(-11, 51); sandbagsW(-41.5, 53, -40.5, 56.5); crateW(40, 55, 2, 1, 1); crateW(40.5, 54, 1, 1, 1);
+  containerW(-34, 48, -31.5, 54, 3); containerW(31.5, 52, 34, 58, 2);
+  sandbagsW(-55.5, -21.5, -53, -20.5); crateW(-53, 18, 1, 1, 1); crateW(-52, 18, 1, 1, 1, 0.07); crateW(-52, 19, 1, 1, 2); barrelW(-55, 36);
+  containerW(-58, -34, -52, -31.5, 1); containerW(-54, 31.5, -48, 34, 0);
 
   // NW courtyard
   well(-16, -16);
   bench(-19.5, -19.5, -17, -19); bench(-15, -12.5, -12.5, -12);
   pot(-19.75, -12.25); pot(-12.25, -19.75); pot(-12.25, -12.75, false);
   crate(-6.25, -11.75, 1, 1, 1); crate(-10.5, -16, 1, 1, 1, 0.1);
+  crateW(-28.5, -36.5, 1, 1, 2); crateW(-27.5, -36.5, 1, 1, 1); sandbagsW(-38, -36, -37, -33);
 
   // NE market
   stall(9, -19.5, 11.5, -18.5, 0, 's'); stall(13.5, -19.5, 16, -18.5, 1, 's'); stall(9, -15, 11.5, -14, 2, 'n');
-  stall(18, -19.5, 20.5, -18.5, 1, 's'); planter(15.25, -14.25); crate(18.5, -14, 1, 1, 1); crate(19.5, -14, 1, 1, 2); barrel(8, -12.5, 1);
-  crate(14, -8.5, 1, 1, 1); crate(11.5, -5.5, 1, 1, 1, 0.12);
+  stall(18, -19.5, 20.5, -18.5, 1, 's'); planter(15.25, -14.25); crateW(37, -28, 1, 1, 1); crateW(38, -28, 1, 1, 2); barrel(8, -12.5, 1);
+  crate(14, -8.5, 1, 1, 1); crate(11.5, -5.5, 1, 1, 1, 0.12); containerW(22, -34, 28, -31.5, 1);
 
   // SE yard
-  container(13, 15, 15.5, 21, 1); crate(18, 14, 1, 1, 2); crate(19, 14, 1, 1, 1); crate(18, 15, 1, 1, 1, 0.06);
-  barrel(20.5, 19.5); barrel(21.5, 19.5, 1); barrel(20.5, 20.5, 2); sandbags(17, 18, 19, 19); crate(6.75, 13.5, 1, 1, 1);
-  crate(16.5, 21, 1, 1, 1);
+  container(13, 15, 15.5, 21, 1); crateW(36, 28, 1, 1, 2); crateW(37, 28, 1, 1, 1); crateW(36, 29, 1, 1, 1, 0.06);
+  barrelW(41, 39); barrelW(42, 39, 1); barrelW(41.5, 40, 2); sandbagsW(35, 36.5, 37, 37.5); crate(6.75, 13.5, 1, 1, 1);
+  crate(16.5, 21, 1, 1, 1); containerW(38, 32, 44, 34.5, 3);
 
   // SW terrace and lower yard
   planter(-11.75, 12.75); crate(-20, 12.5, 1, 1, 1); crate(-11.5, 19.5, 1, 1, 1, 0.1);
   crate(-19.5, 7, 1, 1, 2); barrel(-12, 7); sandbags(-11, 8.5, -10.5, 10.5);
-  crate(-17.5, 18.5, 1, 1, 1);
+  crate(-17.5, 18.5, 1, 1, 1); sandbagsW(-41, 14.5, -40, 17.5); crateW(-25, 14, 1, 1, 2);
 
   /* ----- spawns and bot waypoints ----- */
-  const spawns = [
+  const spawnsD = [
     [-25, -25], [-13, -26.5], [0, -26.5], [13, -26.5], [25, -25], [26.5, -13], [26.5, 0], [26.5, 13.5],
     [25, 25], [13, 26.5], [0, 26.5], [-13, 26.5], [-25, 25], [-26.5, 13], [-26.5, 0], [-26.5, -13],
     [-18.5, -13.5], [16, -16], [17, 17.5], [-19, 9], [-16, 13.5], [11.5, -7], [-6.25, -11], [6.75, 11],
   ];
+  const spawns = spawnsD.map(([x, z]) => [sc(x), sc(z)]);
   const waypoints = spawns.concat([
     [-5, -5], [5, -5], [-5, 5], [5, 5], [0, -4], [0, 4], [-4, 0], [4, 0],
     [0, -16], [0, 16], [-16, 0], [16, 0], [-7.5, -15.5], [3.5, -16.5], [18.75, -7], [18.25, 7], [7, 18.25], [-5, 15.5],
     [-12, 15], [-18, 14], [-17, 18.5], [-15.5, -6], [-14.25, -22], [14, -22.5], [23, 16.5], [16.5, 23],
-  ]);
+  ].map(([x, z]) => [sc(x), sc(z)]));
 
   /* ----- queries ----- */
   function cellH(gx, gz) { return gx < 0 || gz < 0 || gx >= N || gz >= N ? OOB : H[gz * N + gx]; }
@@ -858,7 +947,7 @@ const MAP = (() => {
     if (L < 0.05) return true;
     return !raycast(ax, ay, az, dx / L, dy / L, dz / L, L - 0.05);
   }
-  return { CELL, INV, HALF, N, H, M, G, T, BASE, props, spawns, waypoints, cellH, hAt, toCell, groundUnder, raycast, los };
+  return { CELL, INV, HALF, N, MS, FS, H, M, G, T, BASE, props, spawns, waypoints, cellH, hAt, toCell, groundUnder, raycast, los };
 })();
 
 /* ================= navigation: A* on the grid ================= */
@@ -1026,7 +1115,7 @@ function inaccuracy(W, o) {
   if (!o.onGround) a += W.air;
   if (o.crouch) a *= 0.72;
   if (o.ads && !W.scope) a *= W.adsMul;
-  return a + (o.bloom || 0);
+  return a + (o.bloom || 0) * (o.ads && !W.scope ? 0.6 : 1);
 }
 function spreadDir(yaw, pitch, inacc, uniform) {
   const r = inacc * (uniform ? Math.sqrt(Math.random()) : Math.random()), th = Math.random() * TAU;
@@ -1047,7 +1136,7 @@ class Server {
     this.snapAcc = 0; this.sbAcc = 0;
     this.hostId = null; this.code = '';
     this.botNames = shuffle(BOT_NAMES.slice());
-    this.noises = [];
+    this.noises = []; this.drops = []; this.dropSeq = 0; this.chatLog = [];
     this.spawnUsed = new Map();
   }
 
@@ -1077,7 +1166,7 @@ class Server {
       id: this.nextId++, name: String(name || 'Player').replace(/[<>]/g, '').slice(0, 16) || 'Player', bot, link: null, color: this.nextColor(),
       alive: false, hp: 100, respawnAt: 0, protectUntil: 0, lastHurt: -99, loadout: 'rifle', knife: 'tactical', reloading: false,
       prim: null, sec: { w: 'pistol', ammo: WEAPONS.pistol.mag }, cur: 'prim',
-      x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, yaw: 0, pitch: 0, crouch: false, ads: false, sprint: false, onGround: true,
+      x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, yaw: 0, pitch: 0, crouch: false, ads: false, onGround: true,
       pts: 0, k: 0, d: 0, a: 0, streak: 0, dmgFrom: new Map(), ping: 0, spawnSeq: 0, lastIn: 0,
       brain: bot ? newBrain() : null,
     };
@@ -1107,9 +1196,10 @@ class Server {
         if (this.hostId == null) this.hostId = np.id;
         this.players.set(np.id, np);
         link.send({ t: 'welcome', id: np.id, host: np.id === this.hostId, mode: this.mode, code: this.code });
+        for (const c of this.chatLog) link.send(c); // catch up on the recent chat
         if (this.phase === 'live') {
           np.respawnAt = this.time + 1;
-          link.send({ t: 'start' });
+          link.send({ t: 'start' }); link.send(this.dropsMsg());
           this.notice(`${np.name} joined the fight`);
         } else if (this.phase === 'end') {
           link.send({ t: 'start' });
@@ -1140,9 +1230,9 @@ class Server {
         const dist = Math.hypot(m.x - p.x, m.z - p.z);
         if (!(dist <= 13 * dt + 1.5) || !isFinite(m.x) || !isFinite(m.y) || !isFinite(m.z)) return;
         p.x = m.x; p.y = m.y; p.z = m.z; p.vx = +m.vx || 0; p.vz = +m.vz || 0;
-        p.ads = !!m.ads; p.sprint = !!m.sp; p.onGround = !!m.g;
+        p.ads = !!m.ads; p.onGround = !!m.g;
         if (m.w === 'prim' || m.w === 'sec' || m.w === 'knife') p.cur = m.w;
-        p.reloading = !!m.rl;
+        p.reloading = !!m.rl; p.fullAmmo = !!m.fa;
         break;
       }
       case 'fire': {
@@ -1170,6 +1260,19 @@ class Server {
         }
         break;
       }
+      case 'chat': {
+        // text chat: trimmed, at most 120 characters, and at most 4 messages every 5 seconds per player
+        if (!p || typeof m.text !== 'string') return;
+        const text = m.text.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
+        if (!text) return;
+        p.chatT = (p.chatT || []).filter((t) => this.time - t < 5);
+        if (p.chatT.length >= 4) { link.send({ t: 'note', text: 'Slow down: you can send 4 messages every 5 seconds.' }); return; }
+        p.chatT.push(this.time);
+        const msg = { t: 'chat', id: p.id, name: p.name, color: p.color, text };
+        this.chatLog.push(msg); if (this.chatLog.length > 12) this.chatLog.shift();
+        this.broadcast(msg);
+        break;
+      }
       case 'ping': if (p) { p.ping = clamp(m.rtt | 0, 0, 9999); link.send({ t: 'pong', c: m.c }); } break;
       default: break;
     }
@@ -1181,6 +1284,7 @@ class Server {
     this.botNames = shuffle(BOT_NAMES.slice());
     for (let i = 0; i < this.settings.bots; i++) {
       const b = this.newPlayer('BOT ' + (this.botNames.shift() || 'Unit' + this.nextId), true);
+      b.knife = KNIFE_SKINS[(Math.random() * KNIFE_SKINS.length) | 0];
       this.players.set(b.id, b);
     }
     let k = 0;
@@ -1189,13 +1293,13 @@ class Server {
       p.dmgFrom.clear(); k++;
     }
     this.phase = 'live'; this.endAt = this.time + this.settings.minutes * 60; this.winner = -1; this.endReason = '';
-    this.noises = []; this.spawnUsed.clear();
-    this.broadcast({ t: 'start' });
+    this.noises = []; this.spawnUsed.clear(); this.drops = [];
+    this.broadcast({ t: 'start' }); this.sendDrops();
     this.broadcastLobby();
   }
   toLobby() {
     for (const p of [...this.players.values()]) if (p.bot) this.players.delete(p.id);
-    this.phase = 'lobby';
+    this.phase = 'lobby'; this.drops = [];
     for (const p of this.players.values()) { p.alive = false; p.respawnAt = 0; }
     this.broadcast({ t: 'tolobby' });
     this.broadcastLobby();
@@ -1232,7 +1336,7 @@ class Server {
   }
   spawn(p) {
     const s = this.pickSpawn(p);
-    Object.assign(p, { alive: true, hp: 100, respawnAt: 0, protectUntil: this.time + RULES.protect, lastHurt: -99, vx: 0, vy: 0, vz: 0, onGround: true, crouch: false, ads: false, sprint: false, pitch: 0 });
+    Object.assign(p, { alive: true, hp: 100, respawnAt: 0, protectUntil: this.time + RULES.protect, lastHurt: -99, vx: 0, vy: 0, vz: 0, onGround: true, crouch: false, ads: false, pitch: 0 });
     p.dmgFrom.clear();
     p.x = s[0] + rand(-0.15, 0.15); p.z = s[1] + rand(-0.15, 0.15); p.y = MAP.groundUnder(p.x, p.z, PHYS.radius);
     p.yaw = yawTo(-p.x, -p.z) + rand(-0.25, 0.25);
@@ -1259,6 +1363,7 @@ class Server {
         if (p.hp < 100 && this.time - p.lastHurt >= RULES.regenDelay) p.hp = Math.min(100, p.hp + RULES.regenRate * dt);
       }
       this.updateBots(dt);
+      this.updateDrops();
       while (this.noises.length && this.time - this.noises[0].t > 6) this.noises.shift();
       if (this.time >= this.endAt) this.endMatch('time');
     }
@@ -1278,7 +1383,7 @@ class Server {
     for (const p of this.players.values()) {
       const prot = p.alive && this.time < p.protectUntil;
       const rl = p.alive && (p.bot ? p.brain.reloadEnd > 0 : p.reloading);
-      const fl = (p.alive ? 1 : 0) | (p.crouch ? 2 : 0) | (p.ads ? 4 : 0) | (p.sprint ? 8 : 0) | (prot ? 16 : 0) | (p.onGround ? 32 : 0) | (rl ? 64 : 0);
+      const fl = (p.alive ? 1 : 0) | (p.crouch ? 2 : 0) | (p.ads ? 4 : 0) | (prot ? 16 : 0) | (p.onGround ? 32 : 0) | (rl ? 64 : 0);
       pl.push([p.id, r2(p.x), r2(p.y), r2(p.z), r3(p.yaw), r3(p.pitch), fl, this.heldKey(p), p.alive ? Math.ceil(p.hp) : 0]);
     }
     const common = { t: 's', tm: r3(this.time), ph: this.phase, tl: r2(Math.max(0, this.endAt - this.time)), tg: this.settings.target, pl };
@@ -1319,7 +1424,43 @@ class Server {
     }
     v.dmgFrom.clear();
     this.broadcast({ t: 'kill', k: a ? a.id : -1, v: v.id, w: wkey, hs: !!hs, back: !!back, as, pts, streak: a ? a.streak : 0 });
+    if (Math.random() < RULES.dropChance) this.addDrop(v);
     for (const id of Object.keys(pts)) if (pts[id] >= this.settings.target) { this.endMatch('score'); break; }
+  }
+
+  /* ---------- supply drops ---------- */
+  addDrop(v) {
+    const y = Math.min(v.y, MAP.groundUnder(v.x, v.z, 0.2));
+    this.drops.push({ id: ++this.dropSeq, x: r2(v.x), y: r2(y), z: r2(v.z), until: this.time + RULES.dropLife });
+    if (this.drops.length > RULES.dropMax) this.drops.shift();
+    this.sendDrops();
+  }
+  dropsMsg() { return { t: 'drops', d: this.drops.map((d) => [d.id, d.x, d.y, d.z, r2(d.until - this.time)]) }; }
+  sendDrops() { this.broadcast(this.dropsMsg()); }
+  // a case is only used up by someone it would help
+  wantsDrop(p) {
+    if (p.hp < 99.5) return true;
+    if (!p.bot) return !p.fullAmmo;
+    return p.brain.reloadEnd > 0 || p.sec.ammo < WEAPONS[p.sec.w].mag || (p.prim && p.prim.ammo < WEAPONS[p.prim.w].mag);
+  }
+  updateDrops() {
+    if (!this.drops.length) return;
+    let changed = false;
+    for (let i = this.drops.length - 1; i >= 0; i--) {
+      const d = this.drops[i];
+      if (this.time >= d.until) { this.drops.splice(i, 1); changed = true; continue; }
+      for (const p of this.players.values()) {
+        if (!p.alive || Math.hypot(p.x - d.x, p.z - d.z) > RULES.dropReach || Math.abs(p.y - d.y) > 1.6 || !this.wantsDrop(p)) continue;
+        this.drops.splice(i, 1); changed = true;
+        p.hp = 100;
+        if (p.prim) p.prim.ammo = WEAPONS[p.prim.w].mag;
+        p.sec.ammo = WEAPONS[p.sec.w].mag; p.reloading = false; p.fullAmmo = true;
+        if (p.bot) p.brain.reloadEnd = 0;
+        this.broadcast({ t: 'pick', d: d.id, id: p.id, x: d.x, y: d.y, z: d.z });
+        break;
+      }
+    }
+    if (changed) this.sendDrops();
   }
 
   /* ---------- perception helpers ---------- */
@@ -1340,7 +1481,6 @@ class Server {
       botThink(this, p, dt);
       const B = p.brain, W = this.heldWeapon(p);
       let speed = PHYS.run * W.speed;
-      if (p.sprint) speed *= PHYS.sprint;
       if (p.crouch) speed *= PHYS.crouch;
       if (p.ads) speed *= W.scope ? PHYS.scope : PHYS.ads;
       let wx = B.wish[0], wz = B.wish[1];
@@ -1364,10 +1504,12 @@ function newBrain() {
 }
 function botThink(S, p, dt) {
   const B = p.brain, D = DIFF[S.settings.diff] || DIFF[1];
-  B.wish = [0, 0]; p.sprint = false; p.ads = false; p.crouch = false;
+  B.wish = [0, 0]; p.ads = false; p.crouch = false;
   if (S.phase !== 'live') return;
   if (p.cur === 'prim' && !p.prim) p.cur = 'sec';
-  const slot = p.cur === 'prim' ? p.prim : p.sec;
+  // bots put the knife out to cover ground quickly and draw their gun when they spot someone
+  const gunCur = p.cur === 'knife' ? (B.gun === 'sec' || !p.prim ? 'sec' : 'prim') : p.cur;
+  const slot = gunCur === 'prim' ? p.prim : p.sec;
   if (B.reloadEnd && S.time >= B.reloadEnd) { slot.ammo = WEAPONS[slot.w].mag; B.reloadEnd = 0; }
   B.senseT -= dt;
   if (B.senseT <= 0) {
@@ -1381,6 +1523,7 @@ function botThink(S, p, dt) {
         B.aimErr = [Math.cos(ang) * e, Math.sin(ang) * e * 0.6];
         B.crouchSpray = Math.random() < 0.3;
       }
+      if (p.cur === 'knife') { p.cur = gunCur; B.reactT = Math.max(B.reactT, 0) + 0.4; }
       B.lostT = 0; B.lastSeen = [t.x, t.z];
     } else if (B.target) {
       B.lostT += 0.13;
@@ -1422,7 +1565,7 @@ function botCombat(S, p, B, D, dt, slot) {
   p.pitch += clamp(wantPitch - p.pitch, -turn, turn);
   const decay = Math.exp(-dt * D.decay); B.aimErr[0] *= decay; B.aimErr[1] *= decay;
   B.reactT -= dt;
-  if (W.scope) p.ads = dist > 6; else if (dist > 22 && W.kind === 'rifle') p.ads = true;
+  if (W.scope) p.ads = dist > 6; else if (W.kind !== 'shotgun' && dist > 9) p.ads = true;
   if (dist < 12 && !W.scope) {
     B.strafeT -= dt;
     if (B.strafeT <= 0) { B.strafeT = rand(0.25, 0.7); B.strafeDir = Math.random() < 0.5 ? -1 : 1; }
@@ -1449,7 +1592,7 @@ function botFire(S, p, B, D, W, slot, dist) {
   slot.ammo--; B.nextFire = S.time + 1 / W.rate; B.lastShot = S.time;
   p.protectUntil = 0;
   let pp = 0, py = 0;
-  if (W.pattern) { const pat = PATTERNS[W.pattern][Math.min(B.recoilI, PATTERNS[W.pattern].length - 1)]; pp = pat[0] * (1 - D.comp); py = pat[1] * (1 - D.comp); }
+  if (W.pattern) { const pat = PATTERNS[W.pattern][Math.min(B.recoilI, PATTERNS[W.pattern].length - 1)]; const ak = p.ads ? 0.65 : 1; pp = pat[0] * (1 - D.comp) * ak; py = pat[1] * (1 - D.comp) * ak; }
   B.recoilI++;
   const inacc = inaccuracy(W, { speed: Math.hypot(p.vx, p.vz), onGround: p.onGround, crouch: p.crouch, ads: p.ads, bloom: 0 });
   const o = [p.x, p.y + eyeH(p.crouch), p.z];
@@ -1476,6 +1619,15 @@ function botRoam(S, p, B, dt, D) {
     if (best) {
       B.lookX = best.x; B.lookZ = best.z; B.lookUntil = S.time + 1.2;
       if (bd > 6 && Math.random() < D.investigate) { B.goal = [best.x, best.z]; B.goalKey = 'noise' + Math.round(best.t * 10); B.arrived = false; }
+    }
+  }
+  if (S.drops.length && S.time > (B.dropCheck || 0)) {
+    B.dropCheck = S.time + 0.5;
+    const slot = p.cur === 'sec' || !p.prim ? p.sec : p.prim;
+    if (p.hp < 70 || B.reloadEnd > 0 || slot.ammo < WEAPONS[slot.w].mag * 0.35) {
+      let best = null, bd = 30;
+      for (const d of S.drops) { const dd = Math.hypot(d.x - p.x, d.z - p.z); if (dd < bd && Math.abs(d.y - p.y) < 3) { bd = dd; best = d; } }
+      if (best && B.goalKey !== 'drop' + best.id) { B.goal = [best.x, best.z]; B.goalKey = 'drop' + best.id; B.arrived = false; }
     }
   }
   if (!B.goal || (B.arrived && S.time > B.lingerUntil) || B.stuckTotal > 3) {
@@ -1514,7 +1666,9 @@ function botMoveTo(S, p, B, goal, key, dt) {
     if (MAP.hAt(p.x + cx * reach, p.z + cz * reach) > lim) { ax -= cx; az -= cz; }
   }
   if (ax || az) { const al = Math.hypot(ax, az); B.wish[0] += (ax / al) * 0.55; B.wish[1] += (az / al) * 0.55; }
-  p.sprint = dg > 10 && S.time - B.lastShot > 3 && S.time - B.hurtT > 2;
+  const travel = dg > 18 && S.time - B.lastShot > 3 && S.time - B.hurtT > 2 && !B.target;
+  if (travel && p.cur !== 'knife') { B.gun = p.cur; p.cur = 'knife'; }
+  else if (p.cur === 'knife' && (dg < 7 || S.time - B.hurtT < 2)) p.cur = B.gun === 'sec' || !p.prim ? 'sec' : 'prim';
   let ty = yawTo(dx, dz);
   if (S.time < B.lookUntil) ty = yawTo(B.lookX - p.x, B.lookZ - p.z);
   p.yaw += clamp(angDiff(p.yaw, ty), -8 * dt, 8 * dt);
@@ -1563,31 +1717,60 @@ class PeerLink {
   close() { try { this.conn.close(); } catch (e) { /* already closed */ } this._closed(); }
 }
 
+// Relay servers. Two players on the same school or office Wi-Fi usually can't reach each other directly (the
+// network isolates devices and blocks the UDP that WebRTC prefers), so the connection has to go through a TURN
+// relay on ports 80/443, including TURN over TLS, which looks like ordinary HTTPS traffic to most firewalls.
+// Open Relay (metered.ca) publishes a shared secret for its free relay; logins are made from it on the fly.
+const RELAY = {
+  host: 'staticauth.openrelay.metered.ca', secret: 'openrelayprojectsecret',
+  base: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'turn:eu-0.turn.peerjs.com:3478', username: 'peerjs', credential: 'peerjsp' },
+  ],
+};
 const NET = {
-  peer: null,
+  peer: null, ice: null, status: null, seq: 0,
   available() { return typeof Peer === 'function' && typeof RTCPeerConnection === 'function'; },
-  opts() {
-    const o = { debug: 1 };
+  async iceServers() {
+    if (this.ice && this.ice.until > Date.now()) return this.ice.list;
+    const list = RELAY.base.slice();
+    try {
+      // TURN REST login: username = expiry time, password = base64(HMAC-SHA1(secret, username))
+      const user = Math.floor(Date.now() / 1000 + 8 * 3600) + ':siteline', enc = new TextEncoder();
+      const key = await crypto.subtle.importKey('raw', enc.encode(RELAY.secret), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+      const sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(user)));
+      let bin = ''; for (const b of sig) bin += String.fromCharCode(b);
+      const h = RELAY.host;
+      list.push({ urls: [`turn:${h}:80`, `turn:${h}:443?transport=tcp`, `turns:${h}:443?transport=tcp`], username: user, credential: btoa(bin) });
+    } catch (e) { /* no Web Crypto here: direct connections and the PeerJS relay only */ }
+    this.ice = { list, until: Date.now() + 4 * 3600 * 1000 };
+    return list;
+  },
+  async opts() {
+    const o = { debug: 1, config: { iceServers: await this.iceServers(), sdpSemantics: 'unified-plan' } };
     if (QS.peer) {
       const [h, p] = QS.peer.split(':');
       o.host = h; o.port = +p || 9000; o.path = '/'; o.secure = location.protocol === 'https:' && h !== 'localhost';
     }
+    if (QS.relay === 'only') o.config.iceTransportPolicy = 'relay'; // test hook: force the relay
     return o;
   },
+  say(msg) { if (this.status) this.status(msg); },
   makeCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 5; i++) s += A[(Math.random() * A.length) | 0]; return s; },
   peerId(code) { return 'siteline-' + code.toLowerCase(); },
   describe(err) {
     const t = err && err.type;
     if (t === 'peer-unavailable') return 'No match found with that code. Check the code, or ask your friend to host again.';
-    if (t === 'network' || t === 'socket-error' || t === 'socket-closed' || t === 'server-error') return 'Couldn’t reach the online lobby server. Online play doesn’t work inside the Claude preview — open the game from your Vercel link.';
+    if (t === 'network' || t === 'socket-error' || t === 'socket-closed' || t === 'server-error') return 'Couldn’t reach the online lobby server (0.peerjs.com). This network may be blocking it. Online play also doesn’t work inside the Claude preview, so use your Vercel link.';
     if (t === 'browser-incompatible') return 'This browser can’t make peer-to-peer connections. Try Chrome, Edge, Firefox or Safari.';
     return 'Connection problem: ' + ((err && (err.message || err.type)) || 'unknown error');
   },
-  host(onReady, onConn, onError, tries = 0) {
+  async host(onReady, onConn, onError, tries = 0) {
     this.close();
-    const code = this.makeCode();
+    const seq = this.seq, code = this.makeCode(), opts = await this.opts();
+    if (seq !== this.seq) return; // cancelled while getting ready
     let peer;
-    try { peer = new Peer(this.peerId(code), this.opts()); } catch (e) { onError(this.describe(e)); return; }
+    try { peer = new Peer(this.peerId(code), opts); } catch (e) { onError(this.describe(e)); return; }
     this.peer = peer;
     let opened = false;
     const timer = setTimeout(() => { if (!opened) { this.close(); onError(this.describe({ type: 'network' })); } }, 12000);
@@ -1606,22 +1789,29 @@ const NET = {
       if (!opened) { clearTimeout(timer); this.close(); onError(this.describe(err)); }
     });
   },
-  join(code, onOpen, onError) {
+  async join(code, onOpen, onError) {
     this.close();
+    const seq = this.seq, opts = await this.opts();
+    if (seq !== this.seq) return;
     let peer;
-    try { peer = new Peer(undefined, this.opts()); } catch (e) { onError(this.describe(e)); return; }
+    try { peer = new Peer(undefined, opts); } catch (e) { onError(this.describe(e)); return; }
     this.peer = peer;
-    let done = false;
-    const fail = (msg) => { if (done) return; done = true; clearTimeout(timer); this.close(); onError(msg); };
-    const timer = setTimeout(() => fail('Couldn’t connect to that match. The host may be offline, or a network is blocking peer-to-peer play.'), 15000);
+    let done = false, lobby = false, conn = null, poll = 0, slow = 0;
+    const fail = (msg) => { if (done) return; done = true; clearTimeout(timer); clearTimeout(slow); clearInterval(poll); this.close(); onError(msg); };
+    const blocked = 'Found the match, but this network blocked the connection to the host, even through the relay. School and work Wi-Fi often block game traffic: try a phone hotspot, or play from home.';
+    const timer = setTimeout(() => fail(lobby ? blocked : 'Couldn’t reach the online lobby server. This network may be blocking it. Try a phone hotspot, or play from home.'), 30000);
     peer.on('open', () => {
-      const conn = peer.connect(this.peerId(code), { serialization: 'json', reliable: true });
-      conn.on('open', () => { if (done) return; done = true; clearTimeout(timer); onOpen(conn); });
-      conn.on('error', () => fail('The connection to the host failed.'));
+      lobby = true; this.say('Found the lobby. Connecting to the host…');
+      slow = setTimeout(() => this.say('Still connecting… going through the relay (this takes a few seconds on school Wi-Fi).'), 6000);
+      conn = peer.connect(this.peerId(code), { serialization: 'json', reliable: true });
+      conn.on('open', () => { if (done) return; done = true; clearTimeout(timer); clearTimeout(slow); clearInterval(poll); onOpen(conn); });
+      conn.on('error', () => fail(blocked));
+      // ICE gives up once every route (direct, then relay) has failed
+      poll = setInterval(() => { const pc = conn && conn.peerConnection; if (pc && pc.iceConnectionState === 'failed') fail(blocked); }, 500);
     });
     peer.on('error', (err) => fail(this.describe(err)));
   },
-  close() { if (this.peer) { try { this.peer.destroy(); } catch (e) { /* already destroyed */ } } this.peer = null; },
+  close() { this.seq++; if (this.peer) { try { this.peer.destroy(); } catch (e) { /* already destroyed */ } } this.peer = null; },
 };
 
 /* ================= synthesized sound ================= */
@@ -1711,6 +1901,15 @@ const AUDIO = {
     this.burst(out, t, P[0], 'bandpass', P[1] * muf, 0.8, P[2]);
     this.burst(out, t, P[0] * 1.6, 'lowpass', 500 * muf + 200, 0.5, P[2] * 0.6);
     this.tone(out, t, P[0] * 0.9, 'sine', P[3] * 1.6, P[3] * 0.6, P[4]);
+  },
+  // supply case: a bright two-note chime and the clack of a fresh magazine; quieter and placed in the world when someone else takes one
+  pickup(x, z, L) {
+    if (!this.ok()) return;
+    const [pan, gain] = x == null ? [0, 1] : this.place(x, z, L), mine = x == null;
+    const t = this.ctx.currentTime, out = mine ? this.bus(0, 0.5, true) : this.bus(pan, gain * 0.35);
+    this.tone(out, t, 0.14, 'triangle', 880, 1320, 0.22); this.tone(out, t + 0.08, 0.22, 'triangle', 1320, 1760, 0.2);
+    this.tone(out, t, 0.3, 'sine', 440, 660, 0.12);
+    if (mine) { this.burst(out, t + 0.12, 0.04, 'bandpass', 1500, 3, 0.6); this.burst(out, t + 0.2, 0.05, 'bandpass', 2300, 4, 0.55); }
   },
   step(x, z, L, loud) {
     if (!this.ok()) return;
@@ -2138,14 +2337,28 @@ const GEO = (() => {
 class Batch {
   constructor() { this.parts = new Map(); }
   add(mat, geo, m, c) { let a = this.parts.get(mat); if (!a) { a = []; this.parts.set(mat, a); } a.push({ geo, m, c }); }
+  // opts.tile: split each material's mesh into square tiles of that many metres, so whatever is off screen
+  // (or outside the sun's shadow box) is skipped instead of drawn
   build(parent, opts = {}) {
     const out = [];
     for (const [mat, parts] of this.parts) {
       if (!parts.length) continue;
-      const mesh = new THREE.Mesh(GEO.merge(parts), mat);
-      mesh.castShadow = opts.cast !== false; mesh.receiveShadow = opts.receive !== false;
-      mesh.matrixAutoUpdate = false; mesh.updateMatrix();
-      parent.add(mesh); out.push(mesh);
+      const groups = new Map();
+      for (const p of parts) {
+        let k = 'all';
+        if (opts.tile) {
+          let x, z;
+          if (p.m) { x = p.m.elements[12]; z = p.m.elements[14]; } else { if (!p.geo.boundingSphere) p.geo.computeBoundingSphere(); x = p.geo.boundingSphere.center.x; z = p.geo.boundingSphere.center.z; }
+          k = Math.floor(x / opts.tile) + ',' + Math.floor(z / opts.tile);
+        }
+        let g = groups.get(k); if (!g) { g = []; groups.set(k, g); } g.push(p);
+      }
+      for (const g of groups.values()) {
+        const mesh = new THREE.Mesh(GEO.merge(g), mat);
+        mesh.castShadow = opts.cast !== false; mesh.receiveShadow = opts.receive !== false;
+        mesh.matrixAutoUpdate = false; mesh.updateMatrix();
+        parent.add(mesh); out.push(mesh);
+      }
     }
     this.parts.clear();
     return out;
@@ -2254,14 +2467,15 @@ class World {
     this.buildFacades(batch, detail);
     this.buildProps(batch);
     this.buildDecor(batch);
-    batch.build(this.group);
-    detail.build(this.group, { cast: false });
+    batch.build(this.group, { tile: 32 });
+    detail.build(this.group, { cast: false, tile: 32 });
     this.buildDistant();
   }
 
   /* ---------- ground: one baked texture for the whole town, painted pixel by pixel ---------- */
   buildGround(S) {
-    const { N, G, M, H } = MAP, ppm = S / 64, cpx = S / N, rnd = seeded(2024);
+    const { N, G, M, H, HALF, FS } = MAP, ppm = S / (2 * HALF), cpx = S / N, rnd = seeded(2024);
+    const R0 = 2.75 * FS, R1 = 4.7 * FS + 0.3; // mosaic ring around the fountain
     const hash2 = (a, b) => { let h = Math.imul(a, 374761393) + Math.imul(b, 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
     // sand tile (256 px, seamless)
     const ST = 256, sand = new Float32Array(ST * ST);
@@ -2293,8 +2507,8 @@ class World {
       return (arr[i] * (1 - fx) + arr[i + 1] * fx) * (1 - fy) + (arr[i + n] * (1 - fx) + arr[i + n + 1] * fx) * fy;
     };
     // cobble rows: random sett widths in a running bond
-    const rowH = 0.2 * ppm, gap = 0.03 * ppm, crad = rowH * 0.3, rows = [];
-    for (let r = 0; r * rowH < S; r++) { const b = []; let x = -rnd() * 0.3 * ppm; while (x < S + 1) { b.push(x); x += (0.22 + rnd() * 0.16) * ppm; } b.push(x); rows.push(b); }
+    const rowH = 0.26 * ppm, gap = 0.035 * ppm, crad = rowH * 0.3, rows = [];
+    for (let r = 0; r * rowH < S; r++) { const b = []; let x = -rnd() * 0.3 * ppm; while (x < S + 1) { b.push(x); x += (0.28 + rnd() * 0.2) * ppm; } b.push(x); rows.push(b); }
     const COB = [[168, 156, 138], [156, 146, 130], [176, 162, 140], [148, 138, 124], [162, 148, 126]];
     const RING = [[168, 88, 58], [214, 200, 176], [52, 98, 132], [214, 200, 176]];
     const rr = (fx, fy, w, h, rad, inset) => {
@@ -2307,7 +2521,7 @@ class World {
     for (let py = 0; py < S; py++) {
       const gz = Math.min(N - 1, Math.floor(py / cpx)), r = Math.min(rows.length - 1, Math.floor(py / rowH)), rb = rows[r], fyr = py - r * rowH;
       let si = 0;
-      const wz = py / ppm - 32;
+      const wz = py / ppm - HALF;
       for (let px = 0; px < S; px++) {
         const gx = Math.min(N - 1, Math.floor(px / cpx)), ci = gz * N + gx, g = G[ci];
         let cr, cg, cb, hgt;
@@ -2319,12 +2533,12 @@ class World {
           cr = lerp(118, t[0] * k, inside); cg = lerp(106, t[1] * k, inside); cb = lerp(90, t[2] * k, inside);
           hgt = inside * (0.5 + 0.5 * Math.sqrt(clamp(-dist / (rowH * 0.5), 0, 1)));
         } else if (g === GROUND.PLAZA) {
-          const wx = px / ppm - 32, rad = Math.hypot(wx, wz);
-          if (rad >= 2.72 && rad < 4.72) {
-            const rk = (rad - 2.75) / 0.32, k = Math.max(0, Math.floor(rk)), n = Math.round((TAU * (2.75 + 0.32 * k + 0.16)) / 0.32);
+          const wx = px / ppm - HALF, rad = Math.hypot(wx, wz);
+          if (rad >= R0 - 0.03 && rad < R1) {
+            const rk = (rad - R0) / 0.4, k = Math.max(0, Math.floor(rk)), n = Math.round((TAU * (R0 + 0.4 * k + 0.2)) / 0.4);
             const fa = ((Math.atan2(wz, wx) + Math.PI) / TAU) * n, seg = Math.floor(fa);
-            const edge = Math.min(Math.min(rk - k, 1 - (rk - k)) * 0.32, Math.min(fa - seg, 1 - (fa - seg)) * (TAU * rad / n)) * ppm;
-            const inside = rad < 2.75 || rad > 4.67 ? 0 : clamp(edge / 1.2 - 0.6, 0, 1), col = RING[(seg + k) % 4];
+            const edge = Math.min(Math.min(rk - k, 1 - (rk - k)) * 0.4, Math.min(fa - seg, 1 - (fa - seg)) * (TAU * rad / n)) * ppm;
+            const inside = rad < R0 || rad > R1 - 0.05 ? 0 : clamp(edge / 1.2 - 0.6, 0, 1), col = RING[(seg + k) % 4];
             cr = lerp(150, col[0], inside); cg = lerp(130, col[1], inside); cb = lerp(100, col[2], inside); hgt = 0.4 + inside * 0.4;
           } else {
             const tx = Math.floor(px / ppm), ty = Math.floor(py / ppm), fx = px - tx * ppm, fy = py - ty * ppm;
@@ -2359,8 +2573,8 @@ class World {
     }
     x.putImageData(img, 0, 0);
     // manhole covers on the main streets
-    for (const [mx, mz] of [[0, -17], [0, 17], [-17, 0], [17, 0], [0, -26.5], [26.5, 0]]) {
-      const px = (mx + 32) * ppm, pz = (mz + 32) * ppm, rd = 0.42 * ppm;
+    for (const [mx, mz] of [[0, -17], [0, 17], [-17, 0], [17, 0], [0, -26.5], [26.5, 0], [-26.5, 0], [0, 26.5], [-13, -26.5], [13, 26.5]]) {
+      const px = (mx * MAP.MS + HALF) * ppm, pz = (mz * MAP.MS + HALF) * ppm, rd = 0.42 * ppm;
       x.fillStyle = 'rgb(70,66,60)'; x.beginPath(); x.arc(px, pz, rd, 0, TAU); x.fill();
       x.strokeStyle = 'rgb(96,90,82)'; x.lineWidth = 0.03 * ppm;
       for (let k = 1; k < 4; k++) { x.beginPath(); x.arc(px, pz, rd * k / 4, 0, TAU); x.stroke(); }
@@ -2368,7 +2582,7 @@ class World {
     const normal = heightToNormal(hg, half, half, 3.0);
     const map = tex(c, { clamp: true }), nmap = tex(normal, { srgb: false, clamp: true });
     const mat = new THREE.MeshStandardMaterial({ map, normalMap: nmap, normalScale: new THREE.Vector2(1, 1), roughness: 0.94, envMapIntensity: 0.5 });
-    const geo = new THREE.PlaneGeometry(64, 64); geo.rotateX(-Math.PI / 2);
+    const geo = new THREE.PlaneGeometry(2 * HALF, 2 * HALF); geo.rotateX(-Math.PI / 2);
     const mesh = new THREE.Mesh(geo, mat); mesh.receiveShadow = true; this.group.add(mesh);
     this.groundTex = map;
   }
@@ -2649,7 +2863,7 @@ class World {
           if (p.palm) palm(batch, M, p.x, p.y + 0.6, p.z, seeded(Math.round((p.x * 31 + p.z * 17) * 10) >>> 0), 1);
           break;
         }
-        case 'fountain': fountain(batch, M, this); break;
+        case 'fountain': fountain(batch, M, this, p.s || 1, p.sy || 1); break;
         case 'stall': stall(batch, M, p, rnd); break;
         case 'container': {
           const lx = p.x1 - p.x0, lz = p.z1 - p.z0, cx = (p.x0 + p.x1) / 2, cz = (p.z0 + p.z1) / 2, alongZ = lz > lx;
@@ -2730,21 +2944,22 @@ class World {
         bulbs.push([lerp(a[0], b[0], t), lerp(a[1], b[1], t) - sag * 4 * t * (1 - t) - 0.06, lerp(a[2], b[2], t)]);
       }
     };
-    for (const z of [-12.5, -17.5, -21.5]) string([-2.5, 4.1, z], [2.5, 4.3, z], 0.45);
-    for (const z of [12.5, 17.5, 21.5]) string([-2.5, 4.0, z], [2.5, 4.2, z], 0.45);
-    for (const x of [-12.5, -17.5, -21.5]) string([x, 4.2, -2.5], [x, 4.0, 2.5], 0.45);
-    for (const x of [12.5, 17.5, 21.5]) string([x, 4.1, -2.5], [x, 4.2, 2.5], 0.45);
-    for (const [x, z] of [[-9, -9], [9, -9], [-9, 9], [9, 9]]) string([x, 4.3, z], [0, 2.9, 0], 0.7);
-    string([7, 4.6, -21], [21, 4.6, -12], 0.9); string([7, 4.6, -12], [21, 4.6, -21], 0.9);
+    const S = MAP.MS, Y = 1.3;
+    for (const z of [-12.5, -17.5, -21.5]) string([-2.5 * S, 4.1 * Y, z * S], [2.5 * S, 4.3 * Y, z * S], 0.7);
+    for (const z of [12.5, 17.5, 21.5]) string([-2.5 * S, 4.0 * Y, z * S], [2.5 * S, 4.2 * Y, z * S], 0.7);
+    for (const x of [-12.5, -17.5, -21.5]) string([x * S, 4.2 * Y, -2.5 * S], [x * S, 4.0 * Y, 2.5 * S], 0.7);
+    for (const x of [12.5, 17.5, 21.5]) string([x * S, 4.1 * Y, -2.5 * S], [x * S, 4.2 * Y, 2.5 * S], 0.7);
+    for (const [x, z] of [[-9, -9], [9, -9], [-9, 9], [9, 9]]) string([x * S, 4.3 * Y, z * S], [0, 2.9 * MAP.FS * 0.85, 0], 1.3);
+    string([7 * S, 4.6 * Y, -21 * S], [21 * S, 4.6 * Y, -12 * S], 1.4); string([7 * S, 4.6 * Y, -12 * S], [21 * S, 4.6 * Y, -21 * S], 1.4);
     const bulbMesh = new THREE.InstancedMesh(G.sphere(0.05, 6, 5), M.bulb, bulbs.length);
     bulbs.forEach((b, i) => bulbMesh.setMatrixAt(i, G.mat(b[0], b[1], b[2])));
     this.group.add(bulbMesh);
     // rooftop tanks, dishes and vents
     const { N, H, M: Mm } = MAP;
     let placed = 0;
-    for (let z = 4; z < N - 4 && placed < 34; z += 3) for (let x = 4; x < N - 4 && placed < 34; x += 3) {
+    for (let z = 4; z < N - 4 && placed < 90; z += 3) for (let x = 4; x < N - 4 && placed < 90; x += 3) {
       const i = z * N + x, h = H[i];
-      if (Mm[i] !== MAT.BUILDING || h < 4.5 || rnd() > 0.16) continue;
+      if (Mm[i] !== MAT.BUILDING || h < 5.5 || rnd() > 0.1) continue;
       let flat = true;
       for (let dz = -3; dz <= 3 && flat; dz++) for (let dx = -3; dx <= 3; dx++) if (H[(z + dz) * N + x + dx] !== h || Mm[(z + dz) * N + x + dx] !== MAT.BUILDING) { flat = false; break; }
       if (!flat) continue;
@@ -2780,8 +2995,8 @@ class World {
       const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, side: THREE.BackSide }));
       this.group.add(m);
     };
-    ring(330, 20, 70, 9, rgbL(214, 205, 196), rgbL(170, 160, 168), 3.3);
-    ring(190, 4, 22, 14, rgbL(220, 200, 166), rgbL(200, 172, 132), 7.1);
+    ring(420, 24, 80, 9, rgbL(214, 205, 196), rgbL(170, 160, 168), 3.3);
+    ring(250, 4, 24, 14, rgbL(220, 200, 166), rgbL(200, 172, 132), 7.1);
     // skyline beyond the walls: minarets, a dome, tall palms
     const b = new Batch(), M = this.M, G = GEO, cream = TINTS[5], sand = TINTS[3];
     const minaret = (x, z, h) => {
@@ -2790,19 +3005,19 @@ class World {
       b.add(M.plaster, G.cyl(1.0, 1.2, h * 0.22, 16), G.mat(x, h * 0.81, z), cream);
       b.add(M.stone, new THREE.ConeGeometry(1.25, 3.2, 16), G.mat(x, h * 0.92 + 1.6, z), lin(0x4a8a8a));
     };
-    minaret(-46, -44, 30); minaret(52, 40, 26); minaret(-58, 34, 22);
-    const domeX = -60, domeZ = -14;
+    minaret(-84, -80, 34); minaret(92, 74, 30); minaret(-100, 58, 26);
+    const domeX = -102, domeZ = -22;
     b.add(M.plaster, G.roundedBox(18, 9, 18, 0.2), G.mat(domeX, 4.5, domeZ), sand);
     b.add(M.plaster, G.cyl(6.4, 6.4, 4, 24), G.mat(domeX, 11, domeZ), cream);
     b.add(M.stone, new THREE.SphereGeometry(6.4, 28, 14, 0, TAU, 0, Math.PI / 2), G.mat(domeX, 13, domeZ), lin(0x3f8f95));
     b.add(M.iron, G.cyl(0.12, 0.2, 2.4, 6), G.mat(domeX, 20.5, domeZ));
-    b.add(M.plaster, G.roundedBox(30, 12, 10, 0.2), G.mat(48, 6, -52), TINTS[1]);
-    b.add(M.plaster, G.roundedBox(14, 15, 14, 0.2), G.mat(60, 7.5, 8), TINTS[0]);
-    b.add(M.metal, G.cyl(3.2, 3.2, 4, 20), G.mat(40, 18, 58), lin(0xd8d4cc));
-    b.add(M.iron, G.cyl(0.5, 0.8, 16, 8), G.mat(40, 8, 58));
+    b.add(M.plaster, G.roundedBox(30, 14, 10, 0.2), G.mat(80, 7, -88), TINTS[1]);
+    b.add(M.plaster, G.roundedBox(14, 17, 14, 0.2), G.mat(98, 8.5, 12), TINTS[0]);
+    b.add(M.metal, G.cyl(3.2, 3.2, 4, 20), G.mat(64, 20, 98), lin(0xd8d4cc));
+    b.add(M.iron, G.cyl(0.5, 0.8, 18, 8), G.mat(64, 9, 98));
     const rnd = seeded(5150);
     for (let k = 0; k < 16; k++) {
-      const a = (k / 16) * TAU + rnd() * 0.3, r = 40 + rnd() * 14;
+      const a = (k / 16) * TAU + rnd() * 0.3, r = 74 + rnd() * 18;
       palm(b, M, Math.cos(a) * r, 0, Math.sin(a) * r, seeded(900 + k), 1.9);
     }
     b.build(this.group, { cast: false });
@@ -2859,16 +3074,16 @@ function palm(batch, M, x, y, z, rng, scale) {
     batch.add(M.bark, GEO.sphere(0.1 * scale, 7, 5), GEO.mat(top.x + Math.cos(a) * 0.16 * scale, top.y - 0.15 * scale, top.z + Math.sin(a) * 0.16 * scale));
   }
 }
-function fountain(batch, M, world) {
-  const G = GEO;
+function fountain(batch, M, world, fs, fh) {
+  const G = GEO, sm = G.mat(0, 0, 0, 0, 0, 0, fs, fh, fs);
   const basin = G.lathe([[2.63, 0], [2.63, 0.6], [2.7, 0.66], [2.68, 0.78], [2.58, 0.84], [2.15, 0.84], [2.06, 0.78], [2.06, 0.36], [0.62, 0.36]], 48);
-  batch.add(M.stone, basin, null, STONE_TINT);
+  batch.add(M.stone, basin, sm, STONE_TINT);
   const column = G.lathe([[0.64, 0.34], [0.52, 0.55], [0.38, 1.0], [0.34, 1.5], [0.46, 1.66], [0.98, 1.88], [1.05, 1.95], [1.0, 2.0], [0.9, 1.97], [0.32, 1.9], [0.2, 1.95], [0.15, 2.3], [0.24, 2.42], [0.06, 2.72], [0, 2.78]], 32);
-  batch.add(M.stone, column, null, tinted(STONE_TINT, 1.04));
+  batch.add(M.stone, column, sm, tinted(STONE_TINT, 1.04));
   const water = new THREE.Mesh(new THREE.RingGeometry(0.6, 2.08, 48, 1), M.water); water.rotation.x = -Math.PI / 2; water.position.y = 0.62;
   const bowl = new THREE.Mesh(new THREE.CircleGeometry(0.92, 32), M.water); bowl.rotation.x = -Math.PI / 2; bowl.position.y = 1.95;
   const curtain = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.12, 1.34, 40, 1, true), M.curtain); curtain.position.y = 1.29;
-  for (const m of [water, bowl, curtain]) world.group.add(m);
+  for (const m of [water, bowl, curtain]) { m.position.y *= fh; m.scale.multiply(m === curtain ? new THREE.Vector3(fs, fh, fs) : new THREE.Vector3(fs, fs, 1)); world.group.add(m); }
 }
 function stall(batch, M, p, rnd) {
   const G = GEO, cx = (p.x0 + p.x1) / 2, cz = (p.z0 + p.z1) / 2, w = p.x1 - p.x0, d = p.z1 - p.z0, y = p.y;
@@ -3019,17 +3234,42 @@ function buildGun(kind, hi) {
       break;
     }
     case 'shotgun': {
-      add(sideGeo(roundedShape([[-0.02, -0.03], [0.2, -0.03], [0.2, -0.086], [0.0, -0.088], [-0.02, -0.07]], 0.01), 0.048, hi), GM.metal);
-      tube(0.013, 0.013, 0.47, GM.metal, -0.043, -0.67);
-      tube(0.012, 0.012, 0.41, GM.metal, -0.072, -0.61);
+      // a classic pump-action 12 gauge: blued steel receiver and barrel with a vent rib and brass bead,
+      // magazine tube under the barrel, ribbed walnut pump, walnut stock with a rubber recoil pad, side saddle of shells
+      add(sideGeo(roundedShape([[-0.02, -0.026], [0.215, -0.026], [0.215, -0.088], [0.035, -0.09, 0.016], [-0.02, -0.078]], 0.007), 0.046, hi), GM.metal);
+      add(G.roundedBox(0.004, 0.022, 0.085, 0.002, 1), GM.lensDark, 0.0232, -0.045, -0.105); // ejection port
+      add(G.roundedBox(0.03, 0.004, 0.09, 0.002, 1), GM.lensDark, 0, -0.0895, -0.1); // loading port
+      tube(0.0122, 0.0122, 0.47, GM.metal, -0.043, -0.685, 16);
+      tube(0.0138, 0.0138, 0.024, GM.metal, -0.043, -0.705, 16); // choke
+      add(G.roundedBox(0.008, 0.004, 0.47, 0.0015, 1), GM.steelDark, 0, -0.0285, -0.45); // vent rib
+      add(G.roundedBox(0.012, 0.003, 0.2, 0.001, 1), GM.steelDark, 0, -0.0248, -0.11); // matted strip along the receiver top
+      if (hi) for (let k = 0; k < 9; k++) add(G.roundedBox(0.005, 0.004, 0.006, 0.001, 1), GM.metal, 0, -0.0325, -0.24 - k * 0.051);
+      add(G.roundedBox(0.004, 0.011, 0.006, 0.0015, 1), GM.metal, 0, -0.021, -0.69); // front sight post
+      add(new THREE.SphereGeometry(0.0034, 10, 8), GM.brass, 0, -0.0146, -0.69); // bead
+      tube(0.0112, 0.0112, 0.42, GM.metal, -0.073, -0.635, 14); // magazine tube
+      tube(0.0124, 0.0124, 0.022, GM.metal, -0.073, -0.657, 14); // magazine cap
+      add(G.roundedBox(0.006, 0.012, 0.008, 0.002, 1), GM.metal, 0, -0.088, -0.648); // sling stud
+      add(G.roundedBox(0.03, 0.046, 0.016, 0.005, 1), GM.metal, 0, -0.058, -0.6); // barrel clamp
       const pump = new THREE.Group(); g.add(pump); o.pump = pump;
-      pump.add(tube(0.025, 0.025, 0.17, GM.wood, -0.07, -0.47));
-      if (hi) for (let k = 0; k < 5; k++) pump.add(add(new THREE.TorusGeometry(0.025, 0.0028, 5, 16), GM.wood, 0, -0.07, -0.32 - k * 0.032));
+      pump.add(add(G.roundedBox(0.046, 0.044, 0.17, 0.016, 2), GM.wood, 0, -0.072, -0.385));
+      if (hi) for (let k = 0; k < 6; k++) for (const sx of [-1, 1]) pump.add(add(G.roundedBox(0.004, 0.03, 0.006, 0.0015, 1), GM.grip, sx * 0.0225, -0.073, -0.33 - k * 0.022));
+      pump.add(add(G.roundedBox(0.04, 0.008, 0.012, 0.003, 1), GM.wood, 0, -0.05, -0.305)); // rear lip
       o.port = [0, -0.094, -0.1];
-      add(sideGeo(roundedShape([[0.0, -0.04], [-0.08, -0.062], [-0.3, -0.092], [-0.305, -0.182], [-0.25, -0.19], [-0.06, -0.122], [0.0, -0.095]], 0.016), 0.044, hi), GM.wood);
-      add(new THREE.TorusGeometry(0.022, 0.004, 6, 12, Math.PI), GM.metal, 0, -0.09, -0.05, 0, Math.PI / 2, Math.PI);
-      add(new THREE.SphereGeometry(0.0045, 8, 6), GM.brass, 0, -0.026, -0.655);
-      o.sightY = -0.024; o.grip = [0, -0.1, 0.01]; o.fore = [0, -0.07, -0.39]; o.muzzle = [0, -0.043, -0.68]; o.eject = [0.03, -0.05, -0.1];
+      // stock: wrist, comb and a straight butt; the black recoil pad behind it
+      o.stock = [];
+      o.stock.push(add(sideGeo(roundedShape([[0.0, -0.032], [-0.055, -0.058, 0.03], [-0.322, -0.079], [-0.33, -0.205, 0.01], [-0.29, -0.207], [-0.1, -0.13], [-0.03, -0.12, 0.02], [0.0, -0.09]], 0.012), 0.04, hi), GM.wood));
+      o.stock.push(add(sideGeo(roundedShape([[-0.327, -0.075], [-0.35, -0.077], [-0.352, -0.209], [-0.329, -0.209]], 0.006), 0.044, hi), GM.grip));
+      // trigger guard and trigger
+      add(new THREE.TorusGeometry(0.02, 0.0035, 6, 14, Math.PI), GM.metal, 0, -0.09, -0.045, 0, Math.PI / 2, Math.PI);
+      add(G.roundedBox(0.005, 0.024, 0.007, 0.002, 1), GM.metal, 0, -0.1, -0.045, 0.25, 0, 0);
+      // side saddle with four shells on the left of the receiver
+      add(G.roundedBox(0.005, 0.05, 0.13, 0.003, 1), GM.polymer, -0.0258, -0.057, -0.085);
+      if (hi) for (let k = 0; k < 4; k++) {
+        const z = -0.034 - k * 0.032;
+        add(new THREE.CylinderGeometry(0.0098, 0.0098, 0.042, 12), GM.shellRed, -0.036, -0.054, z);
+        add(new THREE.CylinderGeometry(0.0102, 0.0102, 0.014, 12), GM.brass, -0.036, -0.082, z);
+      }
+      o.sightY = -0.003; o.grip = [0, -0.1, 0.02]; o.fore = [0, -0.072, -0.385]; o.muzzle = [0, -0.043, -0.72]; o.eject = [0.03, -0.045, -0.105];
       break;
     }
     case 'sniper': {
@@ -3190,14 +3430,14 @@ class ViewModel {
     o.lhHome = lh.position.toArray(); o.lhRot = [lh.rotation.x, lh.rotation.y, lh.rotation.z];
     const P = {
       pistol: [[0.13, -0.115, -0.34], -0.38], rifle: [[0.155, -0.112, -0.3], -0.15], smg: [[0.14, -0.1, -0.29], -0.16],
-      shotgun: [[0.15, -0.105, -0.31], -0.3], sniper: [[0.15, -0.105, -0.27], -0.12],
+      shotgun: [[0.15, -0.105, -0.31], -0.37], sniper: [[0.15, -0.105, -0.27], -0.12],
     }[kind];
     o.hip = P[0]; o.ads = [0, -o.sightY, P[1]];
     if (o.mag) { o.magHome = o.mag.position.clone(); o.magRot = o.mag.rotation.clone(); }
     // reload choreography (gun space): the support hand's spot under the magazine, the vest pouch, the charging handle
     const mb = o.magBottom || [0, -0.15, -0.1];
     o.rM = [mb[0] - 0.035, mb[1] + 0.01, mb[2] + 0.005];
-    o.rD = [o.rM[0] - 0.06, o.rM[1] - 0.34, o.rM[2] + 0.14];
+    o.rD = [o.rM[0] - 0.05, o.rM[1] - 0.24, o.rM[2] + 0.1];
     o.rC = { rifle: [-0.035, -0.012, 0.035], smg: [-0.035, -0.035, -0.3], pistol: [-0.004, 0.018, 0.0] }[kind] || null;
     o.rPull = { rifle: 0.06, smg: 0.06, pistol: 0.026 }[kind] || 0;
     if (o.slide) o.slideHome = o.slide.position.z;
@@ -3260,6 +3500,8 @@ class ViewModel {
     this.idleT = (this.idleT || 0) + dt;
     const bobA = st.moving ? (st.sprint ? 0.022 : 0.01) * (1 - a * 0.88) : 0;
     let x = lerp(c.hip[0], c.ads[0], a), y = lerp(c.hip[1], c.ads[1], a), z = lerp(c.hip[2], c.ads[2], a);
+    // with your cheek on the stock you look straight past it, so it isn't drawn while aiming
+    if (c.stock) { const v = a < 0.6; if (c.stock[0].visible !== v) for (const m of c.stock) m.visible = v; }
     x += Math.sin(this.bobT) * bobA; y += Math.abs(Math.cos(this.bobT)) * bobA * 0.9 - bobA * 0.4;
     y += Math.sin(this.idleT * 1.6) * 0.0018 * (1 - a * 0.8);
     this.sx = lerp(this.sx || 0, clamp(-st.lookDX * 0.00035, -0.025, 0.025), Math.min(1, dt * 10));
@@ -3293,11 +3535,14 @@ class ViewModel {
   // magazine reload over u = 0..1: tilt, drop the old mag, fetch a fresh one, seat it, slap it, work the charging handle or slide
   magReload(c, rl) {
     const u = rl.u, H = c.lhHome, M = c.rM, D = c.rD, C = c.rC, add = (p, d) => [p[0] + d[0], p[1] + d[1], p[2] + d[2]];
-    const keys = [[0, H], [0.12, M], [0.16, add(M, [0, -0.025, 0])], [0.32, D], [0.4, D], [0.54, add(M, [0, -0.05, 0.004])], [0.6, M], [0.63, add(M, [0, -0.022, 0])], [0.66, add(M, [0, 0.006, 0])]];
+    // the gun turns its magazine well toward you; the hand pulls the old mag clear and lets it drop, fetches a new one,
+    // shows it under the well, pushes it home and slaps it, then works the charging handle
+    const OUT = [0, -0.075, 0.012], Mout = add(M, OUT), Mlow = add(M, [0, -0.07, 0.004]);
+    const keys = [[0, H], [0.1, M], [0.2, Mout], [0.34, D], [0.4, D], [0.5, Mlow], [0.55, Mlow], [0.6, M], [0.62, add(M, [0, -0.02, 0])], [0.65, add(M, [0, 0.006, 0])]];
     const grab = [0.25, 0, 0.55], low = [0.7, 0, 0.4];
-    const rots = [[0, c.lhRot], [0.12, grab], [0.32, low], [0.4, low], [0.54, grab], [0.66, grab]];
-    const T1 = [-0.06, 0.075, 0.03, 0.28, 0.18, -0.55], jolt = (d) => T1.map((v, i) => v + (d[i] || 0));
-    const gk = [[0, Z6], [0.12, T1], [0.56, T1], [0.6, jolt([0, 0.012, 0, 0.05])], [0.63, T1], [0.66, jolt([0, 0.008, 0, 0.03])], [0.69, T1]];
+    const rots = [[0, c.lhRot], [0.1, grab], [0.2, grab], [0.32, low], [0.4, low], [0.5, grab], [0.65, grab]];
+    const T1 = { sniper: [-0.07, 0.08, -0.07, 0.16, 0.26, -0.45], pistol: [-0.06, 0.09, -0.03, 0.18, 0.24, -0.42] }[c.kind] || [-0.085, 0.12, -0.035, 0.2, 0.3, -0.5], jolt = (d) => T1.map((v, i) => v + (d[i] || 0));
+    const gk = [[0, Z6], [0.1, T1], [0.18, jolt([0, 0.006, 0, 0.02])], [0.22, T1], [0.58, T1], [0.6, jolt([0, 0.014, 0, 0.05])], [0.63, T1], [0.65, jolt([0, 0.009, 0, 0.03])], [0.69, T1]];
     if (C) {
       const C2 = add(C, [0, 0, c.rPull]), T2 = [-0.04, 0.05, 0.02, 0.16, -0.14, 0.28];
       keys.push([0.76, C], [0.82, C2], [0.85, C2], [0.97, H], [1, H]);
@@ -3308,11 +3553,14 @@ class ViewModel {
     if (C && c.slide) this.rlSlide = u > 0.76 && u < 0.86 ? clamp(hp[2] - C[2], 0, c.rPull) : 0;
     if (c.mag) {
       const m = c.mag, h = c.magHome;
-      if (u < 0.13) { m.position.copy(h); m.rotation.copy(c.magRot); m.visible = true; }
-      else if (u < 0.36) {
-        const t = (u - 0.13) * rl.T, fall = 0.02 + 5 * t * t;
-        m.position.set(h.x - t * 0.05, h.y - fall, h.z + t * 0.08); m.rotation.set(c.magRot.x + t * 2.5, c.magRot.y, c.magRot.z - t * 1.5); m.visible = fall < 0.6;
-      } else if (u < 0.6) { m.position.set(h.x + hp[0] - M[0], h.y + hp[1] - M[1], h.z + hp[2] - M[2]); m.rotation.copy(c.magRot); m.visible = true; }
+      const inHand = () => { m.position.set(h.x + hp[0] - M[0], h.y + hp[1] - M[1], h.z + hp[2] - M[2]); m.rotation.copy(c.magRot); m.visible = true; };
+      if (u < 0.1) { m.position.copy(h); m.rotation.copy(c.magRot); m.visible = true; }
+      else if (u < 0.2) inHand(); // pulled out of the well
+      else if (u < 0.4) {
+        // let go: it falls and tumbles away
+        const t = (u - 0.2) * rl.T, fall = 4.9 * t * t;
+        m.position.set(h.x + OUT[0] - t * 0.06, h.y + OUT[1] - fall, h.z + OUT[2] + t * 0.1); m.rotation.set(c.magRot.x + t * 3, c.magRot.y, c.magRot.z - t * 2); m.visible = fall < 0.7;
+      } else if (u < 0.6) inHand(); // the fresh one, carried up and pushed in
       else { m.position.copy(h); m.rotation.copy(c.magRot); m.visible = true; }
     }
     return [gp, [hp, hr]];
@@ -3320,7 +3568,7 @@ class ViewModel {
   // shotgun loads shell by shell: roll to the loading port, push each shell in, pump if it ran dry
   shotgunReload(c, rl) {
     const F = c.lhHome, P = c.port, Pd = [P[0] - 0.012, P[1] - 0.07, P[2] + 0.035], D = [P[0] - 0.06, P[1] - 0.32, P[2] + 0.14];
-    const T = [-0.06, 0.07, 0.03, 0.25, 0.15, -0.62], k = rl.k, low = [0.6, 0, 0.5];
+    const T = [-0.06, 0.05, 0.02, 0.12, 0.12, -0.9], k = rl.k, low = [0.6, 0, 0.5]; // rolled over so the loading port faces you
     let hp, hr = low, gp = T, shellVis = false;
     if (rl.phase === 'start') { hp = track(k, [[0, F], [1, D]]); hr = track(k, [[0, c.lhRot], [1, low]]); gp = track(k, [[0, Z6], [0.7, T]]); }
     else if (rl.phase === 'shell') {
@@ -3378,6 +3626,25 @@ class ViewModel {
 
 /* ---------- third-person soldier ---------- */
 const FATIGUES = [0x8c7c5c, 0x6f7556, 0x7d756a, 0x9a8a68];
+/* bots wear a glowing red outline so you can tell them from players at a glance:
+   an inverted hull (the body's back faces pushed out along their normals, about 2 px wide at any distance)
+   and a red rim light on the body itself */
+const BOT_GLOW = { value: 1 };
+const BOT_RED = new THREE.Color(1.0, 0.09, 0.06);
+const BOT_HULL = new THREE.ShaderMaterial({
+  side: THREE.BackSide, uniforms: { glow: BOT_GLOW, color: { value: BOT_RED } },
+  vertexShader: 'uniform float glow; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vec3 n = normalize(normalMatrix * normal); mv.xyz += n * max(0.011, -mv.z * 0.0042); gl_Position = projectionMatrix * mv; }',
+  fragmentShader: 'uniform vec3 color; uniform float glow; void main(){ gl_FragColor = vec4(color * (0.85 + 0.35 * glow), 1.0); }',
+});
+function botRim(mat) {
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.glow = BOT_GLOW; sh.uniforms.rimColor = { value: BOT_RED };
+    sh.fragmentShader = 'uniform float glow; uniform vec3 rimColor;\n' + sh.fragmentShader.replace('#include <emissivemap_fragment>',
+      '#include <emissivemap_fragment>\n  float rimF = 1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0);\n  totalEmissiveRadiance += rimColor * pow(rimF, 4.0) * (0.55 + 0.35 * glow);');
+  };
+  mat.customProgramCacheKey = () => 'botrim'; mat.needsUpdate = true;
+}
+
 class Soldier {
   constructor(R, color, seed = 0) {
     const G = GEO, std = (c, o = {}) => new THREE.MeshStandardMaterial({ color: lin(c), roughness: 0.85, ...o });
@@ -3436,6 +3703,17 @@ class Soldier {
     this.tag = null; this.deadT = -1; this.walk = 0; this.crouchK = 0; this.hipYaw = 0; this.protect = false;
     R.scene.add(root);
   }
+  markBot() {
+    if (this.isBot) return; this.isBot = true;
+    for (const m of Object.values(this.mats)) botRim(m);
+    this.hulls = [];
+    this.body.traverse((o) => {
+      if (!o.isMesh || o.userData.hull || o.material === this.mats.visor) return;
+      if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere();
+      if (o.geometry.boundingSphere.radius < 0.05) return; // pouches and buckles don't need their own outline
+      const h = new THREE.Mesh(o.geometry, BOT_HULL); h.userData.hull = true; h.castShadow = false; o.add(h); this.hulls.push(h);
+    });
+  }
   setGun(w, skin) {
     const kind = WEAPONS[w] ? WEAPONS[w].kind : 'pistol', key = kind === 'knife' ? 'knife:' + (skin || 'tactical') : kind;
     if (key === this.gunKey) return; this.gunKey = key; this.gunKind = kind;
@@ -3483,6 +3761,9 @@ class Soldier {
   }
   pose(e, dt) {
     const r = this.root;
+    // the outline shows on living bots; it's hidden while one is see-through with spawn protection
+    const hull = !!e.alive && !this.protect;
+    if (this.hulls && this.hullOn !== hull) { this.hullOn = hull; for (const h of this.hulls) h.visible = hull; }
     r.position.set(e.x, e.y, e.z); r.rotation.set(0, e.yaw, 0);
     if (!e.alive) {
       if (this.deadT < 0) { this.deadT = 0; this.fallDir = Math.random() < 0.5 ? -1 : 1; }
@@ -3507,14 +3788,14 @@ class Soldier {
     const amp = Math.min(1, sp / 5.5) * (e.onGround === false ? 0.3 : 1), ck = this.crouchK;
     const bob = Math.abs(Math.sin(this.walk)) * 0.035 * amp;
     this.hips.position.y = 0.94 - ck * 0.4 + bob; this.torso.position.y = 0.94 - ck * 0.42 + bob;
-    this.torso.rotation.x = -ck * 0.2 - (e.sprint ? 0.18 : 0);
+    this.torso.rotation.x = -ck * 0.2;
     for (let k = 0; k < 2; k++) {
       const L = this.legs[k], ph = this.walk + (k ? Math.PI : 0);
       const swing = Math.sin(ph) * 0.62 * amp, lift = Math.max(0, -Math.sin(ph - 0.5)) * 1.05 * amp;
       L.thigh.rotation.x = swing - ck * (k ? 0.35 : 1.25) - (e.onGround === false ? 0.4 : 0);
       L.knee.rotation.x = lift + ck * (k ? 1.5 : 1.75) + (e.onGround === false ? 0.6 : 0);
     }
-    this.aim.rotation.x = clamp(e.pitch, -1.2, 1.2) * 0.85 + (e.sprint ? -0.55 : 0);
+    this.aim.rotation.x = clamp(e.pitch, -1.2, 1.2) * 0.85;
     // knife swings, or the reload: gun tipped over while the support hand works the magazine
     const gh = this.gunHolder;
     if (this.gunKind === 'knife') {
@@ -3539,11 +3820,82 @@ class Soldier {
   remove() { this.root.parent && this.root.parent.remove(this.root); }
 }
 
+/* ================= supply cases dropped by fallen players ================= */
+// a hovering green case with a white cross (health) and a row of rounds on the lid (ammo), over a soft glow on the ground
+class Pickups {
+  constructor(R) {
+    this.R = R; this.items = new Map(); this.t = 0;
+    if (!Pickups.proto) Pickups.proto = Pickups.build(R);
+  }
+  static build(R) {
+    const G = GEO, body = [], brass = [];
+    const green = lin(0x2e6b3d), dark = lin(0x1f4a2a), white = lin(0xf4f2ea), copper = lin(0xc4703a), shell = lin(0xd8b052);
+    body.push({ geo: G.roundedBox(0.46, 0.26, 0.32, 0.045, 2), m: null, c: green });
+    body.push({ geo: G.roundedBox(0.475, 0.045, 0.335, 0.015, 1), m: G.mat(0, 0.07, 0), c: dark });
+    for (const s of [-1, 1]) {
+      body.push({ geo: G.roundedBox(0.17, 0.055, 0.012, 0.004, 1), m: G.mat(0, -0.02, s * 0.163), c: white });
+      body.push({ geo: G.roundedBox(0.055, 0.17, 0.012, 0.004, 1), m: G.mat(0, -0.02, s * 0.163), c: white });
+      body.push({ geo: G.roundedBox(0.012, 0.055, 0.14, 0.004, 1), m: G.mat(s * 0.233, -0.02, 0), c: white });
+      body.push({ geo: G.roundedBox(0.012, 0.14, 0.04, 0.004, 1), m: G.mat(s * 0.233, -0.02, 0), c: white });
+    }
+    for (let k = 0; k < 5; k++) {
+      const x = -0.12 + k * 0.06;
+      brass.push({ geo: G.cyl(0.017, 0.017, 0.2, 10), m: G.mat(x, 0.148, 0, Math.PI / 2, 0, 0), c: shell });
+      brass.push({ geo: new THREE.ConeGeometry(0.017, 0.05, 10), m: G.mat(x, 0.148, 0.124, Math.PI / 2, 0, 0), c: copper });
+    }
+    const caseMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.45, metalness: 0.05, emissive: lin(0x0b2412) });
+    const brassMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.3, metalness: 0.85, emissive: lin(0x1a1206) });
+    const glowMat = new THREE.MeshBasicMaterial({ map: R.fxTex.soft, color: lin(0x5dff8f), transparent: true, opacity: 0.6, depthWrite: false, blending: THREE.AdditiveBlending, fog: true });
+    const haloMat = new THREE.SpriteMaterial({ map: R.fxTex.soft, color: lin(0x8dffb0), transparent: true, opacity: 0.32, depthWrite: false, blending: THREE.AdditiveBlending });
+    const ground = new THREE.PlaneGeometry(1.7, 1.7); ground.rotateX(-Math.PI / 2);
+    return { caseGeo: G.merge(body), brassGeo: G.merge(brass), caseMat, brassMat, glowMat, haloMat, ground };
+  }
+  make(x, y, z) {
+    const P = Pickups.proto, root = new THREE.Group(), spin = new THREE.Group();
+    const c = new THREE.Mesh(P.caseGeo, P.caseMat), b = new THREE.Mesh(P.brassGeo, P.brassMat);
+    c.castShadow = true; spin.add(c, b);
+    const glow = new THREE.Mesh(P.ground, P.glowMat.clone()); glow.position.y = 0.035; glow.renderOrder = 2;
+    const halo = new THREE.Sprite(P.haloMat); halo.scale.setScalar(1.15);
+    spin.add(halo); root.add(spin, glow);
+    root.position.set(x, y, z); this.R.scene.add(root);
+    return { root, spin, glow, phase: Math.random() * TAU };
+  }
+  // list: [id, x, y, z, secondsLeft]
+  set(list, now) {
+    const keep = new Set();
+    for (const [id, x, y, z, ttl] of list) {
+      keep.add(id);
+      let it = this.items.get(id);
+      if (!it) { it = this.make(x, y, z); it.x = x; it.y = y; it.z = z; this.items.set(id, it); }
+      it.until = now + ttl;
+    }
+    for (const id of [...this.items.keys()]) if (!keep.has(id)) this.remove(id);
+  }
+  remove(id, burst) {
+    const it = this.items.get(id); if (!it) return;
+    if (burst && this.R.fx.pickupBurst) this.R.fx.pickupBurst([it.x, it.y + 0.6, it.z]);
+    this.R.scene.remove(it.root); it.glow.material.dispose(); this.items.delete(id);
+  }
+  clear() { for (const id of [...this.items.keys()]) this.remove(id); }
+  update(dt, now) {
+    this.t += dt;
+    for (const it of this.items.values()) {
+      const t = this.t + it.phase, left = it.until - now;
+      it.spin.position.y = 0.62 + Math.sin(t * 2.4) * 0.07;
+      it.spin.rotation.y = t * 1.5;
+      it.glow.material.opacity = 0.45 + Math.sin(t * 3.1) * 0.15;
+      // blinks for its last few seconds
+      it.root.visible = left > 4 || Math.sin(left * 22) > -0.3;
+    }
+  }
+}
+
 /* ================= renderer, sky, light and effects ================= */
 const QUALITY = {
-  low: { dpr: 1, shadow: 1024, ground: 1024 },
-  medium: { dpr: 1.5, shadow: 2048, ground: 2048 },
-  high: { dpr: 2, shadow: 2048, ground: 2048 },
+  // shadow: shadow-map size; box: half-width in metres of the sun's shadow box around the player; ground: baked town texture size
+  low: { dpr: 1, shadow: 1024, box: 30, ground: 2048 },
+  medium: { dpr: 1.5, shadow: 2048, box: 40, ground: 3072 },
+  high: { dpr: 2, shadow: 4096, box: 48, ground: 4096 },
 };
 const SUN_DIR = new THREE.Vector3(-0.52, 0.7, 0.48).normalize();
 const SKY = { zenith: rgbL(64, 116, 184), horizon: rgbL(222, 210, 190), ground: rgbL(196, 178, 148), sun: rgbL(255, 236, 200) };
@@ -3562,7 +3914,7 @@ const R = {
     r.shadowMap.enabled = !this.lite; r.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer = r;
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog(SKY.horizon.clone(), 55, 230);
+    this.scene.fog = new THREE.Fog(SKY.horizon.clone(), 70, 290);
     this.camera = new THREE.PerspectiveCamera(75, 1, 0.05, 900); this.camera.rotation.order = 'YXZ';
     this.vmScene = new THREE.Scene(); this.vmCam = new THREE.PerspectiveCamera(54, 1, 0.01, 10);
     const aniso = Math.min(8, r.capabilities.getMaxAnisotropy());
@@ -3574,6 +3926,8 @@ const R = {
     for (const m of this.world.group.children) if (m.material === this.mats.leaf) m.customDepthMaterial = this.mats.leafDepth;
     this.fx = new Effects(this);
     this.vm = new ViewModel(this);
+    // compile the supply case's shaders now, behind the loading screen, so the first drop doesn't hitch
+    try { const pk = new Pickups(this), it = pk.make(0, -40, 0); this.renderer.compile(this.scene, this.camera); this.scene.remove(it.root); it.glow.material.dispose(); } catch (e) { /* not critical */ }
     this.resize();
     addEventListener('resize', () => this.resize());
     this.ready = true;
@@ -3582,7 +3936,7 @@ const R = {
     if (!QUALITY[name] || name === this.qName) return;
     this.qName = name; this.q = QUALITY[name];
     this.renderer.setPixelRatio(this.lite ? 0.5 : Math.min(window.devicePixelRatio || 1, this.q.dpr));
-    const s = this.sun.shadow; s.mapSize.set(this.q.shadow, this.q.shadow);
+    const s = this.sun.shadow; s.mapSize.set(this.q.shadow, this.q.shadow); this.shadowBox();
     if (s.map) { s.map.dispose(); s.map = null; }
     this.resize();
   },
@@ -3642,20 +3996,25 @@ const R = {
     const sun = new THREE.DirectionalLight(rgbL(255, 234, 204), 2.3);
     sun.castShadow = true;
     const s = sun.shadow; s.mapSize.set(this.q.shadow, this.q.shadow);
-    Object.assign(s.camera, { left: -32, right: 32, top: 32, bottom: -32, near: 1, far: 160 });
-    s.camera.updateProjectionMatrix(); s.bias = -0.0004; s.normalBias = 0.035;
-    this.scene.add(sun, sun.target); this.sun = sun;
+    s.bias = -0.0004; s.normalBias = 0.035;
+    this.scene.add(sun, sun.target); this.sun = sun; this.shadowBox();
     this.flashLight = new THREE.PointLight(0xffc77a, 0, 9, 2); this.scene.add(this.flashLight);
     // first-person weapon lighting follows the sun direction relative to the camera
     this.vmScene.add(new THREE.HemisphereLight(rgbL(196, 216, 240), rgbL(150, 124, 92), 0.5));
     this.vmSun = new THREE.DirectionalLight(rgbL(255, 238, 210), 1.8); this.vmScene.add(this.vmSun);
   },
+  shadowBox() {
+    const b = this.q.box;
+    Object.assign(this.sun.shadow.camera, { left: -b, right: b, top: b, bottom: -b, near: 1, far: 170 });
+    this.sun.shadow.camera.updateProjectionMatrix();
+  },
   render(dt) {
     const cam = this.camera, r = this.renderer;
     this.sky.position.copy(cam.position);
     this.sky.material.uniforms.time.value += dt || 0;
+    BOT_GLOW.value = 0.5 + 0.5 * Math.sin(nowS() * 4.2); // bots' red outline pulses gently
     // the shadow box follows the camera, snapped to texels so edges do not shimmer
-    const span = 64 / this.q.shadow, f = this.focus || cam.position;
+    const span = (2 * this.q.box) / this.q.shadow, f = this.focus || cam.position;
     const tx = Math.round(f.x / span) * span, tz = Math.round(f.z / span) * span;
     this.sun.target.position.set(tx, 0, tz);
     this.sun.position.set(tx + SUN_DIR.x * 80, SUN_DIR.y * 80, tz + SUN_DIR.z * 80);
@@ -3724,6 +4083,10 @@ class Effects {
     for (let i = 0; i < 3; i++) this.particle(p, [n[0] * rand(1, 4) + rand(-2, 2), n[1] * rand(1, 4) + rand(0, 3), n[2] * rand(1, 4) + rand(-2, 2)], 0xffd890, 0.03, rand(0.08, 0.16), -12, 0, 1, true);
   }
   blood(p) { for (let i = 0; i < 6; i++) this.particle(p, [rand(-1.2, 1.2), rand(-0.3, 1.3), rand(-1.2, 1.2)], 0x8a1712, rand(0.07, 0.16), rand(0.3, 0.5), -6, 0.3, 0.85); }
+  pickupBurst(p) {
+    for (let i = 0; i < 12; i++) this.particle(p, [rand(-1.3, 1.3), rand(0.6, 2.6), rand(-1.3, 1.3)], 0x7dffa6, rand(0.05, 0.11), rand(0.45, 0.8), -1.5, 0.4, 1, true);
+    this.light(p, 3, 0.25, 6);
+  }
   muzzleWorld(p) {
     const f = this.flashes[this.flashI++ % this.flashes.length];
     f.s.visible = true; f.s.position.set(p[0], p[1], p[2]); const s = rand(0.35, 0.55); f.s.scale.set(s, s, s); f.s.material.rotation = Math.random() * TAU; f.life = 0.05;
@@ -3748,16 +4111,18 @@ class Effects {
 }
 
 /* ================= settings & input ================= */
-const KEY_DEFAULTS = { forward: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', sprint: 'ShiftLeft', crouch: 'KeyC', reload: 'KeyR', primary: 'Digit1', pistol: 'Digit2', knife: 'Digit3', swap: 'KeyQ', inspect: 'KeyF', scores: 'Tab' };
-const KEY_LABELS = { forward: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', sprint: 'Sprint', crouch: 'Crouch', reload: 'Reload', primary: 'Main gun', pistol: 'Pistol', knife: 'Knife', swap: 'Last weapon', inspect: 'Inspect knife', scores: 'Scoreboard' };
+const KEY_DEFAULTS = { forward: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', crouch: 'KeyC', reload: 'KeyR', primary: 'Digit1', pistol: 'Digit2', knife: 'Digit3', swap: 'KeyQ', inspect: 'KeyF', scores: 'Tab', chat: 'Enter' };
+const KEY_LABELS = { forward: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', crouch: 'Crouch', reload: 'Reload', primary: 'Main gun', pistol: 'Pistol', knife: 'Knife', swap: 'Last weapon', inspect: 'Inspect knife', scores: 'Scoreboard', chat: 'Chat' };
 const XH_DEFAULTS = { color: '#5ef0ff', len: 7, gap: 4, thick: 2, dot: true, outline: true, dynamic: false };
-const SETTING_DEFAULTS = { sens: 0.8, adsSens: 1.0, invertY: false, fov: 110, vol: 0.7, sfxVol: 1, uiVol: 0.8, aimToggle: false, crouchToggle: false, sprintToggle: false, bob: true, showFps: false, minimap: true, quality: 'medium' };
+const SETTING_DEFAULTS = { sens: 0.8, adsSens: 1.0, invertY: false, fov: 110, vol: 0.7, sfxVol: 1, uiVol: 0.8, aimToggle: false, crouchToggle: false, bob: true, showFps: false, minimap: true, quality: 'medium' };
 const SETTINGS = (() => {
   const saved = store.get('settings', {}) || {};
   if (!(saved.v >= 2) && (saved.fov == null || saved.fov === 100)) saved.fov = SETTING_DEFAULTS.fov; // the old default was 100
   const s = Object.assign({ name: '', loadout: 'rifle', knife: 'tactical', match: null }, SETTING_DEFAULTS, saved, { v: 2 });
   if (!KNIVES[s.knife]) s.knife = 'tactical';
   s.keys = Object.assign({}, KEY_DEFAULTS, saved.keys || {});
+  for (const a in s.keys) if (!(a in KEY_DEFAULTS)) delete s.keys[a]; // actions that no longer exist (sprint)
+  delete s.sprintToggle;
   s.xh = Object.assign({}, XH_DEFAULTS, saved.xh || {});
   if (!LOADOUTS.includes(s.loadout)) s.loadout = 'rifle';
   return s;
@@ -3854,17 +4219,17 @@ class Client {
     this.id = -1; this.isHost = false; this.hostId = -1; this.code = '';
     this.state = 'connecting'; this.now = nowS();
     this.roster = new Map(); this.settings = { target: 500, minutes: 10, bots: 5, diff: 1 };
-    this.ents = new Map();
+    this.ents = new Map(); this.pickups = new Pickups(R);
     this.me = { x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, yaw: 0, pitch: 0, crouch: false, onGround: true };
     this.st = { hp: 100, alive: false, respawnIn: 0, protect: 0 };
     this.inv = { prim: null, sec: { w: 'pistol', ammo: WEAPONS.pistol.mag }, knife: { w: 'knife', ammo: 1 } };
     this.melee = null; this.meleeSide = 1; this.inspectT = -1; this.cues = [];
     this.cur = 'prim'; this.lastCur = 'sec';
-    this.w = { nextFire: 0, reloading: false, reloadEnd: 0, reloadStart: 0, switchEnd: 0, recoilI: 0, lastShot: -9, rp: 0, ry: 0, bloom: 0, trigger: false, sprintOut: 0, ads: 0, adsToggle: false, autoReload: 0 };
+    this.w = { nextFire: 0, reloading: false, reloadEnd: 0, reloadStart: 0, switchEnd: 0, recoilI: 0, lastShot: -9, rp: 0, ry: 0, bloom: 0, trigger: false, ads: 0, adsToggle: false, autoReload: 0 };
     this.phase = 'lobby'; this.timeLeft = 0; this.target = 500;
     this.scores = new Map(); this.killfeed = []; this.ranking = null; this.winner = -1;
     this.deathT = -1; this.killerId = -1; this.deathInfo = null;
-    this.sprinting = false; this.crouchOn = false; this.sprintOn = false; this.frozenAt = 0; this.stepT = 0; this.eyeY = 0; this.eyeCur = PHYS.eyeStand; this.bobT = 0;
+    this.crouchOn = false; this.frozenAt = 0; this.stepT = 0; this.eyeY = 0; this.eyeCur = PHYS.eyeStand; this.bobT = 0;
     this.lookDX = 0; this.lookDY = 0; this.jumpQ = false; this.hurtT = 0; this.punch = 0; this.shake = 0; this.airborneFrom = null;
     this.timeOffset = null; this.spawnSeq = 0; this.sendAcc = 0; this.lastPing = 0; this.rtt = 0; this.lastUpdate = 0; this.quiet = false;
     this.link.send({ t: 'hello', name: SETTINGS.name || 'Player', ver: VERSION, loadout: SETTINGS.loadout, knife: SETTINGS.knife });
@@ -3877,7 +4242,7 @@ class Client {
     return ids.sort((a, b) => { const A = this.scoreOf(a), B = this.scoreOf(b); return B.pts - A.pts || B.k - A.k || A.d - B.d || a - b; });
   }
   serverNow() { return nowS() + (this.timeOffset || 0); }
-  inputActive() { return this.state === 'game' && (INPUT.locked || INPUT.lockFailed || TEST) && !UI.modalOpen(); }
+  inputActive() { return this.state === 'game' && (INPUT.locked || INPUT.lockFailed || TEST) && !UI.modalOpen() && !UI.chatOpen; }
   listener() { const c = R.camera; return { x: c.position.x, z: c.position.z, yaw: c.rotation.y }; }
   setKnife(k) {
     if (!KNIVES[k]) return;
@@ -3909,7 +4274,7 @@ class Client {
       case 'start':
         this.state = 'game'; this.ranking = null; this.scores.clear(); this.killfeed = []; this.st.alive = false; this.deathT = -1;
         this.timeLeft = this.settings.minutes * 60; this.target = this.settings.target;
-        R.fx.clear(); UI.enterGame(this);
+        R.fx.clear(); this.pickups.clear(); UI.enterGame(this);
         break;
       case 'tolobby': this.state = 'lobby'; this.resetWorld(); UI.onLobby(this); break;
       case 'spawn': this.onSpawn(m); break;
@@ -3925,13 +4290,16 @@ class Client {
       case 'sb': for (const r of m.pl) this.scores.set(r[0], { pts: r[1], k: r[2], a: r[3], d: r[4], ping: r[5] }); break;
       case 'pong': if (!this.quiet) this.rtt = (nowS() - m.c) * 1000; break;
       case 'note': UI.toast(m.text); break;
+      case 'chat': UI.addChat(m, this); break;
+      case 'drops': this.pickups.set(m.d, this.now); break;
+      case 'pick': this.onPick(m); break;
       default: break;
     }
   }
   onSpawn(m) {
     const me = this.me;
     me.x = m.x; me.y = m.y; me.z = m.z; me.vx = me.vy = me.vz = 0; me.yaw = m.yaw; me.pitch = 0; me.crouch = false; me.onGround = true;
-    this.spawnSeq = m.sq; this.eyeY = m.y; this.eyeCur = PHYS.eyeStand; this.crouchOn = false; this.sprintOn = false;
+    this.spawnSeq = m.sq; this.eyeY = m.y; this.eyeCur = PHYS.eyeStand; this.crouchOn = false;
     this.inv.prim = { w: m.prim, ammo: WEAPONS[m.prim].mag };
     this.inv.sec = { w: m.sec, ammo: WEAPONS[m.sec].mag };
     this.inv.knife = { w: 'knife', ammo: 1 }; this.melee = null; this.inspectT = -1; this.cues = [];
@@ -3974,6 +4342,19 @@ class Client {
       else if (Ld < 199) R.fx.blood(end);
     }
   }
+  // someone walked over a supply case: it heals to full and refills every magazine at once
+  onPick(m) {
+    const L = this.listener();
+    this.pickups.remove(m.d, !this.quiet);
+    if (m.id !== this.id) { if (!this.quiet) AUDIO.pickup(m.x, m.z, L); return; }
+    if (this.inv.prim) this.inv.prim.ammo = WEAPONS[this.inv.prim.w].mag;
+    this.inv.sec.ammo = WEAPONS[this.inv.sec.w].mag;
+    const w = this.w; w.reloading = false; w.autoReload = 0; w.queued = 0;
+    this.st.hp = 100; this.hurtT = 0;
+    if (this.quiet) return;
+    AUDIO.pickup(); UI.pickupFlash();
+    UI.popup('+HP  +AMMO', 'Health and ammo refilled', 'pickup');
+  }
   onHurt(m) {
     this.st.hp = m.hp; this.hurtT = 0.5; this.lastHurtT = nowS(); this.punch += 0.012 * Math.min(3, m.dmg / 20);
     if (m.from) UI.damageFrom(angDiff(this.me.yaw, yawTo(m.from[0] - this.me.x, m.from[1] - this.me.z)));
@@ -3995,7 +4376,7 @@ class Client {
   }
   onDeath(killer, m) {
     this.st.alive = false; this.deathT = nowS(); this.killerId = killer;
-    this.w.ads = 0; this.w.reloading = false; this.sprinting = false;
+    this.w.ads = 0; this.w.reloading = false;
     if (m) {
       const W = WEAPONS[m.w], kr = this.roster.get(killer);
       const how = m.w === 'knife' ? KNIVES[(kr && kr.knife) || 'tactical'].name + (m.back ? ' · backstab' : '') : W ? W.name : 'unknown';
@@ -4016,10 +4397,11 @@ class Client {
   addEnt(id) {
     const r = this.roster.get(id);
     const e = { id, snaps: [], x: 0, y: 0, z: 0, yaw: 0, pitch: 0, vx: 0, vz: 0, alive: false, crouch: false, px: 0, pz: 0, stepT: 0, w: 'rifle', model: new Soldier(R, r ? r.color : '#cccccc', id), flashT: 0, seenAlive: false, lastShot: -9 };
+    if (r && r.bot) e.model.markBot();
     this.ents.set(id, e); return e;
   }
   removeEnt(id) { const e = this.ents.get(id); if (e) { e.model.remove(); this.ents.delete(id); } }
-  resetWorld() { for (const id of [...this.ents.keys()]) this.removeEnt(id); R.fx.clear(); }
+  resetWorld() { for (const id of [...this.ents.keys()]) this.removeEnt(id); R.fx.clear(); this.pickups.clear(); }
   destroy() {
     if (this.destroyed) return;
     this.destroyed = true; this.resetWorld(); R.vm.root.visible = false;
@@ -4029,12 +4411,12 @@ class Client {
   /* ---------- per-frame ---------- */
   update(dt) {
     const t = nowS(), gap = this.lastUpdate ? t - this.lastUpdate : 0; this.lastUpdate = t;
-    if (gap > 0.5) this.catchUp();
+    if (gap > 0.5) { this.catchUp(); this.graceUntil = t + 4; } // after a long stall, give queued messages a moment before judging the link
     this.link.flush();
     this.quiet = false;
     if (this.destroyed) return;
     this.now = nowS();
-    if (!this.link.local && this.now - this.link.lastRecv > 9) { this.onClosed(); return; }
+    if (!this.link.local && this.now > (this.graceUntil || 0) && this.now - this.link.lastRecv > 9) { this.onClosed(); return; }
     if (this.state !== 'game' && this.state !== 'end') return;
     // a practice match stops while its menu is open: nothing moves, timers resume where they were
     if (GAME.frozen()) { if (!this.frozenAt) this.frozenAt = t; this.updateCamera(0); return; }
@@ -4045,12 +4427,14 @@ class Client {
     this.sendState(dt);
     this.updateEnts(dt);
     R.fx.update(dt);
+    this.pickups.update(dt, this.now);
     this.updateCamera(dt);
     this.hurtT = Math.max(0, this.hurtT - dt);
   }
   shiftTimers(d) {
     const w = this.w;
-    for (const k of ['nextFire', 'reloadEnd', 'reloadStart', 'switchEnd', 'sprintOut', 'lastShot']) w[k] += d;
+    for (const it of this.pickups.items.values()) it.until += d;
+    for (const k of ['nextFire', 'reloadEnd', 'reloadStart', 'switchEnd', 'lastShot']) w[k] += d;
     if (w.autoReload) w.autoReload += d;
     if (this.deathT > 0) this.deathT += d;
     if (this.lastHurtT) this.lastHurtT += d;
@@ -4086,8 +4470,8 @@ class Client {
       case 'knife': this.switchTo('knife'); break;
       case 'inspect': this.inspect(); break;
       case 'jump': this.jumpQ = true; break;
-      case 'crouch': if (SETTINGS.crouchToggle) { this.crouchOn = !this.crouchOn; if (this.crouchOn) this.sprintOn = false; } break;
-      case 'sprint': if (SETTINGS.sprintToggle) this.sprintOn = !this.sprintOn; break;
+      case 'crouch': if (SETTINGS.crouchToggle) this.crouchOn = !this.crouchOn; break;
+      case 'chat': if (this.mode === 'online') UI.openChat(); break;
       default: break;
     }
   }
@@ -4120,21 +4504,14 @@ class Client {
   }
   simulate(dt) {
     const me = this.me;
-    if (!this.st.alive || this.state !== 'game') { this.sprinting = false; return; }
+    if (!this.st.alive || this.state !== 'game') return;
     const A = (a) => INPUT.act(a), act = this.inputActive();
     let fx = 0, fz = 0;
     if (act) { if (A('forward')) fz += 1; if (A('back')) fz -= 1; if (A('right')) fx += 1; if (A('left')) fx -= 1; }
-    // toggled sprint lasts until you stop running forward, aim or crouch
-    if (this.sprintOn && (!act || fz <= 0 || this.adsWanted() || (!SETTINGS.crouchToggle && A('crouch')))) this.sprintOn = false;
-    const wantSprint = act && (SETTINGS.sprintToggle ? this.sprintOn : A('sprint'));
-    if (wantSprint && fz > 0) this.crouchOn = false;
     me.crouch = act && (SETTINGS.crouchToggle ? this.crouchOn : A('crouch'));
-    const W = WEAPONS[this.heldKey()] || { speed: 1 };
-    const sprint = wantSprint && fz > 0 && !me.crouch && !this.adsWanted() && !this.w.reloading;
-    if (this.sprinting && !sprint) this.w.sprintOut = this.now + 0.18;
-    this.sprinting = sprint;
+    // no sprint: what you hold sets your pace, and the knife is the fastest way to get around
+    const W = WEAPONS[this.heldKey()] || { speed: 1 }, fast = !!W.melee;
     let speed = PHYS.run * (W.speed || 1);
-    if (sprint) speed *= PHYS.sprint;
     if (me.crouch) speed *= PHYS.crouch;
     if (this.w.ads > 0.5) speed *= W.scope ? PHYS.scope : PHYS.ads;
     const sy = Math.sin(me.yaw), cy = Math.cos(me.yaw);
@@ -4147,7 +4524,7 @@ class Client {
     if (!wasGround && me.onGround && this.airborneFrom != null && this.airborneFrom - me.y > -0.6) { AUDIO.step(null, null, null, true); R.vm.land = 1; }
     if (wasGround && !me.onGround) this.airborneFrom = y0; else if (me.onGround) this.airborneFrom = null;
     const hs = Math.hypot(me.vx, me.vz);
-    if (me.onGround && hs > 3.4 && !me.crouch) { this.stepT -= dt; if (this.stepT <= 0) { AUDIO.step(null, null, null, sprint); this.stepT = sprint ? 0.28 : 0.36; } }
+    if (me.onGround && hs > 3.4 && !me.crouch) { this.stepT -= dt; if (this.stepT <= 0) { AUDIO.step(null, null, null, fast); this.stepT = fast ? 0.29 : 0.36; } }
     else this.stepT = Math.min(this.stepT, 0.12);
   }
   heldKey() { const s = this.slot(); return s ? s.w : 'pistol'; }
@@ -4187,7 +4564,7 @@ class Client {
       return;
     }
     const u = (this.now - w.reloadStart) / (w.reloadEnd - w.reloadStart);
-    const cues = W.kind === 'sniper' ? [[0.13, 'magout'], [0.6, 'magin'], [0.66, 'slap'], [0.85, 'bolt']] : [[0.13, 'magout'], [0.6, 'magin'], [0.66, 'slap'], [0.81, 'rack']];
+    const cues = W.kind === 'sniper' ? [[0.11, 'magout'], [0.59, 'magin'], [0.645, 'slap'], [0.85, 'bolt']] : [[0.11, 'magout'], [0.59, 'magin'], [0.645, 'slap'], [0.81, 'rack']];
     while (w.rlCue < cues.length && u >= cues[w.rlCue][0]) AUDIO.fx(cues[w.rlCue++][1]);
     if (u >= 1) { slot.ammo = W.mag; w.reloading = false; }
   }
@@ -4201,7 +4578,7 @@ class Client {
     const heavy = INPUT.rmb || rh > 0, light = INPUT.lmb || lh > 0;
     if (!heavy && !light) return;
     w.nextFire = this.now + 1 / (heavy ? W.heavyRate : W.rate); w.lastShot = this.now;
-    this.inspectT = -1; this.sprintOn = false;
+    this.inspectT = -1;
     this.meleeSide = heavy ? 1 : -this.meleeSide;
     this.melee = { start: this.now, heavy, side: this.meleeSide };
     w.pendingHit = { at: this.now + (heavy ? 0.2 : 0.08), heavy };
@@ -4233,7 +4610,7 @@ class Client {
   }
   canFire() {
     const w = this.w, slot = this.slot();
-    return slot && slot.ammo > 0 && !w.reloading && this.now >= w.nextFire && this.now >= w.switchEnd && !this.sprinting && this.now >= w.sprintOut && this.phase === 'live';
+    return slot && slot.ammo > 0 && !w.reloading && this.now >= w.nextFire && this.now >= w.switchEnd && this.phase === 'live';
   }
   updateWeapon(dt) {
     const w = this.w, key = this.heldKey(), W = WEAPONS[key], slot = this.slot();
@@ -4242,7 +4619,7 @@ class Client {
     if (W.melee) { this.updateKnife(); return; }
     if (w.reloading) this.updateReload(W, slot);
     if (w.autoReload && this.now >= w.autoReload) { w.autoReload = 0; this.reload(); }
-    const canAds = !w.reloading && this.inputActive() && !this.sprinting;
+    const canAds = !w.reloading && this.inputActive();
     w.ads = approach(w.ads, canAds && this.adsWanted() ? 1 : 0, dt / 0.14);
     if (this.now - w.lastShot > 0.11) { const k = 1 - Math.exp(-dt * 6.5); w.rp -= w.rp * k; w.ry -= w.ry * k; }
     if (this.now - w.lastShot > 0.3) w.recoilI = 0;
@@ -4252,7 +4629,6 @@ class Client {
     const active = this.inputActive();
     if (w.queued && this.now > w.queued) w.queued = 0; // a click that cut a shotgun reload short fires as soon as it can
     const trig = active && (INPUT.lmb || hits > 0 || !!w.queued), edge = active && (hits > 0 || (INPUT.lmb && !w.trigger) || !!w.queued);
-    if (trig && this.sprintOn) { this.sprintOn = false; this.sprinting = false; w.sprintOut = this.now + 0.12; }
     if (trig && edge && w.reloading && W.shell && slot.ammo > 0) {
       // a shell was already chambered: fire right away; from empty the new shell needs a quick pump first
       w.reloading = false;
@@ -4292,7 +4668,7 @@ class Client {
     const hits = [], muz = this.muzzleWorld();
     let firstEnd = null;
     for (let i = 0; i < W.pellets; i++) {
-      const d = W.pellets > 1 ? spreadDir(yaw, pitch, W.spread * (ads ? 0.85 : 1), true) : spreadDir(yaw, pitch, inacc);
+      const d = W.pellets > 1 ? spreadDir(yaw, pitch, W.spread * (ads ? W.adsMul : 1), true) : spreadDir(yaw, pitch, inacc);
       const r = this.trace(eye, d);
       if (r.hit) { hits.push([r.hit.id, r.hit.zone, r2(r.t)]); R.fx.blood(r.end); }
       else if (r.normal) { R.fx.hole(r.end, r.normal); if (i < 3) R.fx.impact(r.end, r.normal); }
@@ -4300,7 +4676,7 @@ class Client {
       if (i < 3 && !(W.scope && ads)) R.fx.tracer(muz, r.end, W.kind === 'sniper');
     }
     this.link.send({ t: 'fire', w: key, o: eye.map(r2), e: firstEnd.map(r2), hits });
-    const adsK = ads ? 0.72 : 1;
+    const adsK = ads ? 0.65 : 1; // aiming tames the kick
     if (W.pattern) {
       const P = PATTERNS[W.pattern], i = Math.min(w.recoilI, P.length - 2);
       w.rp += (P[i + 1][0] - P[i][0]) * adsK * rand(0.9, 1.1); w.ry += (P[i + 1][1] - P[i][1]) * adsK;
@@ -4317,16 +4693,18 @@ class Client {
     if (this.sendAcc < 0.05) return;
     this.sendAcc = 0;
     if (!this.st.alive || this.state !== 'game') return;
-    const me = this.me;
+    const me = this.me, inv = this.inv;
+    const fa = (!inv.prim || inv.prim.ammo >= WEAPONS[inv.prim.w].mag) && inv.sec.ammo >= WEAPONS[inv.sec.w].mag && !this.w.reloading;
     this.link.send({
-      t: 'in', sq: this.spawnSeq, x: r2(me.x), y: r2(me.y), z: r2(me.z), vx: r2(me.vx), vz: r2(me.vz), yaw: r3(me.yaw), pitch: r3(me.pitch),
-      cr: me.crouch ? 1 : 0, ads: this.w.ads > 0.5 ? 1 : 0, sp: this.sprinting ? 1 : 0, w: this.cur, g: me.onGround ? 1 : 0, rl: this.w.reloading ? 1 : 0,
+      t: 'in', fa: fa ? 1 : 0, sq: this.spawnSeq, x: r2(me.x), y: r2(me.y), z: r2(me.z), vx: r2(me.vx), vz: r2(me.vz), yaw: r3(me.yaw), pitch: r3(me.pitch),
+      cr: me.crouch ? 1 : 0, ads: this.w.ads > 0.5 ? 1 : 0, w: this.cur, g: me.onGround ? 1 : 0, rl: this.w.reloading ? 1 : 0,
     });
   }
   updateEnts(dt) {
     const rt = this.serverNow() - INTERP, L = this.listener();
     for (const e of this.ents.values()) {
       const s = e.snaps, r = this.roster.get(e.id);
+      if (r && r.bot && !e.model.isBot) e.model.markBot();
       if (!s.length) { e.model.root.visible = false; continue; }
       while (s.length >= 3 && s[1].t <= rt) s.shift();
       const a = s[0], b = s[1] || s[0];
@@ -4339,7 +4717,7 @@ class Client {
       e.x = nx; e.z = nz; e.y = lerp(a.y, b.y, k);
       e.yaw = lerpAng(a.yaw, b.yaw, k); e.pitch = lerp(a.pitch, b.pitch, k);
       const wasAlive = e.alive;
-      e.alive = !!(fl & 1); e.crouch = !!(fl & 2); e.ads = !!(fl & 4); e.sprint = !!(fl & 8); e.prot = !!(fl & 16); e.onGround = !!(fl & 32);
+      e.alive = !!(fl & 1); e.crouch = !!(fl & 2); e.ads = !!(fl & 4); e.prot = !!(fl & 16); e.onGround = !!(fl & 32);
       e.w = b.w; e.hp = b.hp; e.reload = !!(fl & 64); e.swingAge = e.swingT != null ? this.now - e.swingT : null;
       if (e.alive && !wasAlive) e.vx = e.vz = 0;
       if (e.alive) e.seenAlive = true;
@@ -4353,7 +4731,7 @@ class Client {
       const sp = Math.hypot(e.vx, e.vz);
       if (e.alive && e.onGround && sp > 3.4 && !e.crouch && dist < 30) {
         e.stepT -= dt;
-        if (e.stepT <= 0) { AUDIO.step(e.x, e.z, L, e.sprint); e.stepT = e.sprint ? 0.28 : 0.36; }
+        if (e.stepT <= 0) { const fast = e.w === 'knife'; AUDIO.step(e.x, e.z, L, fast); e.stepT = fast ? 0.29 : 0.36; }
       }
     }
   }
@@ -4387,7 +4765,7 @@ class Client {
     else if (this.state === 'end') { /* keep the last view */ }
     if (this.shake > 0 && dt > 0) { this.shake = Math.max(0, this.shake - dt); cam.rotation.x += rand(-1, 1) * this.shake * 0.03; cam.rotation.y += rand(-1, 1) * this.shake * 0.03; }
     R.focus = cam.position;
-    R.setFov(SETTINGS.fov * (this.sprinting ? 1.05 : 1), zoom);
+    R.setFov(SETTINGS.fov, zoom);
     // what the hands are doing: reload progress, knife swing, inspect
     const w = this.w, slot = this.slot();
     let rl = null;
@@ -4399,7 +4777,7 @@ class Client {
     const melee = this.melee && mt < (this.melee.heavy ? 0.75 : 0.42) ? { t: mt, heavy: this.melee.heavy, side: this.melee.side } : null;
     const inspect = this.inspectT > 0 && this.now - this.inspectT < 2.6 ? this.now - this.inspectT : -1;
     this.scoped = !!(this.st.alive && W && W.scope && this.w.ads > 0.85);
-    R.vm.update(dt, { hidden: hidden || this.state !== 'game', ads: this.w.ads, sprint: this.sprinting, moving: Math.hypot(me.vx, me.vz) > 0.5 && me.onGround,
+    R.vm.update(dt, { hidden: hidden || this.state !== 'game', ads: this.w.ads, sprint: this.cur === 'knife' && !this.melee && Math.hypot(me.vx, me.vz) > 4 && me.onGround, moving: Math.hypot(me.vx, me.vz) > 0.5 && me.onGround,
       rl, melee, inspect, empty: !!(slot && W && !W.melee && slot.ammo <= 0), lookDX: this.lookDX, lookDY: this.lookDY });
   }
 }
@@ -4449,7 +4827,8 @@ const GAME = {
   },
   join(code) {
     this.leave(true); AUDIO.init();
-    UI.connecting('Joining ' + code, 'Looking for the host…');
+    UI.connecting('Joining ' + code, 'Reaching the lobby server…');
+    NET.status = (msg) => { if (!this.client) $('conn-msg').textContent = msg; };
     NET.join(code, (conn) => { this.client = new Client(new PeerLink(conn), 'online'); this.startTicker(); }, (msg) => { this.leave(true); UI.toMenu(msg); });
   },
   leave(silent) {
@@ -4471,16 +4850,16 @@ const XH_COLORS = ['#5ef0ff', '#7dff6a', '#ffe14a', '#ff5fd2', '#ffffff', '#ff4d
 const BIND_HINT = 'Click a key to change it, then press the new key. Esc cancels.';
 const UI = {
   sbOpen: false, settingsFrom: 'menu', settingsTab: 'game', cache: {}, kfT: 0, radarT: 0, sbT: 0, pbT: 0, bannerT: 0, fpsT: 0, frames: 0,
-  rebinding: null, pauseAt: 0, confirmOk: null,
+  rebinding: null, pauseAt: 0, confirmOk: null, chatOpen: false,
   // [slider id, setting, readout, what to re-apply]
   SLIDERS: [
-    ['set-sens', 'sens', (v) => v.toFixed(2)], ['set-ads', 'adsSens', (v) => v.toFixed(2) + '×'], ['set-fov', 'fov', (v) => v + '°'],
+    ['set-sens', 'sens', (v) => v.toFixed(2)], ['set-ads', 'adsSens', (v) => v.toFixed(2) + '×'], ['set-fov', 'fov', (v) => v + '°'], ['pause-fov', 'fov', (v) => v + '°'],
     ['set-vol', 'vol', pct, 'audio'], ['set-sfx', 'sfxVol', pct, 'audio'], ['set-uivol', 'uiVol', pct, 'audio'],
     ['xh-len', 'xh.len', (v) => v + ' px', 'xh'], ['xh-gap', 'xh.gap', (v) => v + ' px', 'xh'], ['xh-thick', 'xh.thick', (v) => v + ' px', 'xh'],
   ],
   // [button group id, setting, what to re-apply]
   CHOICES: [
-    ['seg-aim', 'aimToggle'], ['seg-crouch', 'crouchToggle'], ['seg-sprint', 'sprintToggle'], ['seg-bob', 'bob'], ['seg-minimap', 'minimap', 'hud'],
+    ['seg-aim', 'aimToggle'], ['seg-crouch', 'crouchToggle'], ['seg-bob', 'bob'], ['seg-minimap', 'minimap', 'hud'],
     ['seg-invert', 'invertY'], ['seg-quality', 'quality', 'quality'], ['seg-fps', 'showFps', 'hud'],
     ['xh-dot', 'xh.dot', 'xh'], ['xh-outline', 'xh.outline', 'xh'], ['xh-dynamic', 'xh.dynamic', 'xh'],
   ],
@@ -4507,6 +4886,16 @@ const UI = {
       $('online-note').textContent = 'Online play is unavailable on this page (peer-to-peer connections are blocked here). Open the game from your Vercel link to play with friends. Playing against bots works anywhere.';
     }
     $('btn-conn-cancel').onclick = () => { GAME.leave(true); this.toMenu(); };
+    $('update-no').textContent = VERSION;
+    // chat: Enter sends, Esc or clicking away closes
+    const ci = $('chat-input');
+    ci.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); this.sendChat(ci.value); ci.value = ''; this.closeChat(); }
+      else if (e.key === 'Escape') { ci.value = ''; this.closeChat(); }
+      e.stopPropagation();
+    });
+    ci.addEventListener('blur', () => this.closeChat());
+    $('lobby-chat-form').addEventListener('submit', (e) => { e.preventDefault(); const li = $('lobby-chat-input'); this.sendChat(li.value); li.value = ''; });
     const seg = (id, key, parse) => $(id).addEventListener('click', (e) => {
       const b = e.target.closest('button'); if (!b || !GAME.client || !GAME.client.isHost) return;
       const s = { ...GAME.client.settings }; s[key] = parse(b.dataset.v); this.sendCfg(s);
@@ -4571,7 +4960,10 @@ const UI = {
   initSettings() {
     for (const [id, path, fmt, after] of this.SLIDERS) {
       const el = $(id);
-      el.addEventListener('input', () => { setS(path, Number(el.value)); $(id + '-v').textContent = fmt(Number(el.value)); this.applySettings(after || 'none'); saveSettings(); });
+      el.addEventListener('input', () => {
+        setS(path, Number(el.value)); this.applySettings(after || 'none'); saveSettings();
+        for (const [id2, p2, f2] of this.SLIDERS) if (p2 === path) { if (id2 !== id) $(id2).value = el.value; $(id2 + '-v').textContent = f2(Number(el.value)); }
+      });
     }
     for (const [id, path, after] of this.CHOICES) {
       $(id).addEventListener('click', (e) => {
@@ -4623,7 +5015,7 @@ const UI = {
       el.style.setProperty('--ga', half + x.gap + 'px'); el.style.setProperty('--gb', x.thick - half + x.gap + 'px');
       el.classList.toggle('no-dot', !x.dot); el.classList.toggle('no-outline', !x.outline); el.classList.toggle('no-lines', x.len <= 0);
     }
-    this.cache.xgap = null;
+    this.cache.xgap = null; this.cache.xring = null;
     this.centerCrosshair();
   },
   centerCrosshair() { const el = $('crosshair'); el.style.left = Math.floor(innerWidth / 2) + 'px'; el.style.top = Math.floor(innerHeight / 2) + 'px'; },
@@ -4670,18 +5062,18 @@ const UI = {
     const k = (a) => `<kbd>${esc(keyName(SETTINGS.keys[a]))}</kbd>`;
     const rows = [
       [`${k('forward')} ${k('left')} ${k('back')} ${k('right')}`, 'Move'],
-      [k('sprint'), 'Sprint (gun lowered, can’t fire)'],
       [k('crouch'), 'Crouch: steadier aim, smaller target'],
       [k('jump'), 'Jump'],
-      ['<kbd>Right click</kbd>', 'Aim down sights: zoom and tighter spread'],
+      ['<kbd>Right click</kbd>', 'Aim down sights: far tighter spread and less kick. Hip fire is for close range'],
       ['<kbd>Left click</kbd>', 'Fire. Tap for accuracy, pull down to control a spray'],
       [k('reload'), 'Reload'],
-      [`${k('primary')} ${k('pistol')} ${k('knife')}`, 'Main gun, pistol, knife (mouse wheel works too)'],
+      [`${k('primary')} ${k('pistol')} ${k('knife')}`, 'Main gun, pistol, knife (mouse wheel works too). You run fastest with the knife out'],
       [k('swap'), 'Back to your last weapon'],
       ['<kbd>Left</kbd> / <kbd>Right click</kbd>', 'With the knife: quick slash / heavy stab. Double damage from behind'],
       [k('inspect'), 'Inspect your knife'],
       ['<kbd>1</kbd>–<kbd>4</kbd> while down', 'Pick your gun for the next life'],
       [k('scores'), 'Scoreboard'],
+      [k('chat'), 'Chat with the other players (online matches)'],
       ['<kbd>Esc</kbd> <kbd>P</kbd>', 'Game menu: settings, restart, leave'],
     ];
     $('manual-keys').innerHTML = rows.map(([d, t]) => `<dt>${d}</dt><dd>${t}</dd>`).join('');
@@ -4741,7 +5133,36 @@ const UI = {
   hideErr() { $('menu-err').hidden = true; },
   hideAll() { for (const id of ['menu', 'connecting', 'lobby', 'pause', 'settings', 'confirm', 'endscreen', 'scoreboard']) this.show(id, false); this.sbOpen = false; this.stopRebind(); this.confirmOk = null; },
   setPlaying(on) { if (R.canvas) R.canvas.classList.toggle('playing', on); document.body.classList.toggle('ingame', on); $('hud').hidden = !on; },
+  sendChat(text) {
+    const c = GAME.client; text = String(text || '').trim();
+    if (c && text) c.link.send({ t: 'chat', text: text.slice(0, 120) });
+  },
+  openChat() {
+    const c = GAME.client;
+    if (!c || c.state !== 'game' || this.modalOpen() || this.chatOpen) return;
+    this.chatOpen = true; INPUT.keys.clear(); INPUT.lmb = INPUT.rmb = false;
+    $('chat').classList.add('open'); const ci = $('chat-input'); ci.hidden = false; ci.focus();
+    const log = $('chat-log'); log.scrollTop = log.scrollHeight;
+  },
+  closeChat() {
+    if (!this.chatOpen) return;
+    this.chatOpen = false; $('chat').classList.remove('open');
+    const ci = $('chat-input'); ci.hidden = true; if (document.activeElement === ci) ci.blur();
+  },
+  addChat(m, c) {
+    for (const id of ['chat-log', 'lobby-chat-log']) {
+      const log = $(id), line = document.createElement('div'), who = document.createElement('b');
+      line.className = 'cl'; who.textContent = m.name + ':'; who.style.color = m.color || '#efe2c4';
+      line.append(who, document.createTextNode(m.text)); log.append(line);
+      while (log.children.length > 40) log.firstChild.remove();
+      log.scrollTop = log.scrollHeight;
+      if (id === 'chat-log') setTimeout(() => line.classList.add('old'), 10000); // in a match, lines fade after 10 s
+    }
+    if (c && m.id !== c.id && !c.quiet) AUDIO.ui('click');
+  },
+  clearChat() { $('chat-log').innerHTML = ''; $('lobby-chat-log').innerHTML = ''; this.closeChat(); },
   toMenu(err) {
+    this.clearChat();
     this.hideAll(); this.show('menu', true); this.setPlaying(false);
     if (R.vm) R.vm.root.visible = false;
     if (err) this.showErr(err); else this.hideErr();
@@ -4758,7 +5179,7 @@ const UI = {
   onLobby(c) {
     if (c.state === 'lobby') { this.hideAll(); this.show('lobby', true); this.setPlaying(false); INPUT.unlock(); }
     const online = c.mode === 'online';
-    $('lobby-codebox').hidden = !online; $('lobby-practice').hidden = online;
+    $('lobby-codebox').hidden = !online; $('lobby-practice').hidden = online; $('lobby-chat').hidden = !online;
     $('lobby-code').textContent = c.code || '-----';
     $('lobby-invite').textContent = this.inviteUrl(c) || 'Share the code above';
     const humans = [...c.roster.values()].filter((p) => !p.bot);
@@ -4782,6 +5203,7 @@ const UI = {
   },
   // the in-game menu; `first` is the screen before you click into a new match
   pauseScreen(c, first) {
+    this.closeChat();
     if (!c) return;
     const online = c.mode === 'online', free = TEST || INPUT.lockFailed;
     $('pause-title').textContent = first ? 'Ready?' : 'Paused';
@@ -4869,6 +5291,7 @@ const UI = {
     $('sb-round').textContent = `First to ${c.settings.target} · ${fmtTime(c.timeLeft)} left`;
   },
   showEnd(c, m) {
+    this.closeChat();
     this.hideAll(); this.setPlaying(false);
     const win = m.winner === c.id, wname = c.nameOf(m.winner);
     $('end-title').textContent = win ? 'Victory' : `${wname} wins`;
@@ -4892,6 +5315,7 @@ const UI = {
     while (this.h.pops.children.length > 3) this.h.pops.lastChild.remove();
     if (!(GAME.client && GAME.client.quiet)) AUDIO.ui('point');
   },
+  pickupFlash() { const f = $('pickflash'); f.classList.remove('show'); void f.offsetWidth; f.classList.add('show'); },
   hitmarker(head, kill) {
     const h = this.h.hit; h.classList.remove('show', 'head'); void h.offsetWidth;
     h.classList.add('show'); if (head || kill) h.classList.add('head');
@@ -4920,14 +5344,19 @@ const UI = {
     return c;
   },
   drawRadar(c) {
-    const ctx = this.radarCtx, S = 200, half = 100, scale = 2.6;
+    const ctx = this.radarCtx, S = 200, half = 100, scale = 2.0;
     const cam = R.camera, vx = cam.position.x, vz = cam.position.z, yaw = cam.rotation.y, cs = Math.cos(yaw), sn = Math.sin(yaw);
     const proj = (x, z) => { const dx = x - vx, dz = z - vz; return [half + (dx * cs - dz * sn) * scale, half + (dx * sn + dz * cs) * scale]; };
     ctx.clearRect(0, 0, S, S);
     ctx.save(); ctx.beginPath(); ctx.arc(half, half, half - 1, 0, TAU); ctx.clip();
     ctx.fillStyle = 'rgba(13,18,22,0.6)'; ctx.fillRect(0, 0, S, S);
     ctx.save(); ctx.translate(half, half); ctx.rotate(yaw); ctx.scale(scale, scale); ctx.translate(-vx, -vz);
-    ctx.imageSmoothingEnabled = false; ctx.drawImage(this.radarImg, -32, -32, 64, 64); ctx.restore();
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(this.radarImg, -MAP.HALF, -MAP.HALF, 2 * MAP.HALF, 2 * MAP.HALF); ctx.restore();
+    // supply cases
+    for (const it of c.pickups.items.values()) {
+      const p = proj(it.x, it.z);
+      ctx.fillStyle = '#6dff9c'; ctx.fillRect(p[0] - 1.2, p[1] - 4, 2.4, 8); ctx.fillRect(p[0] - 4, p[1] - 1.2, 8, 2.4);
+    }
     // anyone who fired in the last two seconds shows up
     for (const e of c.ents.values()) {
       if (!e.alive || !e.snaps.length || c.now - e.lastShot > 2) continue;
@@ -4966,15 +5395,25 @@ const UI = {
     const K = SETTINGS.keys, cell = (c2, k, label) => `<span class="${c.cur === c2 ? 'on' : ''}">${esc(keyName(K[k]))} ${label}</span>`;
     const inv = (c.inv.prim ? cell('prim', 'primary', WEAPONS[c.inv.prim.w].short) : '') + cell('sec', 'pistol', WEAPONS[c.inv.sec.w].short) + cell('knife', 'knife', 'KNIFE');
     if (this.cache.inv !== inv) { this.cache.inv = inv; h.invrow.innerHTML = inv; }
-    // crosshair: fixed in place (lines only spread if the player turns that on); hidden while sprinting or scoped, lines hidden while aiming
+    // crosshair: fixed in place (lines only spread if the player turns that on); hidden while scoped, lines hidden while aiming
     h.scope.hidden = !c.scoped;
-    const showX = st.alive && !c.scoped && !c.sprinting && c.state === 'game';
+    const showX = st.alive && !c.scoped && c.state === 'game';
     if (this.cache.xshow !== showX) { this.cache.xshow = showX; h.cross.classList.toggle('hide', !showX); }
     if (showX) {
       const ads = c.w.ads > 0.6;
       if (this.cache.xads !== ads) { this.cache.xads = ads; h.cross.classList.toggle('ads', ads); }
-      const x = SETTINGS.xh;
-      if (x.dynamic) {
+      const x = SETTINGS.xh, sg = W.pellets > 1;
+      if (this.cache.xsg !== sg) { this.cache.xsg = sg; h.cross.classList.toggle('shotgun', sg); this.cache.xgap = null; if (!sg) this.applyCrosshair(); }
+      if (sg) {
+        // the ring shows where the pellets can land: its radius is the spread cone at the current zoom
+        const sp = W.spread * (c.w.ads > 0.5 ? W.adsMul : 1);
+        const rad = Math.round((innerHeight / 2) * (Math.tan(sp) / Math.tan((R.camera.fov * Math.PI) / 360)));
+        if (rad !== this.cache.xring) {
+          this.cache.xring = rad; const t = Math.min(x.len || 6, 6), half = Math.floor(x.thick / 2);
+          h.cross.style.setProperty('--ring', rad * 2 + 'px'); h.cross.style.setProperty('--len', t + 'px');
+          h.cross.style.setProperty('--ga', half + rad - Math.round(t / 2) + 'px'); h.cross.style.setProperty('--gb', x.thick - half + rad - Math.round(t / 2) + 'px');
+        }
+      } else if (x.dynamic) {
         const inacc = inaccuracy(W, { speed: Math.hypot(me.vx, me.vz), onGround: me.onGround, crouch: me.crouch, ads: c.w.ads > 0.8, bloom: c.w.bloom });
         const px = (innerHeight / 2) * (Math.tan(inacc) / Math.tan((R.camera.fov * Math.PI) / 360));
         const g = x.gap + Math.round(clamp(px - 3, 0, 60)), half = Math.floor(x.thick / 2);
@@ -5002,8 +5441,8 @@ const UI = {
 /* ================= boot ================= */
 function attractCam(t) {
   const a = t * 0.04, cam = R.camera;
-  cam.position.set(Math.sin(a) * 15, 7.5 + Math.sin(t * 0.13) * 1.2, Math.cos(a) * 15);
-  cam.lookAt(0, 1.6, 0);
+  cam.position.set(Math.sin(a) * 24, 9 + Math.sin(t * 0.13) * 1.5, Math.cos(a) * 24);
+  cam.lookAt(0, 2.2, 0);
   R.setFov(96, 1);
   R.vm.root.visible = false;
   R.focus = null;
@@ -5043,7 +5482,7 @@ function boot() {
       R.render(dt);
     };
     requestAnimationFrame(frame);
-    window.__siteline = { GAME, R, MAP, NAV, UI, INPUT };
+    window.__siteline = { GAME, R, MAP, NAV, UI, INPUT, SETTINGS, VERSION, PHYS, WEAPONS, inaccuracy };
   }, 30);
 }
 boot();
