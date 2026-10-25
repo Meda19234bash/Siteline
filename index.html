@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Siteline">
+<meta name="theme-color" content="#0d1216">
 <title>Siteline by Yashmit</title>
 <meta name="description" content="Siteline: a free-for-all browser shooter in a desert market town. Play your friends and bots.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -336,12 +341,121 @@ button.keycap:hover { border-color: var(--sand); }
 .confirm-card h2 { font: 400 34px/1 var(--display); margin: 0; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
+/* ---------- touch controls: phones and tablets ----------
+   Left thumb: a joystick that appears where the thumb lands. Right thumb: drag to look, with the fire, aim,
+   jump, crouch and reload buttons in an arc under it. The HUD shrinks and moves out of the thumbs' way. */
+body:not(.touch) .touch-only { display: none !important; }
+body.touch .mouse-only { display: none !important; }
+body.touch .touch-note { display: block; }
+body.touch { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+body.touch.ingame { overscroll-behavior: none; }
+#touch { display: none; }
+body.touch #touch { display: block; position: absolute; inset: 0; pointer-events: auto; touch-action: none; }
+#tz { position: absolute; inset: 0; }
+#stick { --sr: min(70px, 16vh); position: absolute; width: calc(var(--sr) * 2); height: calc(var(--sr) * 2); margin: calc(var(--sr) * -1) 0 0 calc(var(--sr) * -1);
+  left: calc(max(14px, env(safe-area-inset-left, 0px)) + var(--sr) + 24px); top: calc(100% - var(--sr) - max(18px, env(safe-area-inset-bottom, 0px)) - 18px);
+  border-radius: 50%; border: 2px solid rgba(239, 226, 196, 0.22); background: rgba(13, 18, 22, 0.18); opacity: 0.55; pointer-events: none; transition: opacity 0.15s; }
+#stick.on { opacity: 1; border-color: rgba(239, 226, 196, 0.4); }
+#knob { position: absolute; left: 28%; top: 28%; width: 44%; height: 44%; border-radius: 50%; background: rgba(239, 226, 196, 0.42); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+.tbtn { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; border-radius: 50%;
+  background: rgba(13, 18, 22, 0.42); border: 1.5px solid rgba(239, 226, 196, 0.34); color: var(--sand); touch-action: none; pointer-events: auto;
+  text-shadow: none; -webkit-user-select: none; user-select: none; transition: background-color 0.08s, border-color 0.08s, transform 0.08s; }
+.tbtn svg { width: 24px; height: 24px; }
+.tbtn span { font-size: 10px; line-height: 1; letter-spacing: 0.1em; color: rgba(239, 226, 196, 0.8); }
+.tbtn.held { background: rgba(232, 152, 62, 0.5); border-color: var(--accent); transform: scale(0.94); }
+.tbtn.on { background: rgba(106, 174, 232, 0.42); border-color: var(--blue); }
+.tb-cluster { position: absolute; right: max(10px, env(safe-area-inset-right, 0px)); bottom: max(8px, env(safe-area-inset-bottom, 0px)); width: 232px; height: 216px; pointer-events: none; transform-origin: bottom right; }
+.tb-cluster.dead { opacity: 0.35; }
+.tbtn[data-b="fire"] { right: 64px; bottom: 64px; width: 88px; height: 88px; background: rgba(239, 90, 60, 0.3); border-color: rgba(239, 90, 60, 0.8); }
+.tbtn[data-b="fire"] svg { width: 34px; height: 34px; }
+.tbtn[data-b="fire"].held { background: rgba(239, 90, 60, 0.62); }
+.tbtn[data-b="aim"] { right: 164px; bottom: 92px; width: 62px; height: 62px; }
+.tbtn[data-b="reload"] { right: 70px; bottom: 162px; width: 52px; height: 52px; }
+.tbtn[data-b="crouch"] { right: 96px; bottom: 0; width: 54px; height: 54px; }
+.tbtn[data-b="jump"] { right: 2px; bottom: 8px; width: 58px; height: 58px; }
+.tb-top { position: absolute; top: max(8px, env(safe-area-inset-top, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); display: flex; gap: 8px; }
+.tbtn.sm { position: relative; width: 42px; height: 42px; border-radius: 10px; }
+.tbtn.sm svg { width: 20px; height: 20px; }
+body.touch #killfeed { top: calc(max(8px, env(safe-area-inset-top, 0px)) + 52px); right: max(10px, env(safe-area-inset-right, 0px)); }
+body.touch .kf { font-size: 13px; padding: 2px 8px; }
+body.touch #radar { width: 112px; height: 112px; top: max(8px, env(safe-area-inset-top, 0px)); left: max(10px, env(safe-area-inset-left, 0px)); }
+body.touch .hud-bl { top: calc(max(8px, env(safe-area-inset-top, 0px)) + 120px); bottom: auto; left: max(10px, env(safe-area-inset-left, 0px)); }
+body.touch .hud-bl .vital { order: -1; min-width: 0; width: 140px; padding: 3px 9px 6px; gap: 3px; }
+body.touch .vital .v { font-size: 24px; }
+body.touch .vital .k { font-size: 10px; }
+body.touch #regen { display: none; }
+body.touch .chat { width: min(300px, 36vw); }
+body.touch .chat-log { max-height: 86px; font-size: 13px; }
+body.touch .chat.open .chat-log { max-height: 120px; }
+body.touch .chat-input { pointer-events: auto; font-size: 16px; } /* 16px stops iOS zooming into the box */
+body.touch .hud-br { right: auto; left: 47%; transform: translateX(-50%); bottom: max(6px, env(safe-area-inset-bottom, 0px)); grid-auto-flow: column; align-items: center; gap: 8px; }
+body.touch .wname { display: none; }
+body.touch .ammo { padding: 2px 10px 4px; }
+body.touch .ammo .mag { font-size: 28px; }
+body.touch .ammo .res { font-size: 15px; }
+body.touch .inv { pointer-events: auto; gap: 5px; }
+body.touch .inv span { padding: 9px 12px; min-width: 58px; text-align: center; font-size: 14px; border-radius: 8px; background: rgba(13, 18, 22, 0.6); }
+body.touch .inv span.on { background: rgba(239, 226, 196, 0.16); }
+body.touch #fps { right: auto; left: 50%; transform: translateX(-50%); bottom: auto; top: calc(max(8px, env(safe-area-inset-top, 0px)) + 64px); }
+body.touch #deathcard .label .muted { display: none; }
+body.touch #deathcard { z-index: 1; }
+/* phones in landscape: everything a size smaller */
+@media (max-height: 520px) {
+  body.touch .hud-top { transform: translateX(-50%) scale(0.74); transform-origin: top center; top: max(4px, env(safe-area-inset-top, 0px)); }
+  body.touch #banner { top: 26%; }
+  body.touch #banner .small { font-size: 15px; }
+  body.touch #deathcard { bottom: 6px; padding: 8px 12px; gap: 3px; width: min(520px, 62vw); left: 44%; }
+  body.touch #death-who { font-size: 18px; }
+  body.touch #deathcard .gun { padding-block: 6px; }
+  body.touch #popups { top: calc(50% + 34px); }
+}
+/* tablets: bigger buttons for a bigger screen */
+@media (min-height: 700px) {
+  body.touch .tb-cluster { transform: scale(1.2); }
+  body.touch #radar { width: 140px; height: 140px; }
+  body.touch .hud-bl { top: calc(max(8px, env(safe-area-inset-top, 0px)) + 150px); }
+}
+#rotate { display: none; }
+@media (orientation: portrait) and (max-width: 700px) {
+  body.touch.ingame #rotate { position: fixed; inset: 0; z-index: 60; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 24px; text-align: center; background: var(--ink); color: var(--sand); }
+  #rotate svg { width: 84px; height: 84px; color: var(--accent); animation: tilt 2.4s ease-in-out infinite; }
+  #rotate b { font: 400 30px/1.1 var(--display); }
+  #rotate span { color: var(--dust); }
+}
+@keyframes tilt { 0%, 30% { transform: rotate(0deg); } 60%, 100% { transform: rotate(-90deg); } }
+/* menus on a phone held sideways: keep two columns and shrink the masthead so the buttons fit on screen */
+.screen { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+@media (max-height: 520px) and (min-width: 600px) {
+  .screen { padding-block: max(10px, env(safe-area-inset-top, 0px)) 18px; }
+  .wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 16px; }
+  .logo { font-size: 50px; margin-top: 0; }
+  .tagline { font-size: 15px; margin: 0; }
+  .panel { padding: 12px 14px; gap: 10px; }
+  .btn { padding: 9px 14px; font-size: 16px; }
+}
+
 </style>
 </head>
 <body>
 <canvas id="view" aria-label="Game view"></canvas>
 
 <div id="hud" hidden>
+  <div id="touch">
+    <div id="tz"></div>
+    <div id="stick"><i id="knob"></i></div>
+    <div class="tb-top">
+      <button class="tbtn sm" data-b="chat" id="tb-chat" aria-label="Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
+      <button class="tbtn sm" data-b="scores" aria-label="Scoreboard (hold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"/></svg></button>
+      <button class="tbtn sm" data-b="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg></button>
+    </div>
+    <div class="tb-cluster" id="tb-cluster">
+      <button class="tbtn" data-b="reload" aria-label="Reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12a7 7 0 1 1-2.1-5"/><path d="M19 4v4h-4"/></svg><span>RELOAD</span></button>
+      <button class="tbtn" data-b="aim" id="tb-aim" aria-label="Aim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg><span id="tb-aim-t">AIM</span></button>
+      <button class="tbtn fire" data-b="fire" aria-label="Fire"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg><span>FIRE</span></button>
+      <button class="tbtn" data-b="crouch" id="tb-crouch" aria-label="Crouch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/><path d="M5 19h14"/></svg><span>CROUCH</span></button>
+      <button class="tbtn" data-b="jump" aria-label="Jump"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/><path d="M6 9.5l6-6 6 6" opacity=".55"/></svg><span>JUMP</span></button>
+    </div>
+  </div>
   <div id="scope" hidden></div>
   <div class="hud-top">
     <div class="score you"><span class="k">YOU</span><span class="n num" id="you-pts">0</span><span class="sub" id="you-rank"></span></div>
@@ -383,6 +497,8 @@ button.keycap:hover { border-color: var(--sand); }
   <div id="fps"></div>
 </div>
 
+<div id="rotate" aria-live="polite"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="22" y="8" width="20" height="36" rx="4"/><path d="M14 52h36" opacity=".4"/><path d="M48 22a16 16 0 0 1 4 12" /><path d="M54 29l-2 5-5-2"/></svg><b>Turn your phone sideways</b><span>Siteline plays in landscape.</span></div>
+
 <div id="maploading" hidden><div class="ml-card"><span class="label">Loading map</span><b id="maploading-name">Desert Town</b></div></div>
 
 <section id="menu" class="screen" aria-label="Main menu">
@@ -391,11 +507,11 @@ button.keycap:hover { border-color: var(--sand); }
       <h1 class="logo">SITE<span>LINE</span> <small class="by">By Yashmit</small></h1>
       <p class="tagline">Free-for-all in a desert market town. Everyone is a target, friends and bots alike.</p>
       <details class="update" id="update">
-        <summary><span class="update-chip">UPDATE <b id="update-no">8</b></span> What&rsquo;s new</summary>
+        <summary><span class="update-chip">UPDATE <b id="update-no">9</b></span> What&rsquo;s new</summary>
         <ul>
-          <li>Two new maps, the same size as the town: <b>Arctic Base</b> (a snowy outpost round a frozen lake) and <b>Forest Camp</b> (log cabins and a sawmill in the pines). The host picks the map in the lobby.</li>
-          <li>The bots&rsquo; red outline is thinner and hugs their bodies.</li>
-          <li>Still here from update 7: chat, the pump shotgun, clearer reloads and the relay for school Wi-Fi.</li>
+          <li>Siteline now plays on <b>iPhone, iPad and other touch screens</b>. Left thumb moves, right thumb looks, and there are buttons to fire, aim, jump, crouch and reload.</li>
+          <li>Touch players get light aim assist (you can turn it off in Settings), and phones start on Low graphics so the game stays smooth.</li>
+          <li>Still here from update 8: Arctic Base and Forest Camp maps, and the thinner bot outline.</li>
         </ul>
       </details>
     </header>
@@ -417,7 +533,7 @@ button.keycap:hover { border-color: var(--sand); }
         <p class="err" id="menu-err" hidden></p>
         <p class="note" id="loading" hidden>Building the town&hellip;</p>
         <p class="note" id="online-note">Online matches run peer to peer: one player hosts and shares a 5-letter code, everyone else joins with it. Keep the host&rsquo;s tab open.</p>
-        <p class="note touch-note">This game needs a keyboard and mouse. Open it on a laptop or desktop to play.</p>
+        <p class="note touch-note">On a phone, turn it sideways to play. For full screen on an iPhone or iPad, open the game in Safari, tap Share, then <b>Add to Home Screen</b>, and play from the new icon.</p>
         <div class="row"><button class="btn" id="btn-settings-menu">Settings</button></div>
       </div>
     </div>
@@ -541,11 +657,14 @@ button.keycap:hover { border-color: var(--sand); }
 
     <div class="tabpanel" role="tabpanel" id="panel-game" aria-labelledby="tab-game">
       <div class="slider"><div class="row"><label class="label" for="set-fov">Field of view</label><span class="num" id="set-fov-v"></span></div><input type="range" id="set-fov" min="70" max="130" step="1"></div>
-      <div class="setting-row"><span class="label">Aim (right click)</span><div class="seg" id="seg-aim"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
-      <div class="setting-row"><span class="label">Crouch</span><div class="seg" id="seg-crouch"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
+      <div class="slider touch-only"><div class="row"><label class="label" for="set-tsens">Touch look speed</label><span class="num" id="set-tsens-v"></span></div><input type="range" id="set-tsens" min="0.3" max="2.5" step="0.05"></div>
+      <div class="setting-row touch-only"><span class="label">Aim assist (touch)</span><div class="seg" id="seg-assist"><button data-v="true">Light</button><button data-v="false">Off</button></div></div>
+      <div class="setting-row mouse-only"><span class="label">Aim (right click)</span><div class="seg" id="seg-aim"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
+      <div class="setting-row mouse-only"><span class="label">Crouch</span><div class="seg" id="seg-crouch"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
       <div class="setting-row"><span class="label">Camera bob</span><div class="seg" id="seg-bob"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
       <div class="setting-row"><span class="label">Minimap</span><div class="seg" id="seg-minimap"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
-      <p class="note">Toggle means one press turns it on and the next turns it off. On a trackpad, Toggle aim lets a two-finger click switch aiming.</p>
+      <p class="note mouse-only">Toggle means one press turns it on and the next turns it off. On a trackpad, Toggle aim lets a two-finger click switch aiming.</p>
+      <p class="note touch-only">Light aim assist slows your view a little when it passes over an enemy and nudges it toward them while you shoot or move. It only works with touch controls.</p>
     </div>
 
     <div class="tabpanel" role="tabpanel" id="panel-controls" aria-labelledby="tab-controls" hidden>
@@ -656,7 +775,7 @@ function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 function ordinal(n) { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
 
 /* ================= tuning ================= */
-const VERSION = 8; // also shown on the main screen as the update number
+const VERSION = 9; // also shown on the main screen as the update number
 const PHYS = {
   gravity: 20, jumpV: 6.6, step: 0.55, radius: 0.34,
   hStand: 1.8, hCrouch: 1.25, eyeStand: 1.62, eyeCrouch: 1.08,
@@ -4714,11 +4833,14 @@ class Effects {
 const KEY_DEFAULTS = { forward: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', crouch: 'KeyC', reload: 'KeyR', primary: 'Digit1', pistol: 'Digit2', knife: 'Digit3', swap: 'KeyQ', inspect: 'KeyF', scores: 'Tab', chat: 'Enter' };
 const KEY_LABELS = { forward: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', crouch: 'Crouch', reload: 'Reload', primary: 'Main gun', pistol: 'Pistol', knife: 'Knife', swap: 'Last weapon', inspect: 'Inspect knife', scores: 'Scoreboard', chat: 'Chat' };
 const XH_DEFAULTS = { color: '#5ef0ff', len: 7, gap: 4, thick: 2, dot: true, outline: true, dynamic: false };
-const SETTING_DEFAULTS = { sens: 0.8, adsSens: 1.0, invertY: false, fov: 110, vol: 0.7, sfxVol: 1, uiVol: 0.8, aimToggle: false, crouchToggle: false, bob: true, showFps: false, minimap: true, quality: 'medium' };
+const SETTING_DEFAULTS = { sens: 0.8, adsSens: 1.0, invertY: false, fov: 110, vol: 0.7, sfxVol: 1, uiVol: 0.8, aimToggle: false, crouchToggle: false, bob: true, showFps: false, minimap: true, quality: 'medium', touchSens: 1, aimAssist: true };
+// a phone or tablet with no mouse: start on low graphics so the game stays smooth
+const PURE_TOUCH = (() => { try { return matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches; } catch (e) { return false; } })();
 const SETTINGS = (() => {
   const saved = store.get('settings', {}) || {};
   if (!(saved.v >= 2) && (saved.fov == null || saved.fov === 100)) saved.fov = SETTING_DEFAULTS.fov; // the old default was 100
-  const s = Object.assign({ name: '', loadout: 'rifle', knife: 'tactical', match: null }, SETTING_DEFAULTS, saved, { v: 2 });
+  if (!(saved.v >= 3) && PURE_TOUCH) saved.quality = 'low';
+  const s = Object.assign({ name: '', loadout: 'rifle', knife: 'tactical', match: null }, SETTING_DEFAULTS, saved, { v: 3 });
   if (!KNIVES[s.knife]) s.knife = 'tactical';
   s.keys = Object.assign({}, KEY_DEFAULTS, saved.keys || {});
   for (const a in s.keys) if (!(a in KEY_DEFAULTS)) delete s.keys[a]; // actions that no longer exist (sprint)
@@ -4754,7 +4876,7 @@ const INTERP = 0.1;
 const BLOCK_KEYS = ['Tab', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Slash', 'Quote', 'Backspace'];
 
 const INPUT = {
-  keys: new Set(), locked: false, lockFailed: false, mdx: 0, mdy: 0, lmb: false, rmb: false, lmbHits: 0, rmbHits: 0,
+  keys: new Set(), locked: false, lockFailed: false, mdx: 0, mdy: 0, lmb: false, rmb: false, lmbHits: 0, rmbHits: 0, touch: false, tdx: 0, tdy: 0,
   lockErrors: 0, lastLockErr: 0, everLocked: false, lastUnlock: -99,
   act(a) { const c = SETTINGS.keys[a]; return !!c && (this.keys.has(c) || (!!MOD_TWIN[c] && this.keys.has(MOD_TWIN[c]))); },
   init(canvas) {
@@ -4842,7 +4964,7 @@ class Client {
     return ids.sort((a, b) => { const A = this.scoreOf(a), B = this.scoreOf(b); return B.pts - A.pts || B.k - A.k || A.d - B.d || a - b; });
   }
   serverNow() { return nowS() + (this.timeOffset || 0); }
-  inputActive() { return this.state === 'game' && (INPUT.locked || INPUT.lockFailed || TEST) && !UI.modalOpen() && !UI.chatOpen; }
+  inputActive() { return this.state === 'game' && (INPUT.locked || INPUT.lockFailed || INPUT.touch || TEST) && !UI.modalOpen() && !UI.chatOpen; }
   listener() { const c = R.camera; return { x: c.position.x, z: c.position.z, yaw: c.rotation.y }; }
   setKnife(k) {
     if (!KNIVES[k]) return;
@@ -5093,16 +5215,46 @@ class Client {
   }
   handleLook(dt) {
     let dx = INPUT.mdx, dy = INPUT.mdy * (SETTINGS.invertY ? -1 : 1); INPUT.mdx = INPUT.mdy = 0;
+    const tdx = INPUT.tdx, tdy = INPUT.tdy * (SETTINGS.invertY ? -1 : 1); INPUT.tdx = INPUT.tdy = 0;
     // arrow keys turn too, unless they are bound to something
     const arrow = (c) => INPUT.keys.has(c) && !actionOf(c);
     if (arrow('ArrowLeft')) dx -= 700 * dt; if (arrow('ArrowRight')) dx += 700 * dt;
     if (arrow('ArrowUp')) dy -= 450 * dt; if (arrow('ArrowDown')) dy += 450 * dt;
-    if (!this.inputActive() || !this.st.alive) { this.lookDX = this.lookDY = 0; return; }
+    if (!this.inputActive() || !this.st.alive) { this.lookDX = this.lookDY = 0; this.assist = null; return; }
     const W = WEAPONS[this.heldKey()], zoom = W ? lerp(1, W.zoom, this.w.ads) : 1;
-    const sens = 0.0022 * SETTINGS.sens * (this.w.ads > 0.5 ? SETTINGS.adsSens / zoom : 1);
-    this.lookDX = dx; this.lookDY = dy;
-    this.me.yaw -= dx * sens;
-    this.me.pitch = clamp(this.me.pitch - dy * sens, -1.53, 1.53);
+    const adsK = this.w.ads > 0.5 ? SETTINGS.adsSens / zoom : 1, sens = 0.0022 * SETTINGS.sens * adsK;
+    let yaw = -dx * sens, pitch = -dy * sens;
+    if (INPUT.touch) {
+      // light aim assist for thumbs: the view slows a little over an enemy and drifts toward them while you fire, move or look
+      const a = SETTINGS.aimAssist && W && !W.melee ? this.assistTarget() : null;
+      this.assist = a;
+      const ts = 0.005 * SETTINGS.touchSens * adsK * (a ? 0.55 : 1);
+      yaw -= tdx * ts; pitch -= tdy * ts;
+      if (a && (INPUT.lmb || tdx || tdy || TOUCH.mx || TOUCH.my)) {
+        const k = Math.min(1, dt * 2.5) * 0.35;
+        yaw += a.dyaw * k; pitch += a.dpitch * k * 0.6;
+      }
+    }
+    this.lookDX = dx + tdx; this.lookDY = dy + tdy;
+    this.me.yaw += yaw;
+    this.me.pitch = clamp(this.me.pitch + pitch, -1.53, 1.53);
+  }
+  // the enemy nearest the crosshair, if one is close to it, in range and in plain view
+  assistTarget() {
+    const me = this.me, ex = me.x, ey = me.y + this.eyeCur, ez = me.z;
+    let best = null, bestA = Infinity;
+    for (const e of this.ents.values()) {
+      if (!e.alive || e.prot || !e.snaps.length) continue;
+      const tx = e.x - ex, ty = e.y + eyeH(e.crouch) - 0.38 - ey, tz = e.z - ez, h = Math.hypot(tx, tz), d = Math.hypot(h, ty);
+      if (d > 45 || d < 0.5) continue;
+      const dyaw = angDiff(me.yaw, Math.atan2(-tx, -tz)), dpitch = Math.atan2(ty, h) - me.pitch;
+      const ang = Math.hypot(dyaw * Math.cos(me.pitch), dpitch);
+      if (ang > Math.atan2(0.9, d) + 0.03 || ang >= bestA) continue;
+      const hit = MAP.raycast(ex, ey, ez, tx / d, ty / d, tz / d, d);
+      if (hit && hit.t < d - 0.4) continue;
+      best = { id: e.id, dyaw, dpitch }; bestA = ang;
+    }
+    return best;
   }
   simulate(dt) {
     const me = this.me;
@@ -5110,10 +5262,13 @@ class Client {
     const A = (a) => INPUT.act(a), act = this.inputActive();
     let fx = 0, fz = 0;
     if (act) { if (A('forward')) fz += 1; if (A('back')) fz -= 1; if (A('right')) fx += 1; if (A('left')) fx -= 1; }
-    me.crouch = act && (SETTINGS.crouchToggle ? this.crouchOn : A('crouch'));
+    // the touch stick is analog: a small push walks, a full push runs
+    let stick = 1;
+    if (act && INPUT.touch && (TOUCH.mx || TOUCH.my)) { fx = TOUCH.mx; fz = TOUCH.my; const m = Math.min(1, Math.hypot(fx, fz)); stick = m < 0.12 ? 0 : 0.45 + 0.55 * m; if (!stick) fx = fz = 0; }
+    me.crouch = act && (SETTINGS.crouchToggle || INPUT.touch ? this.crouchOn : A('crouch'));
     // no sprint: what you hold sets your pace, and the knife is the fastest way to get around
     const W = WEAPONS[this.heldKey()] || { speed: 1 }, fast = !!W.melee;
-    let speed = PHYS.run * (W.speed || 1);
+    let speed = PHYS.run * (W.speed || 1) * stick;
     if (me.crouch) speed *= PHYS.crouch;
     if (this.w.ads > 0.5) speed *= W.scope ? PHYS.scope : PHYS.ads;
     const sy = Math.sin(me.yaw), cy = Math.cos(me.yaw);
@@ -5131,7 +5286,7 @@ class Client {
   }
   heldKey() { const s = this.slot(); return s ? s.w : 'pistol'; }
   slot() { return this.cur === 'knife' ? this.inv.knife : this.cur === 'prim' ? this.inv.prim || this.inv.sec : this.inv.sec; }
-  adsWanted() { return this.cur !== 'knife' && (SETTINGS.aimToggle ? this.w.adsToggle : INPUT.rmb); }
+  adsWanted() { return this.cur !== 'knife' && (SETTINGS.aimToggle || INPUT.touch ? this.w.adsToggle : INPUT.rmb); }
   switchTo(c, force) {
     if (!c || (c !== 'prim' && c !== 'sec' && c !== 'knife')) return;
     if (!force && c === this.cur) return;
@@ -5384,6 +5539,113 @@ class Client {
   }
 }
 
+/* ================= touch controls for phones and tablets ================= */
+// Left thumb: a floating joystick wherever it lands on the left side. Right thumb: drag anywhere to look.
+// Buttons on the right fire, aim, jump, crouch and reload; dragging from the fire button keeps turning the view.
+// Touch mode switches on with the first finger on the screen and off again when a real mouse or key is used.
+const TOUCH = {
+  on: false, mx: 0, my: 0, move: null, look: null, fire: null, pk: -1,
+  init() {
+    addEventListener('touchstart', () => this.setOn(true), { passive: true, capture: true });
+    addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') this.setOn(true); else if (e.pointerType === 'mouse' && !TEST) this.setOn(false); }, true);
+    addEventListener('keydown', (e) => { if (!UI.typing(e) && actionOf(e.code)) this.setOn(false); }, true);
+    document.addEventListener('gesturestart', (e) => e.preventDefault()); // no pinch-zoom in Safari
+    const zone = $('tz');
+    zone.addEventListener('pointerdown', (e) => this.down(e));
+    for (const b of document.querySelectorAll('#touch [data-b]')) b.addEventListener('pointerdown', (e) => this.button(e, b.dataset.b, b));
+    // the chat opens on the tap itself (iOS only brings up the keyboard for a focus inside a click)
+    $('tb-chat').addEventListener('click', () => { if (UI.chatOpen) UI.closeChat(); else UI.openChat(); });
+    addEventListener('blur', () => this.reset());
+    document.addEventListener('visibilitychange', () => { if (document.hidden) this.reset(); });
+    this.el = { aim: $('tb-aim'), aimT: $('tb-aim-t'), crouch: $('tb-crouch'), chat: $('tb-chat'), cluster: $('tb-cluster') };
+    addEventListener('pointermove', (e) => this.moveEv(e), { passive: false });
+    addEventListener('pointerup', (e) => this.up(e)); addEventListener('pointercancel', (e) => this.up(e));
+    $('invrow').addEventListener('pointerdown', (e) => {
+      const s = e.target.closest('[data-slot]'), c = GAME.client; if (!s || !c || !this.active()) return;
+      e.preventDefault(); c.switchTo(s.dataset.slot);
+    });
+    if (QS.touch === '1' || PURE_TOUCH) this.setOn(true);
+  },
+  setOn(on) {
+    if (this.on === on) return;
+    this.on = on; INPUT.touch = on; document.body.classList.toggle('touch', on);
+    this.reset(); this.pk = -1; UI.renderManual(); UI.cache.inv = null;
+    const c = GAME.client; if (!c) return;
+    c.w.adsToggle = false;
+    // back on a mouse in the middle of a match: show the menu so a click can capture the mouse again
+    if (!on && c.state === 'game' && !INPUT.locked && !INPUT.lockFailed && !TEST && $('pause').hidden) UI.pauseScreen(c, false);
+  },
+  reset() { this.move = this.look = this.fire = null; this.mx = this.my = 0; INPUT.lmb = false; this.paintStick(); },
+  active() { const c = GAME.client; return this.on && c && c.state === 'game' && !UI.modalOpen() && !UI.chatOpen; },
+  // a finger on the open screen: left part moves, the rest looks
+  down(e) {
+    if (UI.chatOpen) { UI.closeChat(); e.preventDefault(); return; } // a tap on the game puts the chat away
+    if (!this.active()) return;
+    e.preventDefault();
+    const left = e.clientX < innerWidth * 0.42;
+    if (left && !this.move) {
+      const r = Math.min(70, innerHeight * 0.16), x = clamp(e.clientX, r + 8, innerWidth * 0.42), y = clamp(e.clientY, r + 8, innerHeight - r - 8);
+      this.move = { id: e.pointerId, ox: x, oy: y, r }; this.stickAt(x, y, 0, 0);
+    } else if (!this.look) this.look = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    try { e.target.setPointerCapture(e.pointerId); } catch (err) { /* finger already gone */ }
+  },
+  button(e, b, el) {
+    const c = GAME.client;
+    if (b === 'chat') return; // handled by its click, so iOS will show the keyboard
+    e.preventDefault(); e.stopPropagation();
+    if (b === 'menu') { UI.togglePause(); return; }
+    if (!this.active() || !c) return;
+    try { el.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    el.classList.add('held');
+    const knife = c.cur === 'knife';
+    switch (b) {
+      case 'fire': this.fire = { id: e.pointerId, x: e.clientX, y: e.clientY, el }; INPUT.lmb = true; INPUT.lmbHits++; break;
+      case 'aim': if (knife) INPUT.rmbHits++; else c.w.adsToggle = !c.w.adsToggle; break;
+      case 'jump': c.jumpQ = true; break;
+      case 'crouch': c.crouchOn = !c.crouchOn; break;
+      case 'reload': c.reload(); break;
+      case 'scores': UI.sbOpen = true; UI.show('scoreboard', true); UI.renderScoreboard(c, $('sb-table')); el.dataset.pid = e.pointerId; break;
+      default: break;
+    }
+    if (b !== 'fire' && b !== 'scores') setTimeout(() => el.classList.remove('held'), 140);
+  },
+  moveEv(e) {
+    if (this.move && e.pointerId === this.move.id) {
+      e.preventDefault();
+      const m = this.move, dx = e.clientX - m.ox, dy = e.clientY - m.oy, L = Math.hypot(dx, dy), k = L > m.r ? m.r / L : 1;
+      this.mx = clamp(dx / m.r, -1, 1); this.my = clamp(-dy / m.r, -1, 1);
+      const len = Math.hypot(this.mx, this.my); if (len > 1) { this.mx /= len; this.my /= len; }
+      this.stickAt(m.ox, m.oy, dx * k, dy * k);
+      return;
+    }
+    const p = this.look && e.pointerId === this.look.id ? this.look : this.fire && e.pointerId === this.fire.id ? this.fire : null;
+    if (!p) return;
+    e.preventDefault();
+    INPUT.tdx += e.clientX - p.x; INPUT.tdy += e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+  },
+  up(e) {
+    if (this.move && e.pointerId === this.move.id) { this.move = null; this.mx = this.my = 0; this.paintStick(); }
+    if (this.look && e.pointerId === this.look.id) this.look = null;
+    if (this.fire && e.pointerId === this.fire.id) { this.fire.el.classList.remove('held'); this.fire = null; INPUT.lmb = false; }
+    const sb = document.querySelector('#touch [data-b="scores"]');
+    if (sb && sb.dataset.pid === String(e.pointerId)) { delete sb.dataset.pid; sb.classList.remove('held'); UI.sbOpen = false; UI.show('scoreboard', false); }
+  },
+  // light up the buttons that are switched on and relabel aim for the knife
+  paint(c) {
+    const knife = c.cur === 'knife', k = (knife ? 1 : 0) | (c.w.adsToggle ? 2 : 0) | (c.crouchOn ? 4 : 0) | (c.mode === 'online' ? 8 : 0) | (c.st.alive ? 16 : 0);
+    if (k === this.pk) return;
+    this.pk = k; const el = this.el;
+    el.aim.classList.toggle('on', !knife && c.w.adsToggle); el.aimT.textContent = knife ? 'STAB' : 'AIM';
+    el.crouch.classList.toggle('on', c.crouchOn); el.chat.hidden = c.mode !== 'online';
+    el.cluster.classList.toggle('dead', !c.st.alive);
+  },
+  stickAt(x, y, kx, ky) {
+    const s = $('stick'); s.classList.add('on'); s.style.left = x + 'px'; s.style.top = y + 'px'; s.style.bottom = 'auto';
+    $('knob').style.transform = `translate(${kx}px, ${ky}px)`;
+  },
+  paintStick() { const s = $('stick'); if (!s) return; s.classList.remove('on'); s.style.left = ''; s.style.top = ''; s.style.bottom = ''; $('knob').style.transform = ''; },
+};
+
 /* ================= game controller ================= */
 const GAME = {
   server: null, client: null, worker: null, lastTick: nowS(),
@@ -5468,13 +5730,13 @@ const UI = {
   rebinding: null, pauseAt: 0, confirmOk: null, chatOpen: false,
   // [slider id, setting, readout, what to re-apply]
   SLIDERS: [
-    ['set-sens', 'sens', (v) => v.toFixed(2)], ['set-ads', 'adsSens', (v) => v.toFixed(2) + '×'], ['set-fov', 'fov', (v) => v + '°'], ['pause-fov', 'fov', (v) => v + '°'],
+    ['set-sens', 'sens', (v) => v.toFixed(2)], ['set-tsens', 'touchSens', (v) => v.toFixed(2) + '×'], ['set-ads', 'adsSens', (v) => v.toFixed(2) + '×'], ['set-fov', 'fov', (v) => v + '°'], ['pause-fov', 'fov', (v) => v + '°'],
     ['set-vol', 'vol', pct, 'audio'], ['set-sfx', 'sfxVol', pct, 'audio'], ['set-uivol', 'uiVol', pct, 'audio'],
     ['xh-len', 'xh.len', (v) => v + ' px', 'xh'], ['xh-gap', 'xh.gap', (v) => v + ' px', 'xh'], ['xh-thick', 'xh.thick', (v) => v + ' px', 'xh'],
   ],
   // [button group id, setting, what to re-apply]
   CHOICES: [
-    ['seg-aim', 'aimToggle'], ['seg-crouch', 'crouchToggle'], ['seg-bob', 'bob'], ['seg-minimap', 'minimap', 'hud'],
+    ['seg-aim', 'aimToggle'], ['seg-assist', 'aimAssist'], ['seg-crouch', 'crouchToggle'], ['seg-bob', 'bob'], ['seg-minimap', 'minimap', 'hud'],
     ['seg-invert', 'invertY'], ['seg-quality', 'quality', 'quality'], ['seg-fps', 'showFps', 'hud'],
     ['xh-dot', 'xh.dot', 'xh'], ['xh-outline', 'xh.outline', 'xh'], ['xh-dynamic', 'xh.dynamic', 'xh'],
   ],
@@ -5675,6 +5937,22 @@ const UI = {
     AUDIO.ui('click');
   },
   renderManual() {
+    if (INPUT.touch) {
+      const rows = [
+        ['<kbd>Left thumb</kbd>', 'Move: put your thumb down anywhere on the left half and slide it. A small push walks, a full push runs'],
+        ['<kbd>Right thumb</kbd>', 'Look: drag anywhere on the right half'],
+        ['<kbd>FIRE</kbd>', 'Shoot. Keep your thumb on it and slide to aim while you fire'],
+        ['<kbd>AIM</kbd>', 'Aim down sights for a much tighter spread. Tap again to stop. With the knife it&rsquo;s a heavy stab'],
+        ['<kbd>JUMP</kbd> <kbd>CROUCH</kbd>', 'Jump, and crouch on or off (steadier aim, smaller target)'],
+        ['<kbd>RELOAD</kbd>', 'Reload'],
+        ['Weapon tabs', 'Tap your main gun, pistol or knife along the bottom. You run fastest with the knife out'],
+        ['Aim assist', 'Light assist slows your view over an enemy. Turn it off in Settings'],
+        ['Top right', 'Chat (online), hold for the scoreboard, and the game menu'],
+        ['Gun cards', 'Tap one while you&rsquo;re down to pick your gun for the next life'],
+      ];
+      $('manual-keys').innerHTML = rows.map(([d, t]) => `<dt>${d}</dt><dd>${t}</dd>`).join('');
+      return;
+    }
     const k = (a) => `<kbd>${esc(keyName(SETTINGS.keys[a]))}</kbd>`;
     const rows = [
       [`${k('forward')} ${k('left')} ${k('back')} ${k('right')}`, 'Move'],
@@ -5819,12 +6097,12 @@ const UI = {
     this.hideAll(); this.setPlaying(true);
     this.cache = {}; $('killfeed').innerHTML = ''; this.h.pops.innerHTML = '';
     this.applyCrosshair();
-    if (!TEST && !INPUT.locked) this.pauseScreen(c, true);
+    if (!TEST && !INPUT.locked && !INPUT.touch) this.pauseScreen(c, true);
     this.banner('FREE FOR ALL', `${(MAPS[MAP.id] || MAPS.desert).name} · everyone is a target · +${SCORE.kill} a kill, +${SCORE.assist} an assist · first to ${c.settings.target}`, 3.2);
   },
   // the in-game menu; `first` is the screen before you click into a new match
   pauseScreen(c, first) {
-    this.closeChat();
+    this.closeChat(); TOUCH.reset();
     if (!c) return;
     const online = c.mode === 'online', free = TEST || INPUT.lockFailed;
     $('pause-title').textContent = first ? 'Ready?' : 'Paused';
@@ -5832,7 +6110,7 @@ const UI = {
     $('pause-sub').textContent = first ? 'Click Play to lock your mouse to the game. Press Esc any time to open this menu.'
       : online ? 'The match keeps running while you’re here, so find cover first.' : 'The match is paused. The bots will wait.';
     const p = actionOf('KeyP') ? '' : ' or <kbd>P</kbd>';
-    $('pause-hint').innerHTML = first ? '' : free ? `Press <kbd>Esc</kbd>${p} to keep playing` : p ? 'Press <kbd>P</kbd> or click Resume to keep playing' : 'Click Resume to keep playing';
+    $('pause-hint').innerHTML = first ? '' : INPUT.touch ? 'Tap Resume to keep playing' : free ? `Press <kbd>Esc</kbd>${p} to keep playing` : p ? 'Press <kbd>P</kbd> or click Resume to keep playing' : 'Click Resume to keep playing';
     $('pause-hint').hidden = first;
     $('btn-invite-pause').hidden = !(online && c.code);
     $('btn-restart').hidden = !c.isHost;
@@ -5857,7 +6135,7 @@ const UI = {
   },
   resume() {
     AUDIO.init();
-    if (TEST || (INPUT.lockFailed && !INPUT.everLocked)) { this.show('pause', false); return; }
+    if (TEST || INPUT.touch || (INPUT.lockFailed && !INPUT.everLocked)) { this.show('pause', false); return; }
     INPUT.lock(); // the pointer-lock change closes the menu (or, if capture fails again, play goes on with a free mouse)
   },
   // Esc: back out of whatever is open. Browsers only give the mouse back to the game on a click or another key, never Esc.
@@ -6013,9 +6291,10 @@ const UI = {
     this.set(h.wname, 'wn', knife ? KNIVES[SETTINGS.knife].name : W.name + (c.w.reloading ? ' · reloading' : ''));
     if (this.cache.knifeUi !== knife) { this.cache.knifeUi = knife; h.ammo.hidden = knife; }
     if (!knife) { this.set(h.mag, 'mag', String(slot ? slot.ammo : 0)); this.set(h.res, 'res', '/ ∞'); }
-    const K = SETTINGS.keys, cell = (c2, k, label) => `<span class="${c.cur === c2 ? 'on' : ''}">${esc(keyName(K[k]))} ${label}</span>`;
+    const K = SETTINGS.keys, cell = (c2, k, label) => `<span data-slot="${c2}" class="${c.cur === c2 ? 'on' : ''}">${INPUT.touch ? '' : esc(keyName(K[k])) + ' '}${label}</span>`;
     const inv = (c.inv.prim ? cell('prim', 'primary', WEAPONS[c.inv.prim.w].short) : '') + cell('sec', 'pistol', WEAPONS[c.inv.sec.w].short) + cell('knife', 'knife', 'KNIFE');
     if (this.cache.inv !== inv) { this.cache.inv = inv; h.invrow.innerHTML = inv; }
+    if (INPUT.touch) TOUCH.paint(c);
     // crosshair: fixed in place (lines only spread if the player turns that on); hidden while scoped, lines hidden while aiming
     h.scope.hidden = !c.scoped;
     const showX = st.alive && !c.scoped && c.state === 'game';
@@ -6087,6 +6366,7 @@ function boot() {
     }
     INPUT.init(canvas);
     UI.init();
+    TOUCH.init();
     UI.toMenu();
     $('btn-practice').disabled = false;
     $('btn-host').disabled = $('btn-join').disabled = !NET.available();
@@ -6104,7 +6384,7 @@ function boot() {
       R.render(dt);
     };
     requestAnimationFrame(frame);
-    window.__siteline = { GAME, R, UI, INPUT, SETTINGS, VERSION, PHYS, WEAPONS, inaccuracy, setMap, get MAP() { return MAP; }, get NAV() { return NAV; } };
+    window.__siteline = { GAME, R, UI, INPUT, TOUCH, SETTINGS, VERSION, PHYS, WEAPONS, inaccuracy, setMap, get MAP() { return MAP; }, get NAV() { return NAV; } };
   }, 30);
 }
 boot();
