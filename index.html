@@ -225,9 +225,53 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 7px; border: 1px soli
 .pop span { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sand); }
 @keyframes pop { 0% { opacity: 0; transform: translateY(8px) scale(0.9); } 12% { opacity: 1; transform: translateY(0) scale(1.06); } 22% { transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
 #protect { position: absolute; left: 50%; top: calc(50% - 64px); transform: translateX(-50%); background: rgba(106, 174, 232, 0.2); border: 1px solid rgba(106, 174, 232, 0.6); color: #cfe6fb; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; }
-#scope { position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 0 33vmin, rgba(0, 0, 0, 0.55) 33.4vmin, #000 34.5vmin); }
-#scope::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0, 0, 0, 0.9); }
-#scope::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(0, 0, 0, 0.9); }
+/* sniper scope: a round lens with fine crosshairs, thick outer posts and a red centre dot; everything outside is black */
+/* the scope and the zoom window sit under everything else in the HUD, so touch buttons and readouts stay clear while aiming */
+#scope { position: absolute; inset: 0; overflow: hidden; z-index: -1; }
+#scope .lens { position: absolute; left: 50%; top: 50%; width: 88vmin; height: 88vmin; transform: translate(-50%, -50%); border-radius: 50%;
+  box-shadow: 0 0 0 200vmax #050607, inset 0 0 5vmin 1.2vmin rgba(0, 0, 0, 0.9), inset 0 0 0 0.5vmin #0b0d0f; }
+#scope .lens i { position: absolute; background: #0a0b0c; }
+#scope .lens .h { left: 0; right: 0; top: 50%; height: 1px; margin-top: -0.5px; }
+#scope .lens .v { top: 0; bottom: 0; left: 50%; width: 1px; margin-left: -0.5px; }
+#scope .lens .post { background: #0a0b0c; }
+#scope .lens .post.l { left: 0; width: 34%; top: 50%; height: 0.9vmin; margin-top: -0.45vmin; }
+#scope .lens .post.r { right: 0; width: 34%; top: 50%; height: 0.9vmin; margin-top: -0.45vmin; }
+#scope .lens .post.b { bottom: 0; height: 34%; left: 50%; width: 0.9vmin; margin-left: -0.45vmin; }
+#scope .lens .ctr { left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: #ff3a24; box-shadow: 0 0 4px rgba(255, 58, 36, 0.8); }
+
+/* the zoom window you look through when aiming a gun: dark all round, a framed window, the gun's own reticle */
+.adsview { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; --xh: var(--xh-color, #5ef0ff); }
+.adsview .win { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 64vmin; height: 42vmin; border-radius: 2.4vmin;
+  box-shadow: 0 0 0 200vmax rgba(7, 9, 11, 0.74), inset 0 0 4vmin rgba(0, 0, 0, 0.45), inset 0 0 0 0.45vmin rgba(28, 32, 36, 0.95), inset 0 0 0 0.6vmin rgba(160, 170, 180, 0.35); }
+.adsview .win i { position: absolute; display: none; }
+.adsview .dot { display: block !important; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: var(--xh); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6); }
+/* rifle: a fine cross with a gap and short range ticks underneath */
+.adsview.rifle .h, .adsview.rifle .v { display: block; background: var(--xh); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5); }
+.adsview.rifle .h { left: calc(50% - 4.2vmin); width: 8.4vmin; top: 50%; height: 2px; margin-top: -1px;
+  -webkit-mask: linear-gradient(90deg, #000 0 40%, transparent 40% 60%, #000 60%); mask: linear-gradient(90deg, #000 0 40%, transparent 40% 60%, #000 60%); }
+.adsview.rifle .v { top: calc(50% + 0.9vmin); height: 3.2vmin; left: 50%; width: 2px; margin-left: -1px; }
+.adsview.rifle .tk { display: block; left: 50%; height: 2px; background: var(--xh); opacity: 0.75; }
+.adsview.rifle .t1 { top: calc(50% + 4.6vmin); width: 2.4vmin; margin-left: -1.2vmin; }
+.adsview.rifle .t2 { top: calc(50% + 6.4vmin); width: 1.6vmin; margin-left: -0.8vmin; }
+/* SMG: a holographic red ring and dot in a squarer window */
+.adsview.smg .win { width: 54vmin; height: 40vmin; border-radius: 5vmin; }
+.adsview.smg .ring { display: block; left: 50%; top: 50%; width: 9vmin; height: 9vmin; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid rgba(255, 64, 44, 0.95); box-shadow: 0 0 6px rgba(255, 64, 44, 0.6); }
+.adsview.smg .dot { background: #ff402c; box-shadow: 0 0 5px rgba(255, 64, 44, 0.9); }
+/* shotgun: a round window and a ring that shows where the outer pellets land */
+.adsview.shotgun .win { width: 62vmin; height: 62vmin; border-radius: 50%; }
+.adsview.shotgun .ring { display: block; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid var(--xh); opacity: 0.85; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45); }
+.adsview.shotgun .tk { display: block; background: var(--xh); width: 2px; height: 1.6vmin; left: 50%; margin-left: -1px; top: 50%; }
+.adsview.shotgun .t1 { transform: translateY(-4.2vmin); } .adsview.shotgun .t2 { transform: translateY(2.6vmin); }
+/* pistol: a small round window, a dot and a post */
+.adsview.pistol .win { width: 46vmin; height: 46vmin; border-radius: 50%; }
+.adsview.pistol .v { display: block; background: var(--xh); top: calc(50% + 0.7vmin); height: 2.4vmin; left: 50%; width: 2px; margin-left: -1px; opacity: 0.85; }
+
+/* floating damage numbers */
+#dnums { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.dnum { position: absolute; left: 0; top: 0; font: 700 22px/1 var(--ui); color: #fff; text-shadow: 0 0 2px #000, 0 1px 3px rgba(0, 0, 0, 0.9); will-change: transform, opacity; white-space: nowrap; }
+.dnum.head { color: #ffd23f; font-size: 26px; }
+.dnum.kill { color: #ff5a3c; font-size: 28px; }
+.dnum.kill::after { content: ' \2715'; font-size: 0.75em; }
 #vignette { position: absolute; inset: 0; opacity: 0; background: radial-gradient(circle at center, transparent 45%, rgba(190, 20, 10, 0.55)); }
 #pickflash { position: absolute; inset: 0; opacity: 0; pointer-events: none; background: radial-gradient(circle at center, transparent 50%, rgba(70, 230, 130, 0.42)); }
 #pickflash.show { animation: pickflash 0.8s ease-out; }
@@ -463,7 +507,9 @@ body.touch #deathcard { z-index: 1; }
       <button class="tbtn" data-b="jump" aria-label="Jump"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/><path d="M6 9.5l6-6 6 6" opacity=".55"/></svg><span>JUMP</span></button>
     </div>
   </div>
-  <div id="scope" hidden></div>
+  <div id="scope" hidden><div class="lens"><i class="h"></i><i class="v"></i><i class="post l"></i><i class="post r"></i><i class="post b"></i><i class="ctr"></i></div></div>
+  <div id="adsview" class="adsview" hidden><div class="win"><i class="h"></i><i class="v"></i><i class="ring" id="ads-ring"></i><i class="dot"></i><i class="tk t1"></i><i class="tk t2"></i><i class="tk t3"></i><i class="tk t4"></i></div></div>
+  <div id="dnums"></div>
   <div class="hud-top">
     <div class="score you"><span class="k">YOU</span><span class="n num" id="you-pts">0</span><span class="sub" id="you-rank"></span></div>
     <div class="clock"><span class="t num" id="clock-t">10:00</span><span class="sub" id="clock-sub">FIRST TO 500</span></div>
@@ -514,13 +560,13 @@ body.touch #deathcard { z-index: 1; }
       <h1 class="logo">SITE<span>LINE</span> <small class="by">By Yashmit</small></h1>
       <p class="tagline">Free-for-all in a desert market town. Everyone is a target, friends and bots alike.</p>
       <details class="update" id="update">
-        <summary><span class="update-chip">UPDATE <b id="update-no">11</b></span> What&rsquo;s new</summary>
+        <summary><span class="update-chip">UPDATE <b id="update-no">12</b></span> What&rsquo;s new</summary>
         <ul>
-          <li><b>Weapons with weight.</b> Guns now sway with real momentum when you turn, strafe, jump and land, and recoil shoves them back and springs them home.</li>
-          <li><b>Physics for the knives.</b> The butterfly knife flips open from the force of your flick and rattles when you slash. The karambit spins on your finger, and the tactical knife flies out of your hand when you toss it.</li>
-          <li><b>Easier to see.</b> Guns sit bigger and higher in view, and all three knives show their blades without inspecting. On phones and iPads, weapons sit clear of the thumb buttons.</li>
-          <li><b>Sharper aiming.</b> Iron sights and scopes keep their full detail, with crisper textures and much less glare off the metal. Phones render sharper too.</li>
-          <li>Loads a little faster, and each weapon is prepared on the menu so pulling it out for the first time doesn&rsquo;t stutter.</li>
+          <li><b>Floating platforms</b> on every map, built to match it: sandstone terraces in Desert Town, hover decks in Arctic Base and plank decks in Forest Camp. Get up with the <b>jump pads</b> or the <b>stairs</b>.</li>
+          <li><b>Fall damage.</b> Small drops are free, jumping off a platform stings, and falling from very high can kill you.</li>
+          <li><b>Zoom window when you aim</b>, with each gun&rsquo;s own reticle. You can switch back to the gun sights in Settings.</li>
+          <li><b>Damage numbers</b> float over whoever you hit: white for body, yellow for headshots, red for the kill.</li>
+          <li><b>Breacher:</b> its pellets fly in a tight, fixed pattern and hit harder, so it kills in one shot up close. <b>Longshot:</b> scoped shots land exactly on the crosshair, and the scope comes back after each bolt.</li>
         </ul>
       </details>
     </header>
@@ -681,6 +727,8 @@ body.touch #deathcard { z-index: 1; }
       <div class="slider"><div class="row"><label class="label" for="set-fov">Field of view</label><span class="num" id="set-fov-v"></span></div><input type="range" id="set-fov" min="70" max="130" step="1"></div>
       <div class="slider touch-only"><div class="row"><label class="label" for="set-tsens">Touch look speed</label><span class="num" id="set-tsens-v"></span></div><input type="range" id="set-tsens" min="0.3" max="2.5" step="0.05"></div>
       <div class="setting-row touch-only"><span class="label">Aim assist (touch)</span><div class="seg" id="seg-assist"><button data-v="true">Light</button><button data-v="false">Off</button></div></div>
+      <div class="setting-row"><span class="label">When you aim</span><div class="seg" id="seg-adsview"><button data-v="window">Zoom window</button><button data-v="sights">Gun sights</button></div></div>
+      <div class="setting-row"><span class="label">Damage numbers</span><div class="seg" id="seg-dmgnum"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
       <div class="setting-row mouse-only"><span class="label">Aim (right click)</span><div class="seg" id="seg-aim"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
       <div class="setting-row mouse-only"><span class="label">Crouch</span><div class="seg" id="seg-crouch"><button data-v="false">Hold</button><button data-v="true">Toggle</button></div></div>
       <div class="setting-row"><span class="label">Camera bob</span><div class="seg" id="seg-bob"><button data-v="true">On</button><button data-v="false">Off</button></div></div>
@@ -4629,7 +4677,7 @@ function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 function ordinal(n) { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
 
 /* ================= tuning ================= */
-const VERSION = 11; // also shown on the main screen as the update number
+const VERSION = 12; // also shown on the main screen as the update number
 const PHYS = {
   gravity: 20, jumpV: 6.6, step: 0.55, radius: 0.34,
   hStand: 1.8, hCrouch: 1.25, eyeStand: 1.62, eyeCrouch: 1.08,
@@ -4654,7 +4702,8 @@ function makePattern(n, climb, sway, settle) {
 }
 const PATTERNS = { rifle: makePattern(30, 0.098, 0.027, 6.5), smg: makePattern(32, 0.052, 0.016, 7) };
 
-// dmg per bullet to the body; head multiplier per weapon, legs x0.75; falloff = multiplier per 12.7 m
+// dmg per bullet to the body; head multiplier per weapon, legs x0.75; falloff = multiplier per 12.7 m,
+// or range: [full damage out to (m), down to the minimum at (m), minimum multiplier]
 // spread is the hip-fire cone (radians); aiming down sights multiplies it by adsMul, so aiming is what makes guns accurate
 const WEAPONS = {
   pistol: { name: 'P9 Sidearm', short: 'P9', kind: 'pistol', dmg: 28, head: 3.2, falloff: 0.82, rate: 6.5, auto: false, mag: 12, reload: 1.5, speed: 1.0,
@@ -4664,10 +4713,12 @@ const WEAPONS = {
   smg: { name: 'Wasp SMG', short: 'SMG', kind: 'smg', dmg: 21, head: 2.4, falloff: 0.78, rate: 13.5, auto: true, mag: 32, reload: 1.9, speed: 1.0,
     spread: 0.015, move: 0.02, air: 0.1, bloom: 0.0055, kick: [0.0095, 0.003], zoom: 1.3, adsMul: 0.3, pellets: 1, sound: 'smg', pattern: 'smg', blurb: 'Fast and mobile. Wins close fights.' },
   // the shotgun loads shell by shell: a short start, `shell` s per shell, then a pump if it was empty; firing interrupts
-  shotgun: { name: 'Breacher', short: 'SG', kind: 'shotgun', dmg: 17, head: 1.6, falloff: 0.6, rate: 1.2, auto: false, mag: 6, reload: 2.4, speed: 0.95, shell: 0.38, rstart: 0.3, pump: 0.34,
-    spread: 0.068, move: 0.01, air: 0.03, bloom: 0, kick: [0.068, 0.011], zoom: 1.15, adsMul: 0.75, pellets: 8, sound: 'shotgun', blurb: 'Eight pellets. Deadly around corners.' },
+  // pellets fly in a fixed pattern (one on the crosshair, rings round it) so every close shot lands the same way
+  shotgun: { name: 'Breacher', short: 'SG', kind: 'shotgun', dmg: 21, head: 1.5, range: [7, 26, 0.3], rate: 1.2, auto: false, mag: 6, reload: 2.4, speed: 0.95, shell: 0.38, rstart: 0.3, pump: 0.34,
+    spread: 0.05, move: 0.012, air: 0.03, bloom: 0, kick: [0.068, 0.011], zoom: 1.15, adsMul: 0.72, pellets: 8, sound: 'shotgun', blurb: 'Eight pellets. One shot up close.' },
+  // scoped shots go exactly where the crosshair is; the scope drops after each shot while the bolt cycles, then comes back
   sniper: { name: 'Longshot', short: 'SR', kind: 'sniper', dmg: 105, head: 2, falloff: 0.995, rate: 0.75, auto: false, mag: 5, reload: 2.8, speed: 0.85,
-    spread: 0.0015, unscoped: 0.085, move: 0.15, air: 0.3, bloom: 0, kick: [0.078, 0.007], zoom: 4.0, adsMul: 1, pellets: 1, sound: 'sniper', scope: true, blurb: 'One shot to the body. Aim to scope in.' },
+    spread: 0, unscoped: 0.085, move: 0.12, air: 0.3, bloom: 0, kick: [0.078, 0.007], zoom: 4.0, adsMul: 1, pellets: 1, sound: 'sniper', scope: true, rezoom: 0.95, blurb: 'One shot to the body. Aim to scope in.' },
 };
 // slot 3: light slash (left click) and heavy stab (right click); hits from behind do double damage; faster to run with
 WEAPONS.knife = { name: 'Knife', short: 'KNIFE', kind: 'knife', melee: true, dmg: 45, heavy: 70, back: 2, rate: 2.4, heavyRate: 1.05, range: 2.1, speed: 1.32,
@@ -4720,6 +4771,8 @@ function buildMap(id) {
   const T = new Uint8Array(N * N); // building tint index
   const BASE = new Float32Array(N * N); // floor height under a prop
   const props = []; // render-side description of everything that is not a plain wall
+  // floating platforms (and the cover standing on them) are solid boxes outside the heightfield, so you can walk under them
+  const plats = [], pads = [], reserved = [], issues = [], noNav = new Uint8Array(N * N);
   const lo = (v) => clamp(Math.floor((v + HALF) * INV + 1e-6), 0, N);
   const hi = (v) => clamp(Math.ceil((v + HALF) * INV - 1e-6), 0, N);
   function each(x0, z0, x1, z1, fn) { const a = lo(x0), b = hi(x1), c = lo(z0), d = hi(z1); for (let z = c; z < d; z++) for (let x = a; x < b; x++) fn(z * N + x, x, z); }
@@ -4853,7 +4906,7 @@ function buildMap(id) {
 
   // ring road: clusters along it, and shipping containers across it so no stretch is one long firing lane
   for (const [x, z] of [[-26.75, -26.75], [26.75, -26.75], [-26.75, 26.75], [26.75, 26.75]]) planter(x, z);
-  crateW(-16, -53, 1, 1, 1); crateW(-16, -52, 1, 1, 2); crateW(-15, -52, 1, 1, 1); sandbagsW(10.5, -55, 11.5, -51.5);
+  sandbagsW(10.5, -55, 11.5, -51.5);
   barrelW(36, -51); barrelW(37, -51, 1); barrelW(36.5, -52, 2); crateW(-38, -55, 2, 1, 1); crateW(-38.5, -54, 1, 1, 1);
   containerW(-34, -58, -31.5, -52, 2); containerW(31.5, -54, 34, -48, 0);
   containerW(52.5, 13, 55, 19, 0); crateW(53, -18, 1, 1, 1); crateW(54, -18, 1, 1, 2); barrelW(51, -34, 2); sandbagsW(50, 42, 52.5, 43);
@@ -4885,6 +4938,15 @@ function buildMap(id) {
   crate(-19.5, 7, 1, 1, 2); barrel(-12, 7); sandbags(-11, 8.5, -10.5, 10.5);
   crate(-17.5, 18.5, 1, 1, 1); sandbagsW(-41, 14.5, -40, 17.5); crateW(-25, 14, 1, 1, 2);
 
+  // floating sandstone terraces: two perches either side of the fountain, and a sky bridge over the north road
+  platform(-16, -4, -9.5, 4, 4.6, { cover: [[-16, -4, -15.6, -1.4, 1.05], [-16, 1.4, -15.6, 4, 1.05], [-12.5, 2.2, -11.5, 3.2, 1.0, 'crate']] });
+  jumpPad(-6.6, 0, -12.6, 0, 4.6);
+  platform(9.5, -4, 16, 4, 4.6, { cover: [[15.6, -4, 16, -1.4, 1.05], [15.6, 1.4, 16, 4, 1.05], [11.5, -3.2, 12.5, -2.2, 1.0, 'crate']] });
+  jumpPad(6.6, 0, 12.6, 0, 4.6);
+  platform(-12, -57, 12, -49.5, 5.5, { cover: [[-9, -57, -3, -56.6, 1.05], [3, -57, 9, -56.6, 1.05], [-5, -49.9, -1.5, -49.5, 1.05], [1.5, -49.9, 5, -49.5, 1.05], [-0.5, -54, 0.5, -53, 1.0, 'crate'], [7, -53.5, 8, -52.5, 1.0, 'crate'], [-8, -53.5, -7, -52.5, 1.0, 'crate']] });
+  stairsTo(-24, -53.5, -12, -50, 5.5, 'e'); stairsTo(12, -53.5, 24, -50, 5.5, 'w');
+  jumpPad(0, -44.5, 0, -53, 5.5);
+
   /* ----- spawns and bot waypoints ----- */
   const spawnsD = [
     [-25, -25], [-13, -26.5], [0, -26.5], [13, -26.5], [25, -25], [26.5, -13], [26.5, 0], [26.5, 13.5],
@@ -4898,6 +4960,35 @@ function buildMap(id) {
     [-12, 15], [-18, 14], [-17, 18.5], [-15.5, -6], [-14.25, -22], [14, -22.5], [23, 16.5], [16.5, 23],
   ].map(([x, z]) => [sc(x), sc(z)]));
   return { spawns, waypoints };
+  }
+
+  /* ----- floating platforms, their cover, jump pads and the stairs up to them (real metres) ----- */
+  // a floating deck: top surface at `top`, half a metre thick; cover = [x0, z0, x1, z1, height, kind] boxes standing on it
+  function platform(x0, z0, x1, z1, top, o = {}) {
+    const thick = o.thick || 0.5;
+    plats.push({ x0, z0, x1, z1, y0: top - thick, y1: top, kind: 'deck' });
+    for (const c of o.cover || []) plats.push({ x0: c[0], z0: c[1], x1: c[2], z1: c[3], y0: top, y1: top + c[4], kind: c[5] || 'wall' });
+    reserved.push([x0 - 4, z0 - 4, x1 + 4, z1 + 4]); // keep trees and boulders from growing through it
+  }
+  // something you step on to be thrown up onto a platform; the launch is worked out once here
+  function jumpPad(x, z, tx, tz, top, r = 0.85) {
+    const y = H[toCellC(z) * N + toCellC(x)];
+    checkClear(x - r, z - r, x + r, z + r, 'jump pad', false, y);
+    const g = PHYS.gravity, over = 1.7, vy = Math.sqrt(2 * g * Math.max(1, top + over - y)), T = vy / g + Math.sqrt((2 * over) / g);
+    pads.push({ x, y, z, r, tx, tz, top, vy, vx: (tx - x) / T, vz: (tz - z) / T });
+    reserved.push([x - r - 1, z - r - 1, x + r + 1, z + r + 1]);
+  }
+  // stairs from the floor up to a platform edge (dir: the way you walk to go up)
+  function stairsTo(x0, z0, x1, z1, hTop, dir, hBot = 0) {
+    checkClear(x0, z0, x1, z1, 'stairs', false, hBot);
+    stairsW(x0, z0, x1, z1, hTop, dir, hBot);
+    each(x0, z0, x1, z1, (i) => { noNav[i] = 1; }); // bots walk round these rather than climbing halfway and jumping off
+    reserved.push([x0 - 1, z0 - 1, x1 + 1, z1 + 1]);
+  }
+  // note anything already standing where a pad or a stair goes (the map checker prints these)
+  function checkClear(x0, z0, x1, z1, what, _unused, floor = 0) {
+    let bad = 0; each(x0, z0, x1, z1, (i) => { if ((M[i] !== MAT.OPEN && M[i] !== MAT.STONE) || Math.abs(H[i] - floor) > 0.01) bad++; });
+    if (bad) issues.push(`${what} at ${x0},${z0}..${x1},${z1}: ${bad} cells in the way`);
   }
 
   /* ----- helpers for the newer maps, all in real metres ----- */
@@ -4928,7 +5019,10 @@ function buildMap(id) {
   const rock = (x, z, w, d, h) => { const y = propRect(snap(x - w / 2), snap(z - d / 2), snap(x + w / 2), snap(z + d / 2), h, MAT.PROP); props.push({ t: 'rock', x, z, w, d, h, y }); };
   const logs = (x0, z0, x1, z1, h = 1.2) => { const y = propRect(x0, z0, x1, z1, h, MAT.PROP); props.push({ t: 'logs', x0, z0, x1, z1, y, h }); };
   const tank = (x0, z0, x1, z1) => { const y = propRect(x0, z0, x1, z1, 2.6, MAT.PROP); props.push({ t: 'tank', x0, z0, x1, z1, y }); };
-  const free = (x, z, r) => { let ok = true; each(x - r, z - r, x + r, z + r, (i) => { if (M[i] !== MAT.OPEN || H[i] !== 0) ok = false; }); return ok; };
+  const free = (x, z, r) => {
+    if (reserved.some((q) => x + r > q[0] && x - r < q[2] && z + r > q[1] && z - r < q[3])) return false;
+    let ok = true; each(x - r, z - r, x + r, z + r, (i) => { if (M[i] !== MAT.OPEN || H[i] !== 0) ok = false; }); return ok;
+  };
   // scatter trees over open ground, away from paths, clearings and each other
   function forest(seed, count, avoid, scale = [0.85, 1.25], kinds = ['pine']) {
     const r = seeded(seed), placed = [];
@@ -4940,7 +5034,7 @@ function buildMap(id) {
     }
     return placed;
   }
-  const toCellC = (v) => clamp(Math.floor((v + HALF) * INV), 0, N - 1);
+  function toCellC(v) { return clamp(Math.floor((v + HALF) * INV), 0, N - 1); }
   // boulders dropped on open ground for extra cover
   function boulders(seed, count, avoid) {
     const r = seeded(seed); let n = 0;
@@ -4955,7 +5049,7 @@ function buildMap(id) {
   /* ----- arctic base: a research outpost round a frozen lake ----- */
   function layoutArctic() { return LAYOUTS.arctic(API); }
   function layoutForest() { return LAYOUTS.forest(API); }
-  const API = { HALF, N, H, M, G, T, MAT, GROUND, each, fillOpen, ground, groundDisc, bld, wallW, cliffs, tree, rock, logs, tank, forest, boulders, free, stairsW, crateW, barrelW, sandbagsW, containerW, benchW, propRect, props, snap, cellC };
+  const API = { HALF, N, H, M, G, T, MAT, GROUND, each, fillOpen, ground, groundDisc, bld, wallW, cliffs, tree, rock, logs, tank, forest, boulders, free, stairsW, crateW, barrelW, sandbagsW, containerW, benchW, propRect, props, snap, cellC, platform, jumpPad, stairsTo };
   const lay = id === 'arctic' ? layoutArctic() : id === 'forest' ? layoutForest() : layoutDesert();
   const spawns = lay.spawns, waypoints = lay.waypoints;
 
@@ -4963,14 +5057,45 @@ function buildMap(id) {
   function cellH(gx, gz) { return gx < 0 || gz < 0 || gx >= N || gz >= N ? OOB : H[gz * N + gx]; }
   const toCell = (v) => Math.floor((v + HALF) * INV);
   function hAt(x, z) { return cellH(toCell(x), toCell(z)); }
-  function groundUnder(x, z, r) {
+  // the highest floor under a body of radius r; with maxY, platforms whose top is at or below maxY count too
+  function groundUnder(x, z, r, maxY) {
     const gx0 = toCell(x - r), gx1 = toCell(x + r), gz0 = toCell(z - r), gz1 = toCell(z + r);
     let m = 0;
     for (let gz = gz0; gz <= gz1; gz++) for (let gx = gx0; gx <= gx1; gx++) { const h = cellH(gx, gz); if (h > m) m = h; }
+    if (maxY != null) for (const P of plats) if (P.y1 > m && P.y1 <= maxY && x + r > P.x0 && x - r < P.x1 && z + r > P.z0 && z - r < P.z1) m = P.y1;
     return m;
   }
-  // DDA through the heightfield (in cell space, t stays in metres); returns {t, nx, ny, nz} or null
+  // the floor under a point (street, roof or platform), for things that drop to the ground
+  function floorAt(x, z, y) { return groundUnder(x, z, 0.05, y + 0.3); }
+  // ray against the platform boxes (slab test); returns the nearest hit inside maxT or null
+  function rayBoxes(ox, oy, oz, dx, dy, dz, maxT) {
+    let best = null;
+    const o = [ox, oy, oz], d = [dx, dy, dz];
+    for (const P of plats) {
+      const lo = [P.x0, P.y0, P.z0], hi = [P.x1, P.y1, P.z1];
+      let t0 = 0, t1 = maxT, ax = -1, sg = 0, miss = false;
+      for (let a = 0; a < 3; a++) {
+        if (Math.abs(d[a]) < 1e-9) { if (o[a] < lo[a] || o[a] > hi[a]) { miss = true; break; } continue; }
+        let ta = (lo[a] - o[a]) / d[a], tb = (hi[a] - o[a]) / d[a], s2 = -1;
+        if (ta > tb) { const q = ta; ta = tb; tb = q; s2 = 1; }
+        if (ta > t0) { t0 = ta; ax = a; sg = s2; }
+        if (tb < t1) t1 = tb;
+        if (t0 > t1) { miss = true; break; }
+      }
+      if (miss || (best && t0 >= best.t)) continue;
+      best = ax < 0 ? { t: 0, nx: 0, ny: 1, nz: 0 } : { t: t0, nx: ax === 0 ? sg : 0, ny: ax === 1 ? sg : 0, nz: ax === 2 ? sg : 0 };
+    }
+    return best;
+  }
+  // nearest hit on the heightfield or a platform; returns {t, nx, ny, nz} or null
   function raycast(ox, oy, oz, dx, dy, dz, maxT) {
+    const a = rayField(ox, oy, oz, dx, dy, dz, maxT);
+    if (!plats.length) return a;
+    const b = rayBoxes(ox, oy, oz, dx, dy, dz, a ? a.t : maxT);
+    return b && (!a || b.t < a.t) ? b : a;
+  }
+  // DDA through the heightfield (in cell space, t stays in metres); returns {t, nx, ny, nz} or null
+  function rayField(ox, oy, oz, dx, dy, dz, maxT) {
     const x = (ox + HALF) * INV, z = (oz + HALF) * INV, cdx = dx * INV, cdz = dz * INV;
     let cx = Math.floor(x), cz = Math.floor(z);
     const sx = cdx > 0 ? 1 : cdx < 0 ? -1 : 0, sz = cdz > 0 ? 1 : cdz < 0 ? -1 : 0;
@@ -4997,7 +5122,7 @@ function buildMap(id) {
     if (L < 0.05) return true;
     return !raycast(ax, ay, az, dx / L, dy / L, dz / L, L - 0.05);
   }
-  return { id, CELL, INV, HALF, N, MS, FS, H, M, G, T, BASE, props, blds, spawns, waypoints, cellH, hAt, toCell, groundUnder, raycast, los };
+  return { id, CELL, INV, HALF, N, MS, FS, H, M, G, T, BASE, props, blds, spawns, waypoints, plats, pads, issues, noNav, cellH, hAt, toCell, groundUnder, floorAt, raycast, los };
 }
 const LAYOUTS = {}; // filled in below: arctic and forest
 
@@ -5008,7 +5133,7 @@ function buildNav(MAP) {
   const g = new Float32Array(NN), f = new Float32Array(NN), from = new Int32Array(NN), seen = new Uint32Array(NN), shut = new Uint32Array(NN);
   const heap = new Int32Array(NN * 8);
   let hn = 0, gen = 0;
-  const walk = (i) => H[i] <= 4.0;
+  const walk = (i) => H[i] <= 4.0 && !MAP.noNav[i];
   const step = (a, b) => walk(b) && H[b] - H[a] <= PHYS.step; // climbing is limited, dropping down is fine
   // extra cost next to walls keeps bots off corners
   const near = new Float32Array(NN);
@@ -5129,6 +5254,15 @@ LAYOUTS.arctic = (A) => {
   A.barrelW(9, 24); A.barrelW(10, 24, 1); A.barrelW(-12, 27, 2); A.barrelW(-12, 28); A.barrelW(26.5, 40, 1);
   A.crateW(-31, -6, 1, 1, 2); A.crateW(-31, -5, 1, 1, 1); A.sandbagsW(-26, 20, -22, 21); A.sandbagsW(36, -8, 37, -4);
   A.sandbagsW(-14, -40, -11, -39); A.crateW(-46, 30, 1, 1, 2); A.crateW(46, -30, 1, 1, 2); A.barrelW(30, 46, 2);
+  // research platforms held up by blue lift fields: one over the lake, a bridge over the north road, a deck by the hangar
+  A.platform(-5, -4, 5, 4, 5.0, { cover: [[-5, -4, -2.5, -3.6, 1.05], [2.5, 3.6, 5, 4, 1.05], [-5, 3.6, -3.5, 4, 1.05], [3.5, -4, 5, -3.6, 1.05], [-0.6, -0.6, 0.6, 0.6, 1.1, 'crate']] });
+  A.jumpPad(1.5, 9.5, 0.5, 1.5, 5.0); A.jumpPad(-1.5, -9.5, -0.5, -1.5, 5.0);
+  A.platform(-8, -49.5, 8, -42.5, 5.5, { cover: [[-8, -49.5, -4, -49.1, 1.05], [4, -49.5, 8, -49.1, 1.05], [-6.5, -48.6, -5.5, -47.6, 1.0, 'crate'], [5, -46.5, 6, -45.5, 1.0, 'crate']] });
+  A.stairsTo(-2.5, -42.5, 2.5, -31.5, 5.5, 'n');
+  A.jumpPad(-11.5, -46, -5, -46, 5.5);
+  A.platform(41.5, 0.5, 50.5, 9.5, 5.5, { cover: [[50.1, 0.5, 50.5, 4, 1.05], [50.1, 6, 50.5, 9.5, 1.05], [41.5, 9.1, 43.6, 9.5, 1.05], [45.5, 3.5, 46.5, 4.5, 1.0, 'crate']] });
+  A.stairsTo(30.5, 3, 41.5, 7, 5.5, 'e');
+  A.jumpPad(44.9, 12.6, 46, 5.5, 5.5);
   const spawns = [
     [-47, -47], [47, -47], [47, 47], [-47, 47], [-20, -47], [0, -47], [20, -47], [-20, 47], [0, 47], [20, 47],
     [-47, -24], [-47, 0], [-47, 24], [47, -24], [47, 0], [47, 24], [0, -17], [0, 17], [-21, 0], [21, 0],
@@ -5172,6 +5306,16 @@ LAYOUTS.forest = (A) => {
   A.rock(32, 6, 2.5, 2, 1.5); A.rock(-48, 36, 2, 2, 1.4); A.rock(48, -36, 2, 2, 1.4);
   A.logs(-30, 12, -24, 13.5, 1.0); A.logs(24, -10, 30, -8.5, 1.0); A.logs(-10, 30, -9, 36, 1.0); A.logs(6, -36, 12, -34.5, 1.0);
   A.crateW(-31, -38, 1, 1, 2); A.crateW(30, -28, 1, 1, 1); A.barrelW(22, -33, 1); A.crateW(31, 33, 1, 1, 2); A.barrelW(-37, -3);
+  // plank decks floating among the pines: one over the clearing, one by the east trail, one off the rocky ridge
+  A.platform(-7, 6, 3, 12.5, 5.0, { cover: [[-7, 6, -6.6, 8.5, 1.05], [-7, 10, -6.6, 12.5, 1.05], [-3, 12.1, 1, 12.5, 1.05], [-1.5, 7.5, -0.5, 8.5, 1.0, 'crate']] });
+  A.stairsTo(3, 9.5, 14, 12.5, 5.0, 'w');
+  A.jumpPad(-2, 16.5, -2.5, 9.5, 5.0);
+  A.platform(24, 3, 33, 10, 5.0, { cover: [[24, 3, 26.5, 3.4, 1.05], [30.5, 3, 33, 3.4, 1.05], [32.6, 5, 33, 8, 1.05], [27.5, 5.5, 28.5, 6.5, 1.0, 'crate']] });
+  A.stairsTo(26.5, 10, 30.5, 21, 5.0, 'n');
+  A.jumpPad(20, 6.5, 26.5, 6.5, 5.0);
+  A.platform(-30, 22, -22, 30, 6.5, { cover: [[-22.4, 22, -22, 25, 1.05], [-22.4, 27.5, -22, 30, 1.05], [-27, 22, -24, 22.4, 1.05], [-27.5, 27, -26.5, 28, 1.0, 'crate']] });
+  A.stairsTo(-38, 26.5, -30, 30, 6.5, 'e', 2.5);
+  A.jumpPad(-15.5, 26.5, -25.5, 26.2, 6.5);
   const spawns = [
     [-44, -44], [44, -44], [44, 44], [-44, 44], [-20, -44], [0, -44], [20, -44], [-20, 44], [0, 44], [20, 44],
     [-44, -20], [-44, 0], [-44, 20], [44, -20], [44, 0], [44, 20], [0, -16], [0, 16], [-16, 0], [16, 0],
@@ -5181,7 +5325,7 @@ LAYOUTS.forest = (A) => {
   // the woods: pines everywhere except the clearing, the trails and the spawn spots
   A.forest(907, 220, (x, z) => (x / 19) ** 2 + (z / 16) ** 2 < 1 || spawns.some((s) => Math.hypot(s[0] - x, s[1] - z) < 3.5), [0.85, 1.35], ['pine', 'pine', 'fir']);
   const waypoints = spawns.concat([
-    [0, 0], [-12, 0], [12, -12], [-14, -14], [14, 14], [-14, 14], [-31, 29], [-26, -26], [31, -14], [30, 40],
+    [0, 0], [-12, 0], [12, -12], [-14, -14], [14, 14], [-14, 14], [-33.5, 24.5], [-26, -26], [31, -14], [30, 40],
     [-20, 30], [20, 34], [-36, -20], [36, 8], [-6, -30], [6, 30], [-30, 8], [31, -27],
   ]);
   return { spawns, waypoints };
@@ -5202,12 +5346,19 @@ function moveBody(b, wx, wz, speed, jump, dt) {
   }
   if (jump && b.onGround) { b.vy = PHYS.jumpV; b.onGround = false; }
   b.vy -= PHYS.gravity * dt;
-  const r = PHYS.radius, lim = b.y + PHYS.step, C = MAP.CELL, HF = MAP.HALF, tc = MAP.toCell;
+  const r = PHYS.radius, lim = b.y + PHYS.step, C = MAP.CELL, HF = MAP.HALF, tc = MAP.toCell, PL = MAP.plats, bh = bodyH(b.crouch);
+  // a platform box blocks you sideways when it overlaps your body and is too tall to step onto
+  const blocks = (P) => P.y1 > lim && P.y0 < b.y + bh - 0.02;
   if (b.vx !== 0) {
     let nx = b.x + b.vx * dt;
     const gx = tc(nx + (b.vx > 0 ? r : -r)), gz0 = tc(b.z - r), gz1 = tc(b.z + r);
     for (let gz = gz0; gz <= gz1; gz++) {
       if (MAP.cellH(gx, gz) > lim) { nx = b.vx > 0 ? gx * C - HF - r - 0.001 : (gx + 1) * C - HF + r + 0.001; b.vx = 0; break; }
+    }
+    for (const P of PL) {
+      if (!blocks(P) || b.z + r <= P.z0 || b.z - r >= P.z1) continue;
+      if (b.vx > 0 && b.x + r <= P.x0 + 1e-4 && nx + r > P.x0) { nx = P.x0 - r - 0.001; b.vx = 0; }
+      else if (b.vx < 0 && b.x - r >= P.x1 - 1e-4 && nx - r < P.x1) { nx = P.x1 + r + 0.001; b.vx = 0; }
     }
     b.x = nx;
   }
@@ -5217,10 +5368,20 @@ function moveBody(b, wx, wz, speed, jump, dt) {
     for (let gx = gx0; gx <= gx1; gx++) {
       if (MAP.cellH(gx, gz) > lim) { nz = b.vz > 0 ? gz * C - HF - r - 0.001 : (gz + 1) * C - HF + r + 0.001; b.vz = 0; break; }
     }
+    for (const P of PL) {
+      if (!blocks(P) || b.x + r <= P.x0 || b.x - r >= P.x1) continue;
+      if (b.vz > 0 && b.z + r <= P.z0 + 1e-4 && nz + r > P.z0) { nz = P.z0 - r - 0.001; b.vz = 0; }
+      else if (b.vz < 0 && b.z - r >= P.z1 - 1e-4 && nz - r < P.z1) { nz = P.z1 + r + 0.001; b.vz = 0; }
+    }
     b.z = nz;
   }
-  const ground = MAP.groundUnder(b.x, b.z, r);
-  const ny = b.y + b.vy * dt;
+  const ground = MAP.groundUnder(b.x, b.z, r, b.y + PHYS.step);
+  let ny = b.y + b.vy * dt;
+  // jumping up into the underside of a platform stops you
+  if (b.vy > 0) for (const P of PL) {
+    if (b.x + r <= P.x0 || b.x - r >= P.x1 || b.z + r <= P.z0 || b.z - r >= P.z1) continue;
+    if (b.y + bh <= P.y0 + 0.02 && ny + bh > P.y0) { ny = P.y0 - bh; b.vy = 0; }
+  }
   if (ny <= ground) { b.y = ground; b.vy = 0; b.onGround = true; } else { b.y = ny; b.onGround = false; }
 }
 
@@ -5263,6 +5424,25 @@ function rayVsPlayer(ox, oy, oz, dx, dy, dz, px, py, pz, crouch, maxT) {
   return zone ? { t: best, zone } : null;
 }
 function zoneMult(W, zone) { return zone === 'head' ? W.head : zone === 'legs' ? LEG_MULT : 1; }
+
+function dmgAt(W, dist) {
+  if (W.range) { const [full, end, minK] = W.range; return W.dmg * (dist <= full ? 1 : dist >= end ? minK : 1 - ((1 - minK) * (dist - full)) / (end - full)); }
+  return W.dmg * Math.pow(W.falloff, dist / 12.7);
+}
+// the shotgun's pellet pattern on a unit disc: one dead centre, three close in, four on the rim
+const SG_PATTERN = [[0, 0], [0.42, 0.06], [-0.26, 0.33], [-0.18, -0.38], [0.86, 0.42], [-0.4, 0.88], [-0.9, -0.36], [0.38, -0.9]];
+// directions for every pellet of one shot; single-bullet guns get one random direction inside their cone
+function pelletDirs(W, yaw, pitch, inacc) {
+  if (W.pellets <= 1) return [spreadDir(yaw, pitch, inacc)];
+  const rot = Math.random() * TAU, cr = Math.cos(rot), sr = Math.sin(rot), cp = Math.max(0.25, Math.cos(pitch));
+  return SG_PATTERN.slice(0, W.pellets).map(([u, v]) => {
+    const a = (u * cr - v * sr) * inacc + (Math.random() - 0.5) * inacc * 0.12, b = (u * sr + v * cr) * inacc + (Math.random() - 0.5) * inacc * 0.12;
+    return dirFrom(yaw + a / cp, clamp(pitch + b, -1.55, 1.55));
+  });
+}
+// falling: drops up to 5 m are free, then 12 damage a metre (about 13 m kills)
+const FALL = { safe: 5, perM: 12 };
+function fallDamage(drop) { return drop <= FALL.safe ? 0 : Math.round((drop - FALL.safe) * FALL.perM); }
 
 function inaccuracy(W, o) {
   const base = W.scope ? (o.ads ? W.spread : W.unscoped) : W.spread;
@@ -5413,8 +5593,15 @@ class Server {
           if (!v || !v.alive || v === p || !['head', 'body', 'legs'].includes(h[1])) continue;
           if (Math.hypot(v.x - p.x, v.z - p.z) > 240) continue;
           const dist = clamp(+h[2] || 0, 0, 240);
-          this.applyDamage(v, W.dmg * Math.pow(W.falloff, dist / 12.7) * zoneMult(W, h[1]), p, m.w, h[1]);
+          this.applyDamage(v, dmgAt(W, dist) * zoneMult(W, h[1]), p, m.w, h[1]);
         }
+        break;
+      }
+      case 'fall': {
+        // the client measures its own drop; the damage is worked out here
+        if (!p || !p.alive || this.phase !== 'live' || m.sq !== p.spawnSeq) return;
+        const dmg = fallDamage(clamp(+m.d || 0, 0, 80));
+        if (dmg > 0) this.applyDamage(p, dmg, null, 'fall', 'fall');
         break;
       }
       case 'chat': {
@@ -5567,7 +5754,7 @@ class Server {
       rec.dmg += dealt; rec.t = this.time; v.dmgFrom.set(a.id, rec);
     }
     if (v.link) v.link.send({ t: 'hurt', from: a ? [r2(a.x), r2(a.z)] : null, dmg, hp: Math.max(0, Math.ceil(v.hp)) });
-    if (a && a !== v && a.link) a.link.send({ t: 'hitm', head: zone === 'head' || zone === 'back', kill: v.hp <= 0, dmg: dealt });
+    if (a && a !== v && a.link) a.link.send({ t: 'hitm', head: zone === 'head' || zone === 'back', kill: v.hp <= 0, dmg: dealt, v: v.id, z: zone });
     if (v.bot && a && a !== v) { v.brain.hurtBy = a.id; v.brain.hurtT = this.time; }
     if (v.hp <= 0) this.kill(v, a, wkey, zone === 'head', zone === 'back');
   }
@@ -5588,7 +5775,7 @@ class Server {
 
   /* ---------- supply drops ---------- */
   addDrop(v) {
-    const y = Math.min(v.y, MAP.groundUnder(v.x, v.z, 0.2));
+    const y = Math.min(v.y, MAP.floorAt(v.x, v.z, v.y));
     this.drops.push({ id: ++this.dropSeq, x: r2(v.x), y: r2(y), z: r2(v.z), until: this.time + RULES.dropLife });
     if (this.drops.length > RULES.dropMax) this.drops.shift();
     this.sendDrops();
@@ -5757,11 +5944,11 @@ function botFire(S, p, B, D, W, slot, dist) {
   const tgt = B.target, ts = tgt ? Math.hypot(tgt.vx || 0, tgt.vz || 0) : 0, j = D.jitter * (1 + ts / 5);
   const jy = (Math.random() * 2 - 1) * j, jp = (Math.random() * 2 - 1) * j * 0.8;
   let endPt = null;
-  for (let i = 0; i < W.pellets; i++) {
-    const d = W.pellets > 1 ? spreadDir(p.yaw + jy, p.pitch + jp, W.spread, true) : spreadDir(p.yaw + py + jy, p.pitch + pp + jp, inacc);
-    const r = S.traceShot(p, o, d);
+  const dirs = pelletDirs(W, p.yaw + py + jy, p.pitch + pp + jp, inacc);
+  for (let i = 0; i < dirs.length; i++) {
+    const r = S.traceShot(p, o, dirs[i]);
     if (i === 0) endPt = r.end;
-    if (r.victim) S.applyDamage(r.victim, W.dmg * Math.pow(W.falloff, r.t / 12.7) * zoneMult(W, r.zone), p, slot.w, r.zone);
+    if (r.victim) S.applyDamage(r.victim, dmgAt(W, r.t) * zoneMult(W, r.zone), p, slot.w, r.zone);
   }
   S.broadcast({ t: 'shot', id: p.id, w: slot.w, o: o.map(r2), e: endPt.map(r2) });
   S.noise(p);
@@ -6036,6 +6223,8 @@ const AUDIO = {
       case 'shell': this.burst(out, t, 0.03, 'bandpass', 1900, 4, 0.6); this.burst(out, t + 0.03, 0.04, 'bandpass', 950, 3, 0.35); break;
       case 'pump': this.burst(out, t, 0.06, 'bandpass', 1100, 3, 0.7); this.burst(out, t + 0.12, 0.05, 'bandpass', 1450, 3, 0.75); break;
       case 'bolt': this.burst(out, t, 0.03, 'bandpass', 2100, 4, 0.6); this.burst(out, t + 0.1, 0.05, 'bandpass', 1500, 3, 0.6); this.burst(out, t + 0.22, 0.04, 'bandpass', 1800, 4, 0.65); break;
+      case 'pad': this.sweep(out, t, 0.42, 260, 2600, 0.9, 0.55); this.tone(out, t, 0.32, 'sine', 160, 560, 0.35); break;
+      case 'thud': this.burst(out, t, 0.14, 'lowpass', 240, 0.8, 1.0); this.tone(out, t, 0.2, 'sine', 95, 42, 0.7); break;
       default: break;
     }
   },
@@ -6681,12 +6870,12 @@ class RawBuf {
   // axis-aligned box in world space with world-anchored UVs; skip names one face (e.g. '-x') that is hidden
   box(x0, y0, z0, x1, y1, z1, col, skip, us = 2.5) {
     const C = [col, col, col, col];
-    if (skip !== '+x') this.quad([[x1, y0, z0], [x1, y0, z1], [x1, y1, z1], [x1, y1, z0]], [1, 0, 0], [[z0 / us, y0 / us], [z1 / us, y0 / us], [z1 / us, y1 / us], [z0 / us, y1 / us]], C);
-    if (skip !== '-x') this.quad([[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], [-1, 0, 0], [[z0 / us, y0 / us], [z1 / us, y0 / us], [z1 / us, y1 / us], [z0 / us, y1 / us]], C);
-    if (skip !== '+z') this.quad([[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], [0, 0, 1], [[x0 / us, y0 / us], [x1 / us, y0 / us], [x1 / us, y1 / us], [x0 / us, y1 / us]], C);
-    if (skip !== '-z') this.quad([[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0]], [0, 0, -1], [[x0 / us, y0 / us], [x1 / us, y0 / us], [x1 / us, y1 / us], [x0 / us, y1 / us]], C);
-    if (skip !== '+y') this.quad([[x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]], [0, 1, 0], [[x0 / us, z0 / us], [x1 / us, z0 / us], [x1 / us, z1 / us], [x0 / us, z1 / us]], C);
-    if (skip !== '-y') this.quad([[x0, y0, z0], [x1, y0, z0], [x1, y0, z1], [x0, y0, z1]], [0, -1, 0], [[x0 / us, z0 / us], [x1 / us, z0 / us], [x1 / us, z1 / us], [x0 / us, z1 / us]], C);
+    if (!(skip && skip.includes('+x'))) this.quad([[x1, y0, z0], [x1, y0, z1], [x1, y1, z1], [x1, y1, z0]], [1, 0, 0], [[z0 / us, y0 / us], [z1 / us, y0 / us], [z1 / us, y1 / us], [z0 / us, y1 / us]], C);
+    if (!(skip && skip.includes('-x'))) this.quad([[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], [-1, 0, 0], [[z0 / us, y0 / us], [z1 / us, y0 / us], [z1 / us, y1 / us], [z0 / us, y1 / us]], C);
+    if (!(skip && skip.includes('+z'))) this.quad([[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], [0, 0, 1], [[x0 / us, y0 / us], [x1 / us, y0 / us], [x1 / us, y1 / us], [x0 / us, y1 / us]], C);
+    if (!(skip && skip.includes('-z'))) this.quad([[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0]], [0, 0, -1], [[x0 / us, y0 / us], [x1 / us, y0 / us], [x1 / us, y1 / us], [x0 / us, y1 / us]], C);
+    if (!(skip && skip.includes('+y'))) this.quad([[x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]], [0, 1, 0], [[x0 / us, z0 / us], [x1 / us, z0 / us], [x1 / us, z1 / us], [x0 / us, z1 / us]], C);
+    if (!(skip && skip.includes('-y'))) this.quad([[x0, y0, z0], [x1, y0, z0], [x1, y0, z1], [x0, y0, z1]], [0, -1, 0], [[x0 / us, z0 / us], [x1 / us, z0 / us], [x1 / us, z1 / us], [x0 / us, z1 / us]], C);
   }
   geometry() {
     const g = new THREE.BufferGeometry();
@@ -6715,6 +6904,7 @@ class World {
     batch.build(this.group, { tile: 32 });
     detail.build(this.group, { cast: false, tile: 32 });
     this.buildDistant();
+    this.buildPlatforms();
     if (MAP.id === 'arctic') this.snow = new Snowfall(this);
   }
   dispose() {
@@ -7512,9 +7702,113 @@ class World {
     this.group.add(cone, trunk);
   }
 
+  // floating decks, their cover and the jump pads that throw you up to them; each map dresses them its own way
+  buildPlatforms() {
+    if (!MAP.plats.length && !MAP.pads.length) return;
+    const M = this.M, id = MAP.id, own = (m) => (this.own.push(m), m);
+    const bufs = new Map(), buf = (mat) => { let b = bufs.get(mat); if (!b) { b = new RawBuf(); bufs.set(mat, b); } return b; };
+    const batch = new Batch(), glow = [];
+    const SIDES = '+x-x+z-z', TOPS = '+y-y';
+    let hazard = null;
+    if (id === 'arctic') {
+      const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+      g.fillStyle = '#e8b21c'; g.fillRect(0, 0, 64, 64); g.fillStyle = '#17191b';
+      for (let k = -64; k < 128; k += 32) { g.beginPath(); g.moveTo(k, 0); g.lineTo(k + 16, 0); g.lineTo(k + 16 + 64, 64); g.lineTo(k + 64, 64); g.closePath(); g.fill(); }
+      hazard = own(new THREE.MeshStandardMaterial({ map: tex(c), roughness: 0.6, metalness: 0.2, vertexColors: true }));
+    }
+    const thrusters = [], groundAt = (x, z) => MAP.groundUnder(x, z, 0.3);
+    for (const P of MAP.plats) {
+      const { x0, y0, z0, x1, y1, z1 } = P, w = x1 - x0, d = z1 - z0, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+      if (P.kind === 'deck') {
+        if (id === 'desert') {
+          buf(M.stone).box(x0, y0, z0, x1, y1 - 0.08, z1, rgbL(214, 186, 146), '+y', 2.5);
+          buf(M.stone).box(x0 - 0.04, y1 - 0.08, z0 - 0.04, x1 + 0.04, y1, z1 + 0.04, rgbL(238, 222, 192), '-y', 2.5);
+          buf(M.stone).box(x0 + 0.1, y0 - 0.12, z0 + 0.1, x1 - 0.1, y0, z1 - 0.1, rgbL(150, 118, 84), '+y', 2.5);
+          buf(M.stone).box(x0 - 0.025, y1 - 0.36, z0 - 0.025, x1 + 0.025, y1 - 0.16, z1 + 0.025, rgbL(40, 150, 156), '+y-y', 0.5);
+        } else if (id === 'arctic') {
+          buf(M.metal).box(x0, y0, z0, x1, y1, z1, rgbL(150, 160, 172), SIDES, 2);
+          buf(hazard).box(x0, y0, z0, x1, y1, z1, rgbL(255, 255, 255), TOPS, 1);
+          for (const [tx, tz] of [[x0 + 1, z0 + 1], [x1 - 1, z0 + 1], [x0 + 1, z1 - 1], [x1 - 1, z1 - 1]]) {
+            if (y0 - 0.32 - groundAt(tx, tz) < 3.1) continue;
+            batch.add(M.iron, GEO.cyl(0.3, 0.36, 0.26, 12), GEO.mat(tx, y0 - 0.13, tz));
+            thrusters.push([tx, y0 - 0.27, tz]);
+          }
+        } else {
+          buf(M.wood).box(x0, y1 - 0.14, z0, x1, y1, z1, rgbL(214, 178, 132), '', 1.6);
+          buf(M.wood).box(x0 + 0.08, y0, z0 + 0.08, x1 - 0.08, y1 - 0.14, z1 - 0.08, rgbL(150, 116, 82), '+y', 1.6);
+          const ly = y0 + 0.18, R = 0.2;
+          batch.add(M.bark, GEO.cyl(R, R, w + 0.1, 10), GEO.mat(cx, ly, z0 + R - 0.02, 0, 0, Math.PI / 2));
+          batch.add(M.bark, GEO.cyl(R, R, w + 0.1, 10), GEO.mat(cx, ly, z1 - R + 0.02, 0, 0, Math.PI / 2));
+          batch.add(M.bark, GEO.cyl(R, R, d - 0.3, 10), GEO.mat(x0 + R - 0.02, ly, cz, Math.PI / 2));
+          batch.add(M.bark, GEO.cyl(R, R, d - 0.3, 10), GEO.mat(x1 - R + 0.02, ly, cz, Math.PI / 2));
+        }
+      } else if (P.kind === 'crate') {
+        const tone = 0.9 + ((cx * 7 + cz * 3) % 1 + 1) % 1 * 0.2;
+        batch.add(M.crate, GEO.roundedBox(w - 0.04, y1 - y0 - 0.02, d - 0.04, 0.035, 2), GEO.mat(cx, (y0 + y1) / 2 - 0.01, cz), new THREE.Color(tone, tone * 0.97, tone * 0.92));
+        if (id === 'arctic') batch.add(M.snow, GEO.roundedBox(w - 0.06, 0.06, d - 0.06, 0.03, 1), GEO.mat(cx, y1, cz));
+      } else if (id === 'desert') {
+        buf(M.stone).box(x0, y0, z0, x1, y1 - 0.08, z1, rgbL(226, 204, 168), '-y', 2.5);
+        buf(M.stone).box(x0 - 0.04, y1 - 0.08, z0 - 0.04, x1 + 0.04, y1, z1 + 0.04, rgbL(242, 230, 204), '-y', 2.5);
+      } else if (id === 'arctic') {
+        buf(M.metal).box(x0, y0, z0, x1, y1 - 0.16, z1, rgbL(96, 108, 120), '-y', 2);
+        buf(hazard).box(x0, y1 - 0.16, z0, x1, y1, z1, rgbL(255, 255, 255), '-y', 1);
+      } else {
+        buf(M.logs).box(x0, y0, z0, x1, y1, z1, rgbL(204, 170, 128), '-y', 2);
+      }
+    }
+    for (const [mat, b] of bufs) {
+      const mesh = new THREE.Mesh(b.geometry(), mat); mesh.castShadow = mesh.receiveShadow = true;
+      mesh.matrixAutoUpdate = false; mesh.updateMatrix(); this.group.add(mesh);
+    }
+    // the blue glow under the arctic decks
+    if (thrusters.length) {
+      const m = own(new THREE.MeshBasicMaterial({ color: new THREE.Color(0.5, 1.6, 2.6) }));
+      for (const [x, y, z] of thrusters) batch.add(m, GEO.cyl(0.24, 0.24, 0.03, 14), GEO.mat(x, y, z));
+      glow.push(m);
+    }
+    // jump pads: a steel base, a glowing rim, arrows that run toward where it throws you and a soft column of light
+    const pads = [];
+    if (MAP.pads.length) {
+      const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+      g.strokeStyle = '#fff'; g.lineWidth = 13; g.lineCap = 'round'; g.lineJoin = 'round';
+      for (const y of [22, 86]) { g.beginPath(); g.moveTo(30, y + 26); g.lineTo(64, y); g.lineTo(98, y + 26); g.stroke(); }
+      const arrows = tex(c); arrows.wrapS = THREE.ClampToEdgeWrapping;
+      const b = document.createElement('canvas'); b.width = 4; b.height = 64; const gb = b.getContext('2d');
+      const gr = gb.createLinearGradient(0, 0, 0, 64); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(255,255,255,1)');
+      gb.fillStyle = gr; gb.fillRect(0, 0, 4, 64);
+      const cyan = new THREE.Color(0.45, 1.5, 1.9);
+      const arrowM = own(new THREE.MeshBasicMaterial({ map: arrows, color: cyan, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
+      const rimM = own(new THREE.MeshBasicMaterial({ color: cyan.clone() }));
+      const beamM = own(new THREE.MeshBasicMaterial({ map: tex(b, { clamp: true }), color: new THREE.Color(0.3, 0.95, 1.2), transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+      for (const P of MAP.pads) {
+        const r = P.r, yaw = Math.atan2(-(P.tx - P.x), -(P.tz - P.z));
+        batch.add(M.iron, GEO.cyl(r + 0.14, r + 0.2, 0.1, 28), GEO.mat(P.x, P.y + 0.02, P.z));
+        const rim = new THREE.Mesh(new THREE.RingGeometry(r * 0.84, r + 0.04, 40), rimM);
+        rim.rotation.x = -Math.PI / 2; rim.position.set(P.x, P.y + 0.075, P.z);
+        const disc = new THREE.Mesh(new THREE.CircleGeometry(r * 0.8, 32), arrowM);
+        disc.rotation.set(-Math.PI / 2, yaw, 0, 'YXZ'); disc.position.set(P.x, P.y + 0.08, P.z);
+        const beam = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.78, r * 0.9, 2.4, 28, 1, true), beamM);
+        beam.position.set(P.x, P.y + 1.28, P.z);
+        for (const o of [rim, disc, beam]) { o.renderOrder = 2; o.matrixAutoUpdate = false; o.updateMatrix(); this.group.add(o); }
+        disc.material = arrowM; pads.push(disc);
+      }
+      this.padFx = { arrows, rimM, beamM, cyan };
+    }
+    batch.build(this.group, { tile: 32 });
+    this.platGlow = glow;
+  }
+
   update(dt) {
     this.anim.t += dt;
     if (this.snow) this.snow.update(dt);
+    const t = this.anim.t;
+    if (this.padFx) {
+      const F = this.padFx, k = 0.5 + 0.5 * Math.sin(t * 4.2);
+      F.arrows.offset.y = -((t * 0.9) % 1);
+      F.rimM.color.copy(F.cyan).multiplyScalar(0.8 + 0.35 * k);
+      F.beamM.opacity = 0.22 + 0.16 * k;
+    }
+    for (const m of this.platGlow || []) m.color.setRGB(0.5, 1.5 + 0.25 * Math.sin(t * 9.1), 2.4 + 0.4 * Math.sin(t * 7.3));
     const M = this.M;
     M.water.normalMap.offset.set(this.anim.t * 0.02, this.anim.t * 0.013);
     M.curtain.map.offset.y = -this.anim.t * 0.9;
@@ -8869,6 +9163,13 @@ class Effects {
     for (let i = 0; i < 12; i++) this.particle(p, [rand(-1.3, 1.3), rand(0.6, 2.6), rand(-1.3, 1.3)], 0x7dffa6, rand(0.05, 0.11), rand(0.45, 0.8), -1.5, 0.4, 1, true);
     this.light(p, 3, 0.25, 6);
   }
+  padBurst(P) {
+    for (let i = 0; i < 14; i++) {
+      const a = Math.random() * TAU, sp = rand(0.3, 1.1);
+      this.particle([P.x + Math.cos(a) * P.r * 0.6, P.y + 0.15, P.z + Math.sin(a) * P.r * 0.6], [Math.cos(a) * sp, rand(2.5, 5), Math.sin(a) * sp], 0x5ef0ff, rand(0.05, 0.1), rand(0.4, 0.7), -2, 0.3, 1, true);
+    }
+    this.light([P.x, P.y + 0.6, P.z], 3, 0.3, 7);
+  }
   muzzleWorld(p) {
     const f = this.flashes[this.flashI++ % this.flashes.length];
     f.s.visible = true; f.s.position.set(p[0], p[1], p[2]); const s = rand(0.35, 0.55); f.s.scale.set(s, s, s); f.s.material.rotation = Math.random() * TAU; f.life = 0.05;
@@ -8896,7 +9197,7 @@ class Effects {
 const KEY_DEFAULTS = { forward: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', crouch: 'KeyC', reload: 'KeyR', primary: 'Digit1', pistol: 'Digit2', knife: 'Digit3', swap: 'KeyQ', inspect: 'KeyF', scores: 'Tab', chat: 'Enter' };
 const KEY_LABELS = { forward: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', crouch: 'Crouch', reload: 'Reload', primary: 'Main gun', pistol: 'Pistol', knife: 'Knife', swap: 'Last weapon', inspect: 'Inspect knife', scores: 'Scoreboard', chat: 'Chat' };
 const XH_DEFAULTS = { color: '#5ef0ff', len: 7, gap: 4, thick: 2, dot: true, outline: true, dynamic: false };
-const SETTING_DEFAULTS = { sens: 0.8, adsSens: 1.0, invertY: false, fov: 110, vol: 0.7, sfxVol: 1, uiVol: 0.8, aimToggle: false, crouchToggle: false, bob: true, showFps: false, minimap: true, quality: 'medium', touchSens: 1, aimAssist: true };
+const SETTING_DEFAULTS = { sens: 0.8, adsSens: 1.0, invertY: false, fov: 110, vol: 0.7, sfxVol: 1, uiVol: 0.8, aimToggle: false, crouchToggle: false, bob: true, showFps: false, minimap: true, quality: 'medium', touchSens: 1, aimAssist: true, adsView: 'window', dmgNumbers: true };
 // a phone or tablet with no mouse: start on low graphics so the game stays smooth
 const PURE_TOUCH = (() => { try { return matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches; } catch (e) { return false; } })();
 const SETTINGS = (() => {
@@ -9071,7 +9372,7 @@ class Client {
         else if (m.w === 'knife') { const e = this.ents.get(m.id); if (e) { e.swingT = this.now; e.swingHeavy = !!m.hv; } }
         break;
       case 'hurt': if (this.quiet) this.st.hp = m.hp; else this.onHurt(m); break;
-      case 'hitm': if (this.quiet) break; UI.hitmarker(m.head, m.kill); AUDIO.ui(m.head ? 'head' : 'hit'); if (m.kill) setTimeout(() => AUDIO.ui('kill'), 60); break;
+      case 'hitm': if (this.quiet) break; UI.hitmarker(m.head, m.kill); UI.damageNumber(this, m); AUDIO.ui(m.head ? 'head' : 'hit'); if (m.kill) setTimeout(() => AUDIO.ui('kill'), 60); break;
       case 'kill': this.onKill(m); break;
       case 'end': this.onEnd(m); break;
       case 'sb': for (const r of m.pl) this.scores.set(r[0], { pts: r[1], k: r[2], a: r[3], d: r[4], ping: r[5] }); break;
@@ -9086,7 +9387,7 @@ class Client {
   onSpawn(m) {
     const me = this.me;
     me.x = m.x; me.y = m.y; me.z = m.z; me.vx = me.vy = me.vz = 0; me.yaw = m.yaw; me.pitch = 0; me.crouch = false; me.onGround = true;
-    this.spawnSeq = m.sq; this.eyeY = m.y; this.eyeCur = PHYS.eyeStand; this.crouchOn = false;
+    this.spawnSeq = m.sq; this.eyeY = m.y; this.eyeCur = PHYS.eyeStand; this.crouchOn = false; this.fallTop = null; this.padFlight = false;
     this.inv.prim = { w: m.prim, ammo: WEAPONS[m.prim].mag };
     this.inv.sec = { w: m.sec, ammo: WEAPONS[m.sec].mag };
     this.inv.knife = { w: 'knife', ammo: 1 }; this.melee = null; this.inspectT = -1; this.cues = [];
@@ -9167,7 +9468,7 @@ class Client {
     if (m) {
       const W = WEAPONS[m.w], kr = this.roster.get(killer);
       const how = m.w === 'knife' ? KNIVES[(kr && kr.knife) || 'tactical'].name + (m.back ? ' · backstab' : '') : W ? W.name : 'unknown';
-      this.deathInfo = killer >= 0 && killer !== this.id ? { name: this.nameOf(killer), color: this.colorOf(killer), how, hs: m.hs } : null;
+      this.deathInfo = killer >= 0 && killer !== this.id ? { name: this.nameOf(killer), color: this.colorOf(killer), how, hs: m.hs } : m.w === 'fall' ? { fell: true } : null;
     }
     UI.onDeath(this);
   }
@@ -9343,6 +9644,26 @@ class Client {
     while (rem > 1e-6) { const h = Math.min(rem, 1 / 120); moveBody(me, wx, wz, speed, first && jump, h); first = false; rem -= h; }
     if (!wasGround && me.onGround && this.airborneFrom != null && this.airborneFrom - me.y > -0.6) { AUDIO.step(null, null, null, true); R.vm.land = 1; }
     if (wasGround && !me.onGround) this.airborneFrom = y0; else if (me.onGround) this.airborneFrom = null;
+    // falling: remember the highest point of the fall; landing hard costs health (a jump pad's flight is free)
+    if (!me.onGround) this.fallTop = Math.max(this.fallTop == null ? y0 : this.fallTop, me.y);
+    else if (this.fallTop != null) {
+      const drop = this.fallTop - me.y; this.fallTop = null;
+      if (!this.padFlight && fallDamage(drop) > 0) {
+        this.link.send({ t: 'fall', d: r2(drop), sq: this.spawnSeq });
+        R.vm.land = 2; this.shake = Math.max(this.shake, 0.25); AUDIO.fx('thud');
+      }
+      this.padFlight = false;
+    }
+    // jump pads: step on one and it throws you up onto its platform
+    if (me.onGround && this.now > (this.padT || 0)) {
+      for (const P of MAP.pads) {
+        if (Math.hypot(me.x - P.x, me.z - P.z) > P.r || Math.abs(me.y - P.y) > 0.3) continue;
+        me.vx = P.vx; me.vz = P.vz; me.vy = P.vy; me.onGround = false; me.y += 0.02;
+        this.padFlight = true; this.padT = this.now + 0.6; this.fallTop = me.y;
+        AUDIO.fx('pad'); R.fx.padBurst && R.fx.padBurst(P);
+        break;
+      }
+    }
     const hs = Math.hypot(me.vx, me.vz);
     if (me.onGround && hs > 3.4 && !me.crouch) { this.stepT -= dt; if (this.stepT <= 0) { AUDIO.step(null, null, null, fast); this.stepT = fast ? 0.29 : 0.36; } }
     else this.stepT = Math.min(this.stepT, 0.12);
@@ -9439,7 +9760,8 @@ class Client {
     if (W.melee) { this.updateKnife(); return; }
     if (w.reloading) this.updateReload(W, slot);
     if (w.autoReload && this.now >= w.autoReload) { w.autoReload = 0; this.reload(); }
-    const canAds = !w.reloading && this.inputActive();
+    if (w.rezoomAt && this.now >= w.rezoomAt) w.rezoomAt = 0;
+    const canAds = !w.reloading && this.inputActive() && !w.rezoomAt;
     w.ads = approach(w.ads, canAds && this.adsWanted() ? 1 : 0, dt / 0.14);
     if (this.now - w.lastShot > 0.11) { const k = 1 - Math.exp(-dt * 6.5); w.rp -= w.rp * k; w.ry -= w.ry * k; }
     if (this.now - w.lastShot > 0.3) w.recoilI = 0;
@@ -9487,10 +9809,10 @@ class Client {
     const inacc = inaccuracy(W, { speed: Math.hypot(me.vx, me.vz), onGround: me.onGround, crouch: me.crouch, ads, bloom: w.bloom });
     const hits = [], muz = this.muzzleWorld();
     let firstEnd = null;
-    for (let i = 0; i < W.pellets; i++) {
-      const d = W.pellets > 1 ? spreadDir(yaw, pitch, W.spread * (ads ? W.adsMul : 1), true) : spreadDir(yaw, pitch, inacc);
-      const r = this.trace(eye, d);
-      if (r.hit) { hits.push([r.hit.id, r.hit.zone, r2(r.t)]); R.fx.blood(r.end); }
+    const dirs = pelletDirs(W, yaw, pitch, inacc);
+    for (let i = 0; i < dirs.length; i++) {
+      const r = this.trace(eye, dirs[i]);
+      if (r.hit) { hits.push([r.hit.id, r.hit.zone, r2(r.t)]); R.fx.blood(r.end); this.lastHitPt = r.end; }
       else if (r.normal) { R.fx.hole(r.end, r.normal); if (i < 3) R.fx.impact(r.end, r.normal); }
       if (i === 0) firstEnd = r.end;
       if (i < 3 && !(W.scope && ads)) R.fx.tracer(muz, r.end, W.kind === 'sniper');
@@ -9507,6 +9829,8 @@ class Client {
     AUDIO.shot(W.sound);
     if (W.kind === 'shotgun') this.cues.push([this.now + 0.22, 'pump']); else if (W.kind === 'sniper') this.cues.push([this.now + 0.28, 'bolt']);
     if (slot.ammo <= 0) w.autoReload = this.now + 0.3;
+    // the sniper drops out of the scope while you work the bolt, then goes back in if you're still aiming
+    if (W.rezoom && ads) w.rezoomAt = this.now + W.rezoom;
   }
   sendState(dt) {
     this.sendAcc += dt;
@@ -9581,6 +9905,7 @@ class Client {
       cam.rotation.set(me.pitch + this.w.rp + this.punch, me.yaw + this.w.ry, 0);
       zoom = W ? lerp(1, W.zoom, this.w.ads) : 1;
       if (W && W.scope && this.w.ads > 0.85) hidden = true;
+      if (W && !W.scope && !W.melee && SETTINGS.adsView !== 'sights' && this.w.ads > 0.9) hidden = true; // the zoom window takes over
     } else if (this.deathT > 0) this.deathCamera(dt);
     else if (this.state === 'end') { /* keep the last view */ }
     if (this.shake > 0 && dt > 0) { this.shake = Math.max(0, this.shake - dt); cam.rotation.x += rand(-1, 1) * this.shake * 0.03; cam.rotation.y += rand(-1, 1) * this.shake * 0.03; }
@@ -9799,7 +10124,7 @@ const UI = {
   ],
   // [button group id, setting, what to re-apply]
   CHOICES: [
-    ['seg-aim', 'aimToggle'], ['seg-assist', 'aimAssist'], ['seg-crouch', 'crouchToggle'], ['seg-bob', 'bob'], ['seg-minimap', 'minimap', 'hud'],
+    ['seg-aim', 'aimToggle'], ['seg-assist', 'aimAssist'], ['seg-adsview', 'adsView'], ['seg-dmgnum', 'dmgNumbers'], ['seg-crouch', 'crouchToggle'], ['seg-bob', 'bob'], ['seg-minimap', 'minimap', 'hud'],
     ['seg-invert', 'invertY'], ['seg-quality', 'quality', 'quality'], ['seg-fps', 'showFps', 'hud'],
     ['xh-dot', 'xh.dot', 'xh'], ['xh-outline', 'xh.outline', 'xh'], ['xh-dynamic', 'xh.dynamic', 'xh'],
   ],
@@ -9885,7 +10210,9 @@ const UI = {
       vign: $('vignette'), scope: $('scope'), death: $('deathcard'), deathWho: $('death-who'), deathHow: $('death-how'), deathT: $('death-timer'),
       hit: $('hitmarker'), dmg: $('dmgdir'), banner: $('banner'), bBig: $('banner-big'), bSmall: $('banner-small'), fps: $('fps'), pops: $('popups'),
       radar: $('radar'), pause: $('pause'), ammo: document.querySelector('.hud-br .ammo'),
+      adsv: $('adsview'), adsRing: $('ads-ring'), dnums: $('dnums'),
     };
+    this.dnums = []; this.dnV = new THREE.Vector3();
     this.applySettings();
     this.renderManual();
     addEventListener('resize', () => this.centerCrosshair());
@@ -9957,6 +10284,7 @@ const UI = {
       el.classList.toggle('no-dot', !x.dot); el.classList.toggle('no-outline', !x.outline); el.classList.toggle('no-lines', x.len <= 0);
     }
     this.cache.xgap = null; this.cache.xring = null;
+    if (this.h && this.h.adsv) this.h.adsv.style.setProperty('--xh-color', x.color);
     this.centerCrosshair();
   },
   centerCrosshair() { const el = $('crosshair'); el.style.left = Math.floor(innerWidth / 2) + 'px'; el.style.top = Math.floor(innerHeight / 2) + 'px'; },
@@ -10158,7 +10486,7 @@ const UI = {
   },
   enterGame(c) {
     this.hideAll(); this.setPlaying(true);
-    this.cache = {}; $('killfeed').innerHTML = ''; this.h.pops.innerHTML = '';
+    this.cache = {}; $('killfeed').innerHTML = ''; this.h.pops.innerHTML = ''; this.h.dnums.innerHTML = ''; this.dnums = [];
     this.applyCrosshair();
     if (!TEST && !INPUT.locked && !INPUT.touch) this.pauseScreen(c, true);
     this.banner('FREE FOR ALL', `${(MAPS[MAP.id] || MAPS.desert).name} · everyone is a target · +${SCORE.kill} a kill, +${SCORE.assist} an assist · first to ${c.settings.target}`, 3.2);
@@ -10238,8 +10566,8 @@ const UI = {
   },
   onDeath(c) {
     const i = c.deathInfo;
-    $('death-who').innerHTML = i ? `Eliminated by <b style="color:${esc(i.color)}">${esc(i.name)}</b>` : 'You were eliminated';
-    $('death-how').textContent = i ? i.how + (i.hs ? ' · headshot' : '') : '';
+    $('death-who').innerHTML = i && i.fell ? 'You fell too far' : i ? `Eliminated by <b style="color:${esc(i.color)}">${esc(i.name)}</b>` : 'You were eliminated';
+    $('death-how').textContent = i && i.fell ? 'Use the stairs or a jump pad, or drop from lower down' : i ? i.how + (i.hs ? ' · headshot' : '') : '';
     this.paintLoadouts();
   },
   renderScoreboard(c, el) {
@@ -10283,10 +10611,58 @@ const UI = {
     h.classList.add('show'); if (head || kill) h.classList.add('head');
     clearTimeout(this.hitTO); this.hitTO = setTimeout(() => h.classList.remove('show'), kill ? 260 : 120);
   },
+  // Valorant-style zoom window: when you aim, a framed window with the gun's own reticle replaces the weapon
+  aimWindow(c, W, dt) {
+    const h = this.h, el = h.adsv, a = c.w.ads;
+    const on = c.st.alive && c.state === 'game' && W && !W.scope && !W.melee && SETTINGS.adsView !== 'sights' && a > 0.72;
+    this.adsOn = on && a > 0.9;
+    if (el.hidden === on) el.hidden = !on;
+    if (!on) return;
+    if (this.cache.adsKind !== W.kind) { this.cache.adsKind = W.kind; el.className = 'adsview ' + W.kind; }
+    const o = clamp((a - 0.72) / 0.2, 0, 1).toFixed(2); if (this.cache.adsO !== o) { this.cache.adsO = o; el.style.opacity = o; }
+    if (W.pellets > 1) {
+      // the shotgun's ring shows exactly where the outer pellets will land at this zoom
+      const me = c.me, inacc = inaccuracy(W, { speed: Math.hypot(me.vx, me.vz), onGround: me.onGround, crouch: me.crouch, ads: true, bloom: 0 });
+      const rad = Math.round((innerHeight / 2) * (Math.tan(inacc) / Math.tan((R.camera.fov * Math.PI) / 360)));
+      if (rad !== this.cache.adsRing) { this.cache.adsRing = rad; h.adsRing.style.width = h.adsRing.style.height = rad * 2 + 'px'; }
+    }
+  },
+  // floating damage numbers over whoever you hit; pellets from one blast add up into one number
+  damageNumber(c, m) {
+    if (!SETTINGS.dmgNumbers || !m.dmg) return;
+    const e = c.ents.get(m.v); if (!e) return;
+    const now = nowS(), head = m.z === 'head' || m.z === 'back';
+    const d = this.dnums.find((q) => q.v === m.v && now - q.t0 < 0.1);
+    if (d) {
+      d.dmg += m.dmg; d.head = d.head || head; d.kill = d.kill || m.kill;
+      d.el.textContent = d.dmg; d.el.className = 'dnum' + (d.head ? ' head' : '') + (d.kill ? ' kill' : '');
+      return;
+    }
+    const el = document.createElement('div'); el.className = 'dnum' + (head ? ' head' : '') + (m.kill ? ' kill' : ''); el.textContent = m.dmg;
+    this.h.dnums.appendChild(el);
+    this.dnums.push({ v: m.v, el, dmg: m.dmg, t0: now, head, kill: m.kill, ox: rand(-0.3, 0.3), oy: head ? 1.85 : m.z === 'legs' ? 0.6 : 1.25, x: e.x, y: e.y, z: e.z });
+    while (this.dnums.length > 14) this.dnums.shift().el.remove();
+  },
+  updateDamageNumbers(c) {
+    if (!this.dnums.length) return;
+    const now = nowS(), v = this.dnV, W2 = innerWidth / 2, H2 = innerHeight / 2;
+    const W = WEAPONS[c.heldKey()], lens = W && W.scope && c.w.ads > 0.9 ? 0.44 * Math.min(innerWidth, innerHeight) : 0; // through a scope, only what the lens shows
+    for (let i = this.dnums.length - 1; i >= 0; i--) {
+      const d = this.dnums[i], age = now - d.t0;
+      if (age > 1.1) { d.el.remove(); this.dnums.splice(i, 1); continue; }
+      const e = c.ents.get(d.v); if (e && e.alive) { d.x = e.x; d.y = e.y; d.z = e.z; }
+      v.set(d.x + d.ox, d.y + d.oy + age * 0.55, d.z).project(R.camera);
+      const sx = v.x * W2 + W2, sy = -v.y * H2 + H2;
+      if (v.z > 1 || (lens && Math.hypot(sx - W2, sy - H2) > lens)) { d.el.style.opacity = 0; continue; }
+      const pop = age < 0.12 ? 1.35 - age * 2.9 : 1;
+      d.el.style.transform = `translate(${sx.toFixed(1)}px, ${sy.toFixed(1)}px) translate(-50%, -50%) scale(${pop.toFixed(2)})`;
+      d.el.style.opacity = age > 0.75 ? ((1.1 - age) / 0.35).toFixed(2) : 1;
+    }
+  },
   damageFrom(ang) { const d = this.h.dmg; d.style.transform = `rotate(${-ang}rad)`; d.style.transition = 'none'; d.style.opacity = 1; void d.offsetWidth; d.style.transition = 'opacity 1.2s'; d.style.opacity = 0; },
   killfeed(c) {
     const html = c.killfeed.filter((k) => nowS() - k.t < 6).map((k) => {
-      const W = WEAPONS[k.w], wn = W ? W.short : '';
+      const W = WEAPONS[k.w], wn = W ? W.short : k.w === 'fall' ? 'FELL' : '';
       const mine = k.k === c.id || k.v === c.id || (k.as || []).includes(c.id);
       const killer = k.k >= 0 && k.k !== k.v ? `<span style="color:${esc(c.colorOf(k.k))}">${esc(c.nameOf(k.k))}</span>` : '';
       const assist = k.as && k.as.length ? `<span class="w">+ ${k.as.map((a) => esc(c.nameOf(a))).join(', ')}</span>` : '';
@@ -10303,6 +10679,10 @@ const UI = {
       img.data.set(col, i * 4);
     }
     x.putImageData(img, 0, 0);
+    // floating platforms as pale decks, jump pads as cyan dots
+    const k = N / (2 * MAP.HALF), P = (v) => (v + MAP.HALF) * k;
+    for (const pl of MAP.plats) if (pl.kind === 'deck') { x.fillStyle = 'rgba(232,214,170,0.85)'; x.fillRect(P(pl.x0), P(pl.z0), (pl.x1 - pl.x0) * k, (pl.z1 - pl.z0) * k); }
+    for (const pd of MAP.pads) { x.fillStyle = '#5ef0ff'; x.beginPath(); x.arc(P(pd.x), P(pd.z), 2.2, 0, TAU); x.fill(); }
     return c;
   },
   drawRadar(c) {
@@ -10360,7 +10740,9 @@ const UI = {
     if (INPUT.touch) TOUCH.paint(c);
     // crosshair: fixed in place (lines only spread if the player turns that on); hidden while scoped, lines hidden while aiming
     h.scope.hidden = !c.scoped;
-    const showX = st.alive && !c.scoped && c.state === 'game';
+    this.aimWindow(c, W, dt);
+    this.updateDamageNumbers(c);
+    const showX = st.alive && !c.scoped && c.state === 'game' && !this.adsOn;
     if (this.cache.xshow !== showX) { this.cache.xshow = showX; h.cross.classList.toggle('hide', !showX); }
     if (showX) {
       const ads = c.w.ads > 0.6;
